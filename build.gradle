@@ -34,6 +34,10 @@ task copyResourcesOfICARO(type: Copy) {
         from '/schemas'
         into '/build/libs/schemas'
     }
+    copy {
+        from '/gatePluginAnnie'
+        into '/build/resources/main'
+    }
 }
 processResources.dependsOn("copyResourcesOfICARO")
 

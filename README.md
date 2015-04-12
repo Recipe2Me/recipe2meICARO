@@ -10,4 +10,4 @@ Dependencias:
 
 -Base de Datos Mongo en local con la configuración por defeco<br>
 -Gate Instalado<br>
--Definir las rutas de Gate y del archivo del chatter en icaro.aplicaciones.recursos.extractorSemantico.ConfigRutasExtractorSemantico.java<br>
+-Definir las rutas de Gate en icaro.aplicaciones.recursos.extractorSemantico.ConfigRutasExtractorSemantico.java<br>
