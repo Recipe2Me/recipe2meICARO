@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+<title>Recipe2Me - Yo lo pienso, tu solo lo cocinas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" sizes="16x16"
+	th:href="@{/static/img/favicon-16x16.png}" href="/favicon-16x16.png" />
+<link href='http://fonts.googleapis.com/css?family=Roboto'
+	rel='stylesheet' type='text/css' />
+<!-- <link th:href="@{/static/css/bootstrap.css}"
+	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
+<link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
+	rel='stylesheet' type='text/css' />
+</head>
+<body onload="disconnect()">
+	<nav class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header">
+				<button aria-controls="navbar" aria-expanded="false"
+					data-target="#navbar" data-toggle="collapse"
+					class="navbar-toggle collapsed" type="button">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">Recipe2Me</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar">
+				<ul class="nav navbar-nav">
+					<li th:class="((${menu}=='home')?'active')" th:href="@{/home}"><a
+						href="#">Home</a></li>
+					<li th:class="((${menu}=='about')?'active')"><a
+						th:href="@{/about}" href="#about">About</a></li>
+					<li th:class="((${menu}=='contact')?'active')"><a
+						th:href="@{/contact}" href="#contact">Contact</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="!isAuthenticated()"><a th:href="@{/signup}"
+						href="/signup">Sign Up</a></li>
+					<li sec:authorize="!isAuthenticated()" class="dropdown"><a
+						class="dropdown-toggle" href="#" data-toggle="dropdown"
+						role="button" aria-expanded="false">Login<span class="caret"></span></a>
+						<div class="dropdown-menu" role="menu">
+							<div class="col-sm-12">
+								<form class="form" id="formLogin" th:action="@{/login}"
+									method="POST">
+									<input name="username" id="username" placeholder="Username"
+										type="text" /> <input name="password" id="password"
+										placeholder="Password" type="password" /><br />
+									<button type="submit" id="btnLogin" class="btn">Login</button>
+								</form>
+							</div>
+						</div></li>
+					<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"
+						href="/logout">Logout</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+	<div sec:authorize="!isAuthenticated()" class="container">
+		<div class="row">
+			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
+				<h1>Bienvenido a Recipe2Me</h1>
+				<p>Antes de empezar necesito que te accedas al sistema o
+					registre antes de empezar.</p>
+			</div>
+		</div>
+	</div>
+	<div sec:authorize="isAuthenticated()" class="container">
+		<div class="row">
+			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
+				<div>
+					<div>
+						<button id="connect" onclick="connect();">Connect</button>
+						<button id="disconnect" disabled="disabled"
+							onclick="disconnect();">Disconnect</button>
+					</div>
+					<div id="conversationDiv">
+						<label>What is your name?</label><input type="text" id="name" />
+						<button id="sendName" onclick="sendName();">Send</button>
+						<p id="response"></p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer>
+		<div th:each="mess : ${info}"
+			class="alert alert-success alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<strong>Warning! </strong>
+			<p th:text="${mess}"></p>
+		</div>
+		<div th:each="mess : ${error}"
+			class="alert alert-warning alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert"
+				aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+			<strong>Warning! </strong>
+			<p th:text="${mess}"></p>
+		</div>
+		<script th:src="@{/static/js/script.js}" src="../static/js/script.js"></script>
+		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
+		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
+    	<script th:src="@{/static/js/stomp.js}" src="../static/js/stomp.js"></script>
+		<script th:src="@{/static/js/bootstrap.js}"
+			src="../static/js/bootstrap.js"></script>
+		<script th:inline="javascript">
+		/*<![CDATA[*/
+			var stompClient = null;
+
+			function setConnected(connected) {
+				document.getElementById('connect').disabled = connected;
+				document.getElementById('disconnect').disabled = !connected;
+				document.getElementById('conversationDiv').style.visibility = connected ? 'visible'
+						: 'hidden';
+				document.getElementById('response').innerHTML = '';
+			}
+
+			function connect() {
+				var socket = new SockJS('/ws');
+				stompClient = Stomp.over(socket);
+				stompClient
+						.connect(
+								{},
+								function(frame) {
+									setConnected(true);
+									console.log('Connected: ' + frame);
+									stompClient
+											.subscribe(
+													'/recipe/user/' + [[${#authentication.name}]] + '/chat',
+													function(greeting) {
+														showGreeting(JSON
+																.parse(greeting.body).content);
+													});
+								});
+			}
+
+			function disconnect() {
+				if (stompClient != null) {
+					stompClient.disconnect();
+				}
+				setConnected(false);
+				console.log("Disconnected");
+			}
+
+			function sendName() {
+				var name = document.getElementById('name').value;
+				stompClient.send("/app/hello", {}, JSON.stringify({
+					'name' : name
+				}));
+			}
+
+			function showGreeting(message) {
+				var response = document.getElementById('response');
+				var p = document.createElement('p');
+				p.style.wordWrap = 'break-word';
+				p.appendChild(document.createTextNode(message));
+				response.appendChild(p);
+			}
+			/*]]>*/
+			</script>
+	</footer>
+</body>
+</html>

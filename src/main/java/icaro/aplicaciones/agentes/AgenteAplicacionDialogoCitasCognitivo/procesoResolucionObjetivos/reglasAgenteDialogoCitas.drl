@@ -1,0 +1,46 @@
+import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
+import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.*;
+import icaro.infraestructura.entidadesBasicas.informes.*;
+import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.gestorTareas.ItfGestorTareas;
+import icaro.infraestructura.entidadesBasicas.PerformativaUsuario;
+import icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas.*;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.*;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.*;
+
+global ItfGestorTareas gestorTareas;
+global ItfUsoRecursoTrazas recursoTrazas;
+global String agentId;
+
+rule "Creacion de los objectivos iniciales"
+when 
+then 
+TareaSincrona tarea = gestorTareas.crearTareaSincrona(InicializarInfoWorkMem.class);
+    tarea.ejecutar();
+recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName()); 
+end
+
+///Reglas de Registro de comunicacion del usuario
+rule "Inicio del proceso de consecucion del  objetivo RegistrarDialogoUsuario"
+  when
+    evento : EventoConexion( name : user.username )
+    not( UserSession( user == name ) )
+  then
+  	insert( new UserSession( name ) );
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(RegistrarDialogoUsuario.class);
+    tarea.ejecutar(name);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract(evento)
+end
+
+///Regla de desconexion del usuario
+rule "Inicio del proceso de consecucion del  objetivo BorrarRegistroDialogoUsuario"
+  when
+    evento : EventoDesconexion( name : user.username )
+    sesion : UserSession( user == name )
+  then
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract(evento)
+    retract(sesion)
+end
