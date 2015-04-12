@@ -9,7 +9,6 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoDesconexion;
 import icaro.aplicaciones.recursos.accesoMongo.ItfUsoPersistenciaMongo;
 import icaro.aplicaciones.recursos.web.config.DisconnectInterceptor;
-import icaro.aplicaciones.recursos.web.config.JettyConfiguration;
 import icaro.aplicaciones.recursos.web.config.SecurityConfiguration;
 import icaro.aplicaciones.recursos.web.config.WebSocketConfig;
 import icaro.aplicaciones.recursos.web.controller.HomeController;
@@ -20,6 +19,8 @@ import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaRecursoAplicacion;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
 import icaro.infraestructura.patronRecursoSimple.imp.ImplRecursoSimple;
+import icaro.infraestructura.patronRecursoWeb.config.JettyConfiguration;
+import icaro.infraestructura.patronRecursoWeb.imp.ImplRecursoWeb;
 import icaro.infraestructura.recursosOrganizacion.configuracion.ItfUsoConfiguracion;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.imp.ClaseGeneradoraRepositorioInterfaces;
@@ -29,21 +30,15 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-public class ClaseGeneradoraWeb extends ImplRecursoSimple implements ItfUsoComunicacionWeb {
+public class ClaseGeneradoraWeb extends ImplRecursoWeb implements ItfUsoComunicacionWeb {
 
 	private String identRecurso;
 	private String identificadorAgenteGestorDialogo;
 	public InterfazUsoAgente itfUsoAgenteGestDialogo;
 	private ItfUsoPersistenciaMongo itfUsoPersistenciaMongo;
 	private HomeController controller;
-	
-	/**
-     * Flag that will be set to true when the web application context
-     * (SpringMVC) is refreshed.
-     */
-    static boolean webApplicationContextInitialized = false;
 
-	public ClaseGeneradoraWeb(String idRecurso)
+	public ClaseGeneradoraWeb(String idRecurso, AnnotationConfigWebApplicationContext applicationContext)
 			throws RemoteException {
 		super(idRecurso);
 		try {
@@ -57,42 +52,29 @@ public class ClaseGeneradoraWeb extends ImplRecursoSimple implements ItfUsoComun
 			if (itfUsoPersistenciaMongo == null) {
 				this.generarErrorCreacionComponente("itfUsoPersistenciaMongo es null");
 			}
-			AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
-
-            applicationContext
-                    .addApplicationListener(new ApplicationListener<ContextRefreshedEvent>() {
-                        @Override
-                        public void onApplicationEvent(
-                                ContextRefreshedEvent event) {
-                            ApplicationContext ctx = event.getApplicationContext();
-                            if (ctx instanceof AnnotationConfigWebApplicationContext) {
-                                webApplicationContextInitialized = true;
-                            }
-                        }
-                    });
-            applicationContext.registerShutdownHook();
-            applicationContext.register(JettyConfiguration.class);
             applicationContext.register(SecurityConfiguration.class);
             applicationContext.register(WebSocketConfig.class);
 		    applicationContext.register(HomeController.class);
-    		applicationContext.refresh();
-            SecurityConfiguration sec = applicationContext.getBean(SecurityConfiguration.class);
-            sec.getService().setService(itfUsoPersistenciaMongo);  
-            controller = applicationContext.getBean(HomeController.class);
-            controller.setRepository(itfUsoPersistenciaMongo);
-            controller.setWeb(this);
-            DisconnectInterceptor interceptor = applicationContext.getBean(DisconnectInterceptor.class);
-            interceptor.setWeb(this);
-            if (!webApplicationContextInitialized) {
-                logger.error("Web application context not initialized. Exiting.");
-                System.exit(1);
-            }
             logger.info("Running.");
         } catch (Exception e) {
             logger.error("Error starting application", e);
             System.exit(1);
         }
 	}
+
+	@Override
+	public void postInitContext(ApplicationContext context) {
+		super.postInitContext(context);
+        SecurityConfiguration sec = context.getBean(SecurityConfiguration.class);
+        sec.getService().setService(itfUsoPersistenciaMongo);  
+        controller = context.getBean(HomeController.class);
+        controller.setRepository(itfUsoPersistenciaMongo);
+        controller.setWeb(this);
+        DisconnectInterceptor interceptor = context.getBean(DisconnectInterceptor.class);
+        interceptor.setWeb(this);
+	}
+
+
 
 	private void generarErrorCreacionComponente(String textoMensaje) {
 		this.trazas.aceptaNuevaTraza(new InfoTraza(id,
@@ -159,16 +141,6 @@ public class ClaseGeneradoraWeb extends ImplRecursoSimple implements ItfUsoComun
 			}
 		}
 		return itfUsoAgenteGestDialogo;
-	}
-
-	@Override
-	public void termina() {
-
-		try {
-			super.termina();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	@Override
