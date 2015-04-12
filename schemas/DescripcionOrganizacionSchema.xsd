@@ -76,6 +76,7 @@
 	<xs:complexType name="DescRecursoAplicacion">
 		<xs:attribute name="nombre" use="required" type="xs:string"/>
 		<xs:attribute name="localizacionClaseGeneradora" use="optional" type="xs:string"/>
+		<xs:attribute name="tipo" use="optional" type="TipoRecurso"/>
 	</xs:complexType>
 	<xs:complexType name="DescRecursosAplicacion">
 		<xs:sequence>
@@ -173,6 +174,12 @@
 			<xs:enumeration value="CognitivoConExpectativas"/>
 			<xs:enumeration value="Reactivo"/>
 			<xs:enumeration value="ReactivoSCXML"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TipoRecurso">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="RecursoSimple"/>
+            <xs:enumeration value="RecursoWeb"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="TipoComponente">

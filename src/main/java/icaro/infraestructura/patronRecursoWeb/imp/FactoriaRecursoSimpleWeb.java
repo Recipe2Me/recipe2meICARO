@@ -12,6 +12,7 @@ import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.jaxb.Des
 import icaro.infraestructura.patronRecursoWeb.FactoriaRecursoWeb;
 import icaro.infraestructura.patronRecursoWeb.ItfGestionRecursoWeb;
 import icaro.infraestructura.patronRecursoWeb.ItfUsoRecursoWeb;
+import icaro.infraestructura.patronRecursoWeb.config.JettyConfiguration;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza.NivelTraza;
@@ -21,6 +22,10 @@ import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.imp.Clas
 import java.lang.reflect.InvocationTargetException;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
 
@@ -41,10 +46,29 @@ public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
         private ItfUsoAutomataEFsinAcciones itfAutomata;
         private NombresPredefinidos.TipoEntidad tipoEntidad = NombresPredefinidos.TipoEntidad.Recurso ;
         private String idRecurso;
+        private AnnotationConfigWebApplicationContext applicationContext;
+        static boolean webApplicationContextInitialized = false;
+        
+    public FactoriaRecursoSimpleWeb() {
+    	this.applicationContext = new AnnotationConfigWebApplicationContext();
+    	applicationContext
+        .addApplicationListener(new ApplicationListener<ContextRefreshedEvent>() {
+            @Override
+            public void onApplicationEvent(
+                    ContextRefreshedEvent event) {
+                ApplicationContext ctx = event.getApplicationContext();
+                if (ctx instanceof AnnotationConfigWebApplicationContext) {
+                    webApplicationContextInitialized = true;
+                }
+            }
+        });
+    	applicationContext.registerShutdownHook();
+    	applicationContext.register(JettyConfiguration.class);
+	}
 
 	@Override
-	public void crearRecursoSimple(DescInstanciaRecursoAplicacion recurso) {
-		 idRecurso = recurso.getId();
+	public void crearRecursoWeb(DescInstanciaRecursoAplicacion recurso) {
+		idRecurso = recurso.getId();
 		try {
 			// obtengo la clase generadora del recurso
 		    trazas.aceptaNuevaTraza(new InfoTraza(idRecurso,tipoEntidad,
@@ -52,12 +76,19 @@ public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
 					+ idRecurso,
 					InfoTraza.NivelTraza.debug));
 			
-			 ImplRecursoWeb objRecurso = obtenerInstClaseGeneradora( recurso);
+			 ImplRecursoWeb objRecurso = obtenerInstClaseGeneradora(recurso,applicationContext);
 
                          if (objRecurso != null) {
                             itfAutomata = (ItfUsoAutomataEFsinAcciones) ClaseGeneradoraAutomataEFsinAcciones.instance(NombresPredefinidos.FICHERO_AUTOMATA_CICLO_VIDA_COMPONENTE);
                             objRecurso.setItfAutomataCicloDeVida(itfAutomata);
-
+                            //Tras iniciar el objeto iniciamos la actualizacion del contexto
+                            applicationContext.refresh();
+                            if (!webApplicationContextInitialized) {
+                                logger.error("Web application context not initialized. Exiting.");
+                                System.exit(1);
+                            }
+                            //Tras iniciar correctamente el contexto volvemos a pasarlo al recurso para que realice varias acciones post inicio
+                            objRecurso.postInitContext(applicationContext);
 			// Guardamos el id de la instancia
 		//	objRecurso.setId(idRecurso);
 
@@ -88,6 +119,7 @@ public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
                     NivelTraza.error));
                     System.err.println(" No se puede crear  el recurso. La clase generadora no esta bien definida.");
                     }
+             
 
 		} catch (Exception e) {
 			trazas.aceptaNuevaTraza(new InfoTraza(idRecurso,
@@ -97,7 +129,7 @@ public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
 		}
 	}
 
-    private ImplRecursoWeb obtenerInstClaseGeneradora(DescInstanciaRecursoAplicacion instRecurso) {
+    private ImplRecursoWeb obtenerInstClaseGeneradora(DescInstanciaRecursoAplicacion instRecurso, AnnotationConfigWebApplicationContext applicationContext) {
 
 		DescRecursoAplicacion descComportamiento = instRecurso.getDescRecurso();
                 if ( descComportamiento == null){    
@@ -113,7 +145,7 @@ public class FactoriaRecursoSimpleWeb extends FactoriaRecursoWeb {
                     if ( posicion < 0) posicion = rutaClase.indexOf(".java");
                     if ( posicion >= 0) rutaClase = rutaClase.substring(0,posicion);
                     Class claseGenradoraRecurso = Class.forName(rutaClase);
-                    ImplRecursoWeb objRecurso = (ImplRecursoWeb) claseGenradoraRecurso.getConstructor(String.class).newInstance(idRecurso);	
+                    ImplRecursoWeb objRecurso = (ImplRecursoWeb) claseGenradoraRecurso.getConstructor(String.class,AnnotationConfigWebApplicationContext.class).newInstance(idRecurso,applicationContext);	
 			return objRecurso;
 		} catch (InstantiationException ex) {
                     msgError = "La clase: " + rutaClase

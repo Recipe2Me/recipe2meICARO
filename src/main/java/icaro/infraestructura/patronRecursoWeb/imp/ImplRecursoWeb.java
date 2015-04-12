@@ -5,14 +5,18 @@ import icaro.infraestructura.entidadesBasicas.interfaces.InterfazGestion;
 import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.imp.ConfiguracionTrazas;
 import icaro.infraestructura.patronRecursoSimple.ItfGestionRecursoSimple;
 import icaro.infraestructura.patronRecursoSimple.ItfUsoRecursoSimple;
+import icaro.infraestructura.patronRecursoWeb.ItfGestionRecursoWeb;
+import icaro.infraestructura.patronRecursoWeb.ItfUsoRecursoWeb;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
+
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 import org.apache.log4j.Logger;
+import org.springframework.context.ApplicationContext;
 
 
 
@@ -23,7 +27,7 @@ import org.apache.log4j.Logger;
  */
 
 public class ImplRecursoWeb extends UnicastRemoteObject
-		implements ItfUsoRecursoSimple, ItfGestionRecursoSimple,Serializable {
+		implements ItfUsoRecursoWeb, ItfGestionRecursoWeb,Serializable {
 
 	private static final long serialVersionUID = 1L;
 //	public final static String ficheroAutomataCicloVida = "/icaro/infraestructura/patronRecursoSimple/TablaEstadosCicloVidaRecursos.xml";
@@ -171,6 +175,13 @@ public class ImplRecursoWeb extends UnicastRemoteObject
 	}
     public void setParametrosLogger(String archivoLog, String nivelLog){
         ConfiguracionTrazas configuracionTrazas = new ConfiguracionTrazas(logger, archivoLog, nivelLog);
+	}
+
+
+	@Override
+	public void postInitContext(ApplicationContext context) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

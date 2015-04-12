@@ -40,6 +40,8 @@ public class DescRecursoAplicacion {
     protected String nombre;
     @XmlAttribute(name = "localizacionClaseGeneradora")
     protected String localizacionClaseGeneradora;
+    @XmlAttribute(name = "tipo")
+    protected TipoRecurso tipo;
 
     /**
      * Gets the value of the nombre property.
@@ -88,5 +90,15 @@ public class DescRecursoAplicacion {
     public void setLocalizacionClaseGeneradora(String value) {
         this.localizacionClaseGeneradora = value;
     }
+
+	public TipoRecurso getTipo() {
+		return tipo;
+	}
+
+	public void setTipo(TipoRecurso tipo) {
+		this.tipo = tipo;
+	}
+    
+    
 
 }

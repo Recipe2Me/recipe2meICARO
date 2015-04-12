@@ -9,16 +9,18 @@ import icaro.infraestructura.patronAgenteReactivo.control.acciones.AccionesSeman
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstancia;
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaGestor;
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaRecursoAplicacion;
+import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.jaxb.TipoRecurso;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazGestion;
 import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.ItfUsoAgenteReactivo;
 import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.imp.HebraMonitorizacion;
 import icaro.infraestructura.patronRecursoSimple.FactoriaRecursoSimple;
 import icaro.infraestructura.patronRecursoSimple.ItfGestionRecursoSimple;
+import icaro.infraestructura.patronRecursoWeb.FactoriaRecursoWeb;
 import icaro.infraestructura.recursosOrganizacion.configuracion.ItfUsoConfiguracion;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.imp.ClaseGeneradoraRepositorioInterfaces;
-import java.rmi.Remote;
 
+import java.rmi.Remote;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -237,7 +239,11 @@ public class AccionesSemanticasGestorRecursos extends AccionesSemanticasAgenteRe
 
 			if (nodoDestino.equals(esteNodo)) {
              // Se crea el recurso en el mismo nodo
-				FactoriaRecursoSimple.instance().crearRecursoSimple(recurso);
+				if (TipoRecurso.RecursoSimple.equals(recurso.getDescRecurso().getTipo()) || null==recurso.getDescRecurso().getTipo()) {
+					FactoriaRecursoSimple.instance().crearRecursoSimple(recurso);
+				} else if (TipoRecurso.RecursoWeb.equals(recurso.getDescRecurso().getTipo())) {
+					FactoriaRecursoWeb.instance().crearRecursoWeb(recurso);
+				}
                               
             // Si la organizacion esta desplegada en varios nodos entonces hay que registrarlo en el RMI local
             

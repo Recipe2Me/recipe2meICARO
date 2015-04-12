@@ -63,7 +63,7 @@ public class NombresPredefinidos {
 
   public static final String FACTORIA_AGENTE_REACTIVO = "FactoriaAgenteReactivo";
   public static final String FACTORIA_RECURSO_SIMPLE = "FactoriaRecursoSimple";
-  public static final String FACTORIA_RECURSO_WEB = "FactoriaRecursoWeb";
+  public static final String FACTORIA_RECURSO_WEB = "FactoriaRecursoSimpleWeb";
 
 //  public static final String FACTORIA_AGENTE_COGNITIVO = "FactoriaAgenteCognitivo";
   public static final String FACTORIA_AGENTE_COGNITIVO = "CognitiveAgentFactory";

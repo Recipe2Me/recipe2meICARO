@@ -1,6 +1,10 @@
 package icaro.infraestructura.patronRecursoWeb;
 
 
+import java.rmi.RemoteException;
+
+import org.springframework.context.ApplicationContext;
+
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazGestion;
 
 /**
@@ -10,7 +14,7 @@ import icaro.infraestructura.entidadesBasicas.interfaces.InterfazGestion;
  */
 
 public interface ItfGestionRecursoWeb extends InterfazGestion {
-
+	public void postInitContext(ApplicationContext context) throws RemoteException;
 	/*public String obtenerEstado()
 		throws Exception;*/
 }
