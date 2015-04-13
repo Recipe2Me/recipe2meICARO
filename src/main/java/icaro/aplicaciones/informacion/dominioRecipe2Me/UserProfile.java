@@ -32,6 +32,8 @@ public class UserProfile implements Serializable, UserDetails {
 	private String password;
 	@Property("email")
 	private String email;
+	@Property("init")
+	private boolean init=false;
 	
 	public UserProfile() {
 		
@@ -41,12 +43,14 @@ public class UserProfile implements Serializable, UserDetails {
 		this.userName = from.getUserName();
 		this.password = from.getPassword();
 		this.email = from.getEmail();
+		this.init=false;
 	}
 	
 	public UserProfile(String userName, String password) {
 		super();
 		this.userName = userName;
 		this.password = password;
+		this.init=false;
 	}
 	public ObjectId getId() {
 		return id;
@@ -65,6 +69,22 @@ public class UserProfile implements Serializable, UserDetails {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public boolean isInit() {
+		return init;
+	}
+
+	public void setInit(boolean init) {
+		this.init = init;
 	}
 
 	@Override

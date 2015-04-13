@@ -1,0 +1,34 @@
+import icaro.infraestructura.recursosOrganizacion.recursoTrazas.ItfUsoRecursoTrazas;
+import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.*;
+import icaro.infraestructura.entidadesBasicas.informes.*;
+import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.gestorTareas.ItfGestorTareas;
+import icaro.infraestructura.entidadesBasicas.PerformativaUsuario;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorConocimientoInicialCognitivo.tareas.*;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.*;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.*;
+
+global ItfGestorTareas gestorTareas;
+global ItfUsoRecursoTrazas recursoTrazas;
+global String agentId;
+
+rule "Creacion de los objectivos iniciales"
+when 
+then 
+TareaSincrona tarea = gestorTareas.crearTareaSincrona(InicializarInfoWorkMem.class);
+    tarea.ejecutar();
+recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName()); 
+end
+
+///Regla inicial de presentacion al usuario por primera vez
+rule "Inicio del proceso de consecucion del  objetivo PresentarseAlUsuario"
+  when
+    evento : EventoConexion( name : user.username )
+    not( ControlEstadoConocimientoInicial( user == name ) )
+  then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : SaludoInicial",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(SaludoInicial.class);
+    tarea.ejecutar(name);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract(evento)
+end

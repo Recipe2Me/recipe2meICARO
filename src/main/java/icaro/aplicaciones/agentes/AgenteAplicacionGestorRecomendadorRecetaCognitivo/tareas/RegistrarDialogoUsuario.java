@@ -1,4 +1,4 @@
-package icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas;
+package icaro.aplicaciones.agentes.AgenteAplicacionGestorRecomendadorRecetaCognitivo.tareas;
 
 /**
  * <p>Title: Agenda de citas vocal</p>
@@ -10,8 +10,8 @@ package icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas;
  */
 
 
-import icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.objetivos.ObtenerInfoInterlocutor;
-import icaro.aplicaciones.informacion.gestionCitas.VocabularioGestionCitas;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorConocimientoInicialCognitivo.objetivos.ObtenerInfoInterlocutor;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
@@ -40,21 +40,21 @@ public class RegistrarDialogoUsuario extends TareaSincrona{
                     try {
 //         // Se busca la interfaz del recurso en el repositorio de interfaces 
 		ItfUsoComunicacionWeb recComunicacionChat = (ItfUsoComunicacionWeb) NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ.obtenerInterfazUso(
-						VocabularioGestionCitas.IdentRecursoComunicacionChat);          
+						VocabularioRecipe2Me.IdentRecursoComunicacionWeb);          
                 if (recComunicacionChat!=null){
-                    String mensajeAenviar = VocabularioGestionCitas.SaludoInicial2+ "  "+ identInterlocutor + "  "+
-                            VocabularioGestionCitas.InfoGeneralFuncionalidad + "  "+
-                            VocabularioGestionCitas.PeticionInformacionGeneral1;
+                    String mensajeAenviar = VocabularioRecipe2Me.SaludoInicial2+ "  "+ identInterlocutor + "  "+
+                            VocabularioRecipe2Me.InfoGeneralFuncionalidad + "  "+
+                            VocabularioRecipe2Me.PeticionInformacionGeneral1;
                     recComunicacionChat.enviarMensageAlUsuario(mensajeAenviar,identInterlocutor);
                 }
                 else {
                     identAgenteOrdenante = this.getAgente().getIdentAgente();
                      this.generarInformeConCausaTerminacion(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Error-AlObtener:Interfaz:"+
-                             VocabularioGestionCitas.IdentRecursoComunicacionChat, CausaTerminacionTarea.ERROR);
+                             VocabularioRecipe2Me.IdentRecursoComunicacionWeb, CausaTerminacionTarea.ERROR);
                         }
                     } catch(Exception e) {
                         this.generarInformeConCausaTerminacion(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Error-Acceso:Interfaz:"+
-                                VocabularioGestionCitas.IdentRecursoComunicacionChat, CausaTerminacionTarea.ERROR);
+                                VocabularioRecipe2Me.IdentRecursoComunicacionWeb, CausaTerminacionTarea.ERROR);
 			e.printStackTrace();
 		}
 	}

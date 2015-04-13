@@ -4,12 +4,18 @@ import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.*;
 import icaro.infraestructura.entidadesBasicas.informes.*;
 import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.gestorTareas.ItfGestorTareas;
 import icaro.infraestructura.entidadesBasicas.PerformativaUsuario;
-import icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas.*;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas.*;
+import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.*;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.*;
+import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
+import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
 
 global ItfGestorTareas gestorTareas;
 global ItfUsoRecursoTrazas recursoTrazas;
+global InterfazUsoAgente agenteRecomendador;
+global InterfazUsoAgente agenteConocimiento;
+global ItfUsoComunicacionWeb recursoWeb;
 global String agentId;
 
 rule "Creacion de los objectivos iniciales"
@@ -26,12 +32,33 @@ rule "Inicio del proceso de consecucion del  objetivo RegistrarDialogoUsuario"
     evento : EventoConexion( name : user.username )
     not( UserSession( user == name ) )
   then
-  	insert( new UserSession( name ) );
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(RegistrarDialogoUsuario.class);
-    tarea.ejecutar(name);
+    tarea.ejecutar(evento);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
-    retract(evento)
+end
+
+///Interconectar usuario con el agente AgenteAplicacionGestorConocimientoInicial
+rule "Interconectar los mensajes entre agente y usuario"
+	when
+		evento : EventoConexion( name : user.username )
+		sesion : UserSession( user == name , first == true )
+	then
+		agenteConocimiento.aceptaMensaje( new MensajeSimple( evento , name , agenteConocimiento.getIdentAgente() ) );
+		recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+		retract( evento );
+end
+
+rule "Registrar mensaje del agente y reenviar al usuario"
+  when
+    evento : EventoMensajeHaciaUsuario( name : user )
+    sesion : UserSession( user == name )
+  then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(ReenviarMensaje.class);
+    tarea.ejecutar(sesion,evento);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract( evento );
 end
 
 ///Regla de desconexion del usuario

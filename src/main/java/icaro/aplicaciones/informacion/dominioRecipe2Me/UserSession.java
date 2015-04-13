@@ -20,6 +20,7 @@ public class UserSession implements Serializable {
 	public Date start;
 	public Date end;
 	public Date update;
+	public boolean first=true;
 	@Embedded(concreteClass=Message.class) public List<Message> messages = new ArrayList<Message>();
 	public List<String> recipes = new ArrayList<String>();
 	public String recipeAccept;
@@ -80,7 +81,14 @@ public class UserSession implements Serializable {
 	public void setFinished(boolean finished) {
 		this.finished = finished;
 	}
-	
+
+	public boolean isFirst() {
+		return first;
+	}
+
+	public void setFirst(boolean first) {
+		this.first = first;
+	}
 	
 
 }

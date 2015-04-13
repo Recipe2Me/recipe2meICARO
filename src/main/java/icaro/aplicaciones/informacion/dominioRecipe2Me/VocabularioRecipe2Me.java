@@ -2,20 +2,22 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package icaro.aplicaciones.informacion.gestionCitas;
+package icaro.aplicaciones.informacion.dominioRecipe2Me;
 
 /**
  *
  * @author FGarijo
  */
-public class VocabularioGestionCitas {
+public class VocabularioRecipe2Me {
     public static final String ResultadoAutenticacion_DatosNoValidos= "usuarioNoValido";
     public static final String ResultadoAutenticacion_DatosValidos= "usuarioValido";
     public static final String NotificacionAccesoAutorizado="Autorizacion_Acceso_Notificado_Al_Usuario";
     public static final String ErrorObtencionInterfaz_RecPersistencia = "Error-AlObtener:Interfaz_Recurso_Persistencia";
     public static final String IdentRecursoExtractorSemantico= "ExtractorSemantico1";
-    public static final String IdentRecursoComunicacionChat= "ComunicacionWeb1";
-    public static final String IdentAgenteAplicacionDialogoCitas= "AgenteAplicacionDialogoCitas1";
+    public static final String IdentRecursoComunicacionWeb= "ComunicacionWeb1";
+    public static final String IdentAgenteAplicacionGestorDialogo= "AgenteAplicacionGestorDialogo1";
+    public static final String IdentAgenteAplicacionGestorConocimientoInicial= "AgenteAplicacionGestorConocimientoInicial1";
+    public static final String IdentAgenteAplicacionGestorRecomendadorReceta= "AgenteAplicacionGestorRecomendadorReceta1";
     public static final String IdentConexionAgte= "AgteCitas";
     public static final String IdentRecursoPersistenciaChat= "PersistenciaChat1";
     public static final String InfoUsuarioYaExiste= "infoUsuarioYaExistente";

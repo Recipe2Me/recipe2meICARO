@@ -3,8 +3,8 @@
  * and open the template in the editor.
  */
 
-package icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas;
-import icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.objetivos.ObtenerInfoInterlocutor;
+package icaro.aplicaciones.agentes.AgenteAplicacionGestorRecomendadorRecetaCognitivo.tareas;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorConocimientoInicialCognitivo.objetivos.ObtenerInfoInterlocutor;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;

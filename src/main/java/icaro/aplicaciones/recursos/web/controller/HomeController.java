@@ -108,7 +108,7 @@ public class HomeController {
     }
     
     public void sendMessageToUser(String message, String user) {
-    	template.convertAndSendToUser(user,"/chat", new Greeting("Hello, " + message + "!"));
+    	template.convertAndSendToUser(user,"/chat", new Greeting( message ));
     }
 
 	public ItfUsoPersistenciaMongo getRepository() {

@@ -1,4 +1,4 @@
-package icaro.aplicaciones.agentes.AgenteAplicacionDialogoCitasCognitivo.tareas;
+package icaro.aplicaciones.agentes.AgenteAplicacionGestorRecomendadorRecetaCognitivo.tareas;
 
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Tarea;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
