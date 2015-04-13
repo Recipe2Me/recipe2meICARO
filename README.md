@@ -1,6 +1,8 @@
 RECIPE2ME
 =========
 
+[![Stories in Ready](https://badge.waffle.io/Recipe2Me/recipe2meICARO.svg?label=ready&title=Ready)](http://waffle.io/Recipe2Me/recipe2meICARO) 
+
 Este proyecto hace uso del gestor de dependencia y construcción gradle. No es necesario instalarlo en el sistema puesto que incluye una copia con el propio proyecto.
 
 Para ejecutarlo (cumpliendo las dependencias del proyecto como la base de datos y la localización de los recursos necesarios) solo hace falta ejecutar en la linea de comando:
