@@ -32,3 +32,14 @@ rule "Inicio del proceso de consecucion del  objetivo PresentarseAlUsuario"
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     retract(evento)
 end
+
+rule "Recibir mensaje del usuario"
+  when
+    evento : EventoMensajeDelUsuario( name : user )
+  then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : SaludoInicial",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(SegundoMensaje.class);
+    tarea.ejecutar(name);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract(evento)
+end

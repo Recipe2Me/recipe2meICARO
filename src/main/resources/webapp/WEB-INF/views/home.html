@@ -12,7 +12,7 @@
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
 	rel='stylesheet' type='text/css' />
 </head>
-<body onload="disconnect()">
+<body>
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<div class="navbar-header">
@@ -71,15 +71,10 @@
 		<div class="row">
 			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
 				<div>
-					<div>
-						<button id="connect" onclick="connect();">Connect</button>
-						<button id="disconnect" disabled="disabled"
-							onclick="disconnect();">Disconnect</button>
-					</div>
 					<div id="conversationDiv">
-						<label>What is your name?</label><input type="text" id="name" />
-						<button id="sendName" onclick="sendName();">Send</button>
 						<p id="response"></p>
+						<label>Mensaje</label><br/>
+						<textarea id="input" class="textarea"></textarea>
 					</div>
 				</div>
 			</div>
@@ -104,27 +99,34 @@
 			<strong>Warning! </strong>
 			<p th:text="${mess}"></p>
 		</div>
-		<script th:src="@{/static/js/script.js}" src="../static/js/script.js"></script>
 		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
 		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
 		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
     	<script th:src="@{/static/js/stomp.js}" src="../static/js/stomp.js"></script>
 		<script th:src="@{/static/js/bootstrap.js}"
 			src="../static/js/bootstrap.js"></script>
-		<script th:inline="javascript">
+		<script sec:authorize="isAuthenticated()" th:inline="javascript">
 		/*<![CDATA[*/
 			var stompClient = null;
+			$(document).ready(
+					function(){
+						$("#input").keyup(function(e){
+						    if((e.keyCode || e.which) == 13) { //Enter keycode
+						    	$("#input").prop( "disabled", true );
+						    	sendName();
+						      }
+						     });
+						 connect();    
+					    }
+					);
 
 			function setConnected(connected) {
-				document.getElementById('connect').disabled = connected;
-				document.getElementById('disconnect').disabled = !connected;
-				document.getElementById('conversationDiv').style.visibility = connected ? 'visible'
-						: 'hidden';
 				document.getElementById('response').innerHTML = '';
 			}
 
 			function connect() {
 				var socket = new SockJS('/ws');
+				var userName = /*[[${#authentication.name}]]*/ 'sga.vmp';
 				stompClient = Stomp.over(socket);
 				stompClient
 						.connect(
@@ -134,8 +136,10 @@
 									console.log('Connected: ' + frame);
 									stompClient
 											.subscribe(
-													'/recipe/user/' + [[${#authentication.name}]] + '/chat',
+													'/recipe/user/' + userName + '/chat',
 													function(greeting) {
+														$('#input').val('');
+														$('#input').prop( "disabled", false );
 														showGreeting(JSON
 																.parse(greeting.body).content);
 													});
@@ -151,7 +155,7 @@
 			}
 
 			function sendName() {
-				var name = document.getElementById('name').value;
+				var name = document.getElementById('input').value;
 				stompClient.send("/app/hello", {}, JSON.stringify({
 					'name' : name
 				}));

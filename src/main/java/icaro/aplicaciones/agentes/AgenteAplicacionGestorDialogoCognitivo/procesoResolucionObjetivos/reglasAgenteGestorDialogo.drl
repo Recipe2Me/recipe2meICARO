@@ -49,6 +49,16 @@ rule "Interconectar los mensajes entre agente y usuario"
 		retract( evento );
 end
 
+rule "Reenviar mensaje al agente ConocimientoInicial"
+	when
+		evento : EventoMensajeDelUsuario( name : user )
+		sesion : UserSession( user == name , first == true )
+	then
+		agenteConocimiento.aceptaMensaje( new MensajeSimple( evento , name , agenteConocimiento.getIdentAgente() ) );
+		recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+		retract( evento );
+end
+
 rule "Registrar mensaje del agente y reenviar al usuario"
   when
     evento : EventoMensajeHaciaUsuario( name : user )

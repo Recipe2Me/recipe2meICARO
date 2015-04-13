@@ -98,8 +98,8 @@ public class HomeController {
     
     @MessageMapping("/hello")
     public void greeting(Message msg, HelloMessage message, Principal principal) throws Exception {
-        Thread.sleep(3000); // simulated delay
-        sendMessageToUser(message.getName(), message.getName());
+        web.recibirMensajeDelUsuario(message.getName(), principal.getName());
+    	//sendMessageToUser(message.getName(), message.getName());
     }
     
     @SubscribeMapping("/user/{userName}/chat")

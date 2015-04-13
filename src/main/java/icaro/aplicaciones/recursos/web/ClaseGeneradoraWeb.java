@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoDesconexion;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.accesoMongo.ItfUsoPersistenciaMongo;
 import icaro.aplicaciones.recursos.web.config.DisconnectInterceptor;
 import icaro.aplicaciones.recursos.web.config.SecurityConfiguration;
@@ -90,8 +91,9 @@ public class ClaseGeneradoraWeb extends ImplRecursoWeb implements ItfUsoComunica
 	public void recibirMensajeDelUsuario(String mensaje, String usuario) {
 		if (getAgente() != null) {
 			try {
-				EventoSimple eventoAenviar = new EventoSimple("usuario", mensaje);
-				itfUsoAgenteGestDialogo.aceptaEvento(eventoAenviar);
+				EventoMensajeDelUsuario nuevoMensaje = new EventoMensajeDelUsuario(usuario,mensaje);
+				MensajeSimple mensajeAEnviar = new MensajeSimple(nuevoMensaje,usuario,identificadorAgenteGestorDialogo);
+				itfUsoAgenteGestDialogo.aceptaMensaje(mensajeAEnviar);
 			} catch (RemoteException ex) {
 				Logger.getLogger(
 						ClaseGeneradoraWeb.class.getName())
