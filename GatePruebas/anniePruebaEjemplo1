@@ -27,7 +27,7 @@
             <className>gate.persist.SerialDataStore</className>
             <storageUrlString>file:/E:/FicheroRed/GatePruebas/</storageUrlString>
             <storageUrl class="gate.util.persistence.PersistenceManager$URLHolder">
-              <urlString>$relpath$GatePruebas/</urlString>
+              <urlString>$relpath$../GatePruebas/</urlString>
             </storageUrl>
           </dsData>
           <persistenceID class="string">especCitasTextoUsuario1___1422635268933___4133</persistenceID>
