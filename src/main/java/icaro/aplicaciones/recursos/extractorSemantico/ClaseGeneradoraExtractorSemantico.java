@@ -1,9 +1,11 @@
 package icaro.aplicaciones.recursos.extractorSemantico;
 
 import gate.Gate;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.recursos.extractorSemantico.imp.ExtractorSemanticoImp;
 import icaro.infraestructura.patronRecursoSimple.imp.ImplRecursoSimple;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
+
 import java.io.File;
 import java.util.HashSet;
 
@@ -39,8 +41,8 @@ public class ClaseGeneradoraExtractorSemantico extends ImplRecursoSimple impleme
         extractorSem.incializar();
 }
         @Override
-	public HashSet extraerAnotaciones(HashSet anotacionesAencontrar,String textoUsuario)throws Exception{
-            return extractorSem.extraerAnotaciones(anotacionesAencontrar,textoUsuario);
+	public InformacionExtraida extraerAnotaciones(String textoUsuario)throws Exception{
+            return extractorSem.extraerAnotaciones(textoUsuario.toLowerCase());
         }
 
 	@Override

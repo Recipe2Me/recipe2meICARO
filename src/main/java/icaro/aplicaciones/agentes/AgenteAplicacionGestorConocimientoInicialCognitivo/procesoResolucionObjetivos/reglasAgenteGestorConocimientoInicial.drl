@@ -39,7 +39,7 @@ rule "Recibir mensaje del usuario"
   then
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : SaludoInicial",InfoTraza.NivelTraza.debug));
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(SegundoMensaje.class);
-    tarea.ejecutar(name);
+    tarea.ejecutar(name,evento);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     retract(evento)
 end
