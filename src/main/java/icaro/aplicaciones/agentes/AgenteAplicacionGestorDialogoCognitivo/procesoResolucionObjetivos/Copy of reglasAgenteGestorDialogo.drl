@@ -4,12 +4,12 @@ import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.*;
 import icaro.infraestructura.entidadesBasicas.informes.*;
 import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.gestorTareas.ItfGestorTareas;
 import icaro.infraestructura.entidadesBasicas.PerformativaUsuario;
-import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
-import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
-import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.*;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas.*;
+import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.*;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.*;
+import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
+import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
 
 global ItfGestorTareas gestorTareas;
 global ItfUsoRecursoTrazas recursoTrazas;
@@ -17,11 +17,10 @@ global String agentId;
 
 rule "Creacion de los objectivos iniciales"
 when 
-	not(Focus())
 then 
-	TareaSincrona tarea = gestorTareas.crearTareaSincrona(InicializarInfoWorkMem.class);
+TareaSincrona tarea = gestorTareas.crearTareaSincrona(InicializarInfoWorkMem.class);
     tarea.ejecutar();
-	recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName()); 
+recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName()); 
 end
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -46,10 +45,9 @@ rule "Inicio del proceso de consecucion del  objetivo ObtenerInfoSesion"
     obj.setSolving();
     update(obj);
 end
-rule "Creacion de la sesion del usuario"
+rule "Saludo Inicial"
    when
     obj:ObtenerInfoSesion(state==Objetivo.SOLVING)
-    evento:EventoConexion( name : user.username )
     Focus(foco == obj)
    then
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
@@ -57,4 +55,48 @@ rule "Creacion de la sesion del usuario"
     tarea.ejecutar(evento);
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+///Interconectar usuario con el agente AgenteAplicacionGestorConocimientoInicial
+rule "Interconectar los mensajes entre agente y usuario"
+	when
+		evento : EventoConexion( name : user.username )
+		sesion : UserSession( user == name , first == true )
+	then
+		agenteConocimiento.aceptaMensaje( new MensajeSimple( evento , name , agenteConocimiento.getIdentAgente() ) );
+		recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+		retract( evento );
+end
+
+rule "Reenviar mensaje al agente ConocimientoInicial"
+	when
+		evento : EventoMensajeDelUsuario( name : user )
+		sesion : UserSession( user == name , first == true )
+	then
+		agenteConocimiento.aceptaMensaje( new MensajeSimple( evento , name , agenteConocimiento.getIdentAgente() ) );
+		recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+		retract( evento );
+end
+
+rule "Registrar mensaje del agente y reenviar al usuario"
+  when
+    evento : EventoMensajeHaciaUsuario( name : user )
+    sesion : UserSession( user == name )
+  then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(ReenviarMensaje.class);
+    tarea.ejecutar(sesion,evento);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract( evento );
+end
+
+///Regla de desconexion del usuario
+rule "Inicio del proceso de consecucion del  objetivo BorrarRegistroDialogoUsuario"
+  when
+    evento : EventoDesconexion( name : user.username )
+    sesion : UserSession( user == name )
+  then
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    retract(evento)
+    retract(sesion)
 end

@@ -155,10 +155,11 @@
 			}
 
 			function sendName() {
-				var name = document.getElementById('input').value;
+				var name = document.getElementById('input').value;				
 				stompClient.send("/app/hello", {}, JSON.stringify({
 					'name' : name
 				}));
+				showGreeting(name);
 			}
 
 			function showGreeting(message) {

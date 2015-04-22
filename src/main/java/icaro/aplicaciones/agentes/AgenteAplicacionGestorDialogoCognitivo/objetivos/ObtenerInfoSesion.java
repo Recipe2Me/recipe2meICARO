@@ -16,11 +16,10 @@ import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Objetivo;
  *
  * @author 
  */
-public class ObtenerInfoInterlocutor extends Objetivo {
+public class ObtenerInfoSesion extends Objetivo {
     
-    /** Crea una nueva instancia de DarAcceso */
-    public ObtenerInfoInterlocutor() {
-        super.setgoalId("AutorizarAccesoUsuarios");
+    public ObtenerInfoSesion() {
+        super.setgoalId("ObtenerInfoSesion");
     }
     
 }

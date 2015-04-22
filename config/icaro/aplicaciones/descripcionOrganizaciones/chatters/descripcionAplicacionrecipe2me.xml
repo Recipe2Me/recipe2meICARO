@@ -31,16 +31,6 @@
 					localizacionComportamiento="icaro.aplicaciones.agentes.agenteAplicacionGestorDialogoCognitivo"
                                         localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionGestorDialogoCognitivo.procesoResolucionObjetivos.reglasAgenteGestorDialogo.drl"
 					tipo="Cognitivo" />
-				<icaro:DescComportamientoAgente
-					nombreComportamiento="AgenteAplicacionGestorConocimientoInicialCognitivo" rol="AgenteAplicacion" 
-					localizacionComportamiento="icaro.aplicaciones.agentes.agenteAplicacionGestorConocimientoInicialCognitivo"
-                                        localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionGestorConocimientoInicialCognitivo.procesoResolucionObjetivos.reglasAgenteGestorConocimientoInicial.drl"
-					tipo="Cognitivo" />
-				<icaro:DescComportamientoAgente
-					nombreComportamiento="AgenteAplicacionGestorRecomendadorRecetaCognitivo" rol="AgenteAplicacion" 
-					localizacionComportamiento="icaro.aplicaciones.agentes.agenteAplicacionGestorRecomendadorRecetaCognitivo"
-                                        localizacionFicheroReglas="icaro.aplicaciones.agentes.agenteAplicacionGestorRecomendadorRecetaCognitivo.procesoResolucionObjetivos.reglasAgenteGestorRecomendadorReceta.drl"
-					tipo="Cognitivo" />
 			</icaro:DescComportamientoAgentesAplicacion>
 		</icaro:DescComportamientoAgentes> 
 	<!--******************************************************************************************************
@@ -70,8 +60,6 @@
 			<icaro:InstanciaGestor id="GestorAgentes" refDescripcion="GestorAgentes">
 				<icaro:componentesGestionados>		
                 	<icaro:componenteGestionado refId="AgenteAplicacionGestorDialogo1" tipoComponente="AgenteAplicacion"/>
-                	<icaro:componenteGestionado refId="AgenteAplicacionGestorConocimientoInicial1" tipoComponente="AgenteAplicacion"/>		
-                	<icaro:componenteGestionado refId="AgenteAplicacionGestorRecomendadorReceta1" tipoComponente="AgenteAplicacion"/>		
                 </icaro:componentesGestionados>
 			</icaro:InstanciaGestor>	
 			<icaro:InstanciaGestor id="GestorRecursos" refDescripcion="GestorRecursos" >
@@ -91,16 +79,6 @@
 					<icaro:propiedad atributo="" valor=""/>
 				</icaro:listaPropiedades>
 			</icaro:Instancia>
-			<icaro:Instancia id="AgenteAplicacionGestorConocimientoInicial1" refDescripcion="AgenteAplicacionGestorConocimientoInicialCognitivo">
-				<icaro:listaPropiedades>
-					<icaro:propiedad atributo="" valor=""/>
-				</icaro:listaPropiedades>
-			</icaro:Instancia>	
-			<icaro:Instancia id="AgenteAplicacionGestorRecomendadorReceta1" refDescripcion="AgenteAplicacionGestorRecomendadorRecetaCognitivo">
-				<icaro:listaPropiedades>
-					<icaro:propiedad atributo="" valor=""/>
-				</icaro:listaPropiedades>
-			</icaro:Instancia>	
 		</icaro:AgentesAplicacion>
 	<!--******************************************************************************************************
 	******************   Instancias de Recursos de aplicación								******************
