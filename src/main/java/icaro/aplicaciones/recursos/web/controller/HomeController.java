@@ -14,12 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Greeting;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.HelloMessage;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfileForm;
 import icaro.aplicaciones.recursos.accesoMongo.ItfUsoPersistenciaMongo;
@@ -72,7 +74,19 @@ public class HomeController {
     public String home(Locale locale, Model model) {
     	model.addAttribute("menu", "home");
         return "home";
-    }  
+    } 
+    
+    @RequestMapping(value = "/{idRecipe}", method = RequestMethod.GET)
+    public String homeWithRecipe(Locale locale, @PathVariable("idRecipe") String idRecipe, Model model) {
+    	try {
+			Recipe recipe = repository.findOne(idRecipe);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	model.addAttribute("menu", "home");
+        return "home";
+    }
     
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signin(Model model) {

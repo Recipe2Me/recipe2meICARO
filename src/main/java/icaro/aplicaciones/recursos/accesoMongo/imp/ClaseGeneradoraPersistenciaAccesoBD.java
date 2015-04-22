@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.mongodb.MongoClient;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfileForm;
 import icaro.aplicaciones.recursos.accesoMongo.ItfUsoPersistenciaMongo;
@@ -23,6 +24,7 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 
 	private static final long serialVersionUID = 1L;
     private UserProfileRepository userRepository;
+    private RecetaRepository recetaRepository;
     private Morphia morphia;
 	private Datastore ds;
 
@@ -33,6 +35,7 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 			ds = morphia.createDatastore(new MongoClient(), "test");
 			morphia.map(UserProfile.class);
 			userRepository = new UserProfileRepository(ds);
+			recetaRepository = new RecetaRepository(ds);
             trazas.aceptaNuevaTraza(new InfoTraza(this.getId(),
   				"Creando el esquema "+id,
   				InfoTraza.NivelTraza.debug));
@@ -82,6 +85,12 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 	@Override
 	public UserProfile getUserByeUsername(String username) throws Exception {
 		return userRepository.findByUsername(username);
+	}
+
+
+	@Override
+	public Recipe findOne(String idRecipe) throws Exception {
+		return recetaRepository.getRecipeById(idRecipe);
 	}
 
 
