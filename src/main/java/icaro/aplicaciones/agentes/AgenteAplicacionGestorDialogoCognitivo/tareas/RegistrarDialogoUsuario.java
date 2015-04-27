@@ -9,6 +9,8 @@ package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas
  * @version 1.0
  */
 
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerInfoSesion;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesFavoritos;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
