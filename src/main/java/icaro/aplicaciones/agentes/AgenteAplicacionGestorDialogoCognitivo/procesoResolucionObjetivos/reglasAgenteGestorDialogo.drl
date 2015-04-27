@@ -70,10 +70,27 @@ rule "Obtener ingredientes favoritos"
     f:Focus(foco == obj)
    then
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
-    TareaSincrona tarea = gestorTareas.crearTareaSincrona(ObtenerIngredientes.class);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
+    tarea.ejecutar(evento);
+    obj.setSolving();
+    update(obj);
+
+end
+
+rule "Obtener ingredientes odiados"
+   when
+    obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVING)
+    obj2:ObtenerIngredientesOdiados(state==Objetivo.PENDING)
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj2)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
     tarea.ejecutar(evento);
 
 end
+
+
 
 
 

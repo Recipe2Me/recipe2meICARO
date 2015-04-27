@@ -7,12 +7,12 @@ import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
-public class ObtenerIngredientes extends TareaSincrona{
+public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 	
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	
-	public ObtenerIngredientes(){
+	public TareaObtenerIngredientesOdiados(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -23,9 +23,9 @@ public class ObtenerIngredientes extends TareaSincrona{
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void ejecutar(Object... params) {//Params[0] sera el evento de tipo EventoMensajeUsuario
+	public void ejecutar(Object... params) {
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
