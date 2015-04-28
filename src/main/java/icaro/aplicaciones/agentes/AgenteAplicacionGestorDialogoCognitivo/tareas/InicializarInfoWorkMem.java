@@ -8,7 +8,7 @@ import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetiv
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesFavoritos;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesOdiados;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
-import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
+import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;

@@ -19,7 +19,7 @@ public class VocabularioRecipe2Me {
     public static final String IdentAgenteAplicacionGestorConocimientoInicial= "AgenteAplicacionGestorConocimientoInicial1";
     public static final String IdentAgenteAplicacionGestorRecomendadorReceta= "AgenteAplicacionGestorRecomendadorReceta1";
     public static final String IdentConexionAgte= "AgteCitas";
-    public static final String IdentRecursoPersistenciaChat= "PersistenciaChat1";
+    public static final String IdentRecursoPersistenciaMongo= "PersistenciaMongo1";
     public static final String InfoUsuarioYaExiste= "infoUsuarioYaExistente";
     public static final String InfoUsuarioAltaGuardada="InfoAltaUsuarioGuardada";
     public static final String SaludoInicial1="Hola soy Recipe2Me, si has llegado aquí es porque no sabes que cocinar, pues bie,n yo me se de memoria mas de 4000 recetas asi que puedo ayudarte, pero antes, necesito saber mas de tí que veo que acabas de acceder. ¿Puedo hacerte ahora algunas preguntas?";
