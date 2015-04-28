@@ -79,7 +79,7 @@ public class HomeController {
     @RequestMapping(value = "/recipe/{idRecipe}", method = RequestMethod.GET)
     public String homeWithRecipe(Locale locale, @PathVariable("idRecipe") String idRecipe, Model model) {
     	try {
-			Recipe recipe = repository.findOne(idRecipe);
+			//Recipe recipe = repository.findOne(idRecipe);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

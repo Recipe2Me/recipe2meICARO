@@ -46,15 +46,51 @@ rule "Inicio del proceso de consecucion del  objetivo ObtenerInfoSesion"
     obj.setSolving();
     update(obj);
 end
+
 rule "Creacion de la sesion del usuario"
    when
     obj:ObtenerInfoSesion(state==Objetivo.SOLVING)
+    obj2:ObtenerIngredientesFavoritos(state==Objetivo.PENDING)
     evento:EventoConexion( name : user.username )
-    Focus(foco == obj)
+    f:Focus(foco == obj)
    then
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(RegistrarDialogoUsuario.class);
     tarea.ejecutar(evento);
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    f.setFoco(obj2);
+    update(f);
 end
+
+rule "Obtener ingredientes favoritos"
+   when
+    obj:ObtenerIngredientesFavoritos(state==Objetivo.PENDING)
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
+    tarea.ejecutar(evento);
+    obj.setSolving();
+    update(obj);
+
+end
+
+rule "Obtener ingredientes odiados"
+   when
+    obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVING)
+    obj2:ObtenerIngredientesOdiados(state==Objetivo.PENDING)
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj2)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
+    tarea.ejecutar(evento);
+
+end
+
+
+
+
+

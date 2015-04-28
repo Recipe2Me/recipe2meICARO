@@ -10,6 +10,8 @@ package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas
  */
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerInfoSesion;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesFavoritos;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
