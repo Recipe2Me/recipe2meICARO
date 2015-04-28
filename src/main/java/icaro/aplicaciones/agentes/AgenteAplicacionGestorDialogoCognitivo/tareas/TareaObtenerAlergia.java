@@ -1,8 +1,5 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-import java.util.List;
-import java.util.Map;
-
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
@@ -11,13 +8,16 @@ import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
-public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
+import java.util.List;
+import java.util.Map;
+
+public class TareaObtenerAlergia extends TareaSincrona{
 	
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	
-	public TareaObtenerIngredientesFavoritos(){
+	public TareaObtenerAlergia(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -25,15 +25,14 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 					.obtenerInterfazUso("ExtractorSemantico1");
 			itfUsComunicacionoWeb = (ItfUsoComunicacionWeb) this.repoIntfaces
 					.obtenerInterfazUso("ComunicacionWeb1");
-					
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void ejecutar(Object... params) {//Params[0] sera el evento de tipo EventoMensajeUsuario
+	public void ejecutar(Object... params) {
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
@@ -41,21 +40,21 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");
+			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotación correcta
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+					msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					msg = "Muy bien, ahora dime los ingredientes que no te gustan";
+					msg = "Muy bien, ahora te recetaré alguna puta mierda";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}
 			}
 			else{
-				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+				msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 
