@@ -6,6 +6,7 @@ import org.bson.types.ObjectId;
 import org.mongodb.morphia.Datastore;
 import org.mongodb.morphia.Key;
 import org.mongodb.morphia.Morphia;
+import org.mongodb.morphia.query.QueryFactory;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -92,6 +93,10 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 	@Override
 	public Recipe findOne(String idRecipe) throws Exception {
 		return recetaRepository.getRecipeById(idRecipe);
+	}
+	
+	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo,List<String> ingredientesNegativos) {
+		return recetaRepository.getRecipeWithCriteria(ingredientesAfirmativo, ingredientesNegativos);
 	}
 
 
