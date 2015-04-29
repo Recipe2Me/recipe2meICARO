@@ -5,7 +5,7 @@ import icaro.infraestructura.entidadesBasicas.informes.*;
 import icaro.infraestructura.patronAgenteCognitivo.procesadorObjetivos.gestorTareas.ItfGestorTareas;
 import icaro.infraestructura.entidadesBasicas.PerformativaUsuario;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas.*;
-import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
+import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.*;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.*;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;

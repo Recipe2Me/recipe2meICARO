@@ -9,13 +9,15 @@ package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas
  * @version 1.0
  */
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerInfoSesion;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesFavoritos;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
-import icaro.aplicaciones.recursos.web.ItfUsoComunicacionWeb;
+import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
+import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
@@ -44,6 +46,16 @@ public class RegistrarDialogoUsuario extends TareaSincrona {
 		UserSession sesion = new UserSession(interlocutor.getUserName());
 		//Controla si ya ha realizado el formulario inicial
 		sesion.setFirst(!interlocutor.isInit());
+		
+		try {
+			ItfUsoComunicacionWeb web = (ItfUsoComunicacionWeb) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoComunicacionWeb);
+			ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+			Recipe recipe = mongo.findOne("54f8edb18c30d0033cd70078");
+			web.enviarRecetaAlUsuario("Prueba de recepcion de receta", recipe, interlocutor.getUserName());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		this.getEnvioHechos().insertarHecho(sesion);
 		this.generarInformeOK(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Sesion del usuario " + interlocutor.getUserName() + " registrada.");
 	}

@@ -38,9 +38,9 @@
 	********************************************************************************************************-->
 		<icaro:DescRecursosAplicacion>
 		    <icaro:DescRecursoAplicacion nombre="PersistenciaMongo"
-			localizacionClaseGeneradora="icaro.aplicaciones.recursos.accesoMongo.imp.ClaseGeneradoraPersistenciaAccesoBD"/>
+			localizacionClaseGeneradora="icaro.aplicaciones.recursos.persistenciaMongo.ClaseGeneradoraPersistenciaAccesoBD"/>
 			<icaro:DescRecursoAplicacion nombre="ComunicacionWeb"
-			localizacionClaseGeneradora="icaro.aplicaciones.recursos.web.ClaseGeneradoraWeb"
+			localizacionClaseGeneradora="icaro.aplicaciones.recursos.comunicacionWeb.ClaseGeneradoraComunicacionWeb"
 			tipo="RecursoWeb"/>
 			<icaro:DescRecursoAplicacion nombre="ExtractorSemantico"
                         localizacionClaseGeneradora="icaro.aplicaciones.recursos.extractorSemantico.ClaseGeneradoraExtractorSemantico"/>
