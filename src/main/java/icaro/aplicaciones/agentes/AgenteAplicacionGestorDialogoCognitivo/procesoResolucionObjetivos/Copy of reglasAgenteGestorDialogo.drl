@@ -100,3 +100,44 @@ rule "Inicio del proceso de consecucion del  objetivo BorrarRegistroDialogoUsuar
     retract(evento)
     retract(sesion)
 end
+
+
+
+
+//////////////////////////////////////////////////////////
+rule "Inicio del proceso de obtencion de alergias"
+  when
+    obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVED)
+    obj2:ObtenerAlergia(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+    obj2.setSolving();
+    update(obj2);
+end
+
+
+rule "Obtener alergias"
+   when
+    obj:ObtenerAlergia(state==Objetivo.SOLVING)
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerAlergia.class);
+    tarea.ejecutar(evento);
+    retract(evento);
+
+end
+
+
+rule "Zanjar objetivo ObtenerAlergia"
+   when
+     obj:ObtenerAlergia(state==Objetivo.SOLVING)
+     informe:InformeDeTarea(identTarea == "TareaObtenerAlergia")
+     f:Focus(foco == obj)
+   then
+     obj.setSolved();
+     update(obj);   
+ end

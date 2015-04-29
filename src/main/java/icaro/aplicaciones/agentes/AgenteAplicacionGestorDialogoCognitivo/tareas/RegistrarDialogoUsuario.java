@@ -43,21 +43,18 @@ public class RegistrarDialogoUsuario extends TareaSincrona {
 		String identAgenteOrdenante = this.getIdentAgente();
 		EventoConexion evento = (EventoConexion) params[0];
 		UserProfile interlocutor = evento.getUser();
-		UserSession sesion = new UserSession(interlocutor.getUserName());
+		//UserSession sesion = new UserSession(interlocutor.getUserName());
 		//Controla si ya ha realizado el formulario inicial
-		sesion.setFirst(!interlocutor.isInit());
+		//sesion.setFirst(!interlocutor.isInit());
 		
 		try {
 			ItfUsoComunicacionWeb web = (ItfUsoComunicacionWeb) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoComunicacionWeb);
-			ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
-			Recipe recipe = mongo.findOne("54f8edb18c30d0033cd70078");
-			web.enviarRecetaAlUsuario("Prueba de recepcion de receta", recipe, interlocutor.getUserName());
+			web.enviarMensageAlUsuario(VocabularioRecipe2Me.SaludoInicial1, interlocutor.getUserName());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.getEnvioHechos().insertarHecho(sesion);
-		this.generarInformeOK(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Sesion del usuario " + interlocutor.getUserName() + " registrada.");
+		//this.getEnvioHechos().insertarHecho(sesion);
+		this.generarInformeOK(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Sesion_Registrada.");
 	}
 
 }

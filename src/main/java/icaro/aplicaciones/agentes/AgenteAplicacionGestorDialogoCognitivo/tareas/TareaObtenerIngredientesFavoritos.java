@@ -3,6 +3,7 @@ package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas
 import java.util.List;
 import java.util.Map;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -49,7 +50,10 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					msg = "Muy bien, ahora dime los ingredientes que no te gustan";
+					Criterio criterio = new Criterio();
+					criterio.setPositivo(ingredientes);
+					this.getEnvioHechos().insertarHechoWithoutFireRules(criterio);
+					msg = "Muy bien, ahora dime los ingredientes que no quieres que aparezcan";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
 				}

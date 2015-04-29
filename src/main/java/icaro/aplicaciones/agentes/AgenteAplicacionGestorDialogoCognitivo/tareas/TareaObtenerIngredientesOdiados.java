@@ -3,10 +3,14 @@ package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas
 import java.util.List;
 import java.util.Map;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -36,6 +40,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			Criterio criterio = (Criterio) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -48,8 +53,11 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					msg = "Muy bien, ahora dime las alergias que tengas";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					criterio.setNegativo(ingredientes);
+					msg = "Te he encontrado esta receta";
+					ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+					List<Recipe> recipes = mongo.getRecipeWithCriteria(criterio.getPositivo(), criterio.getNegativo());
+					itfUsComunicacionoWeb.enviarRecetaAlUsuario(msg,recipes.get(0),mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
 				}
 			}
@@ -57,6 +65,8 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
+			ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+			Recipe recipe = mongo.findOne("54f8edb18c30d0033cd70078");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
