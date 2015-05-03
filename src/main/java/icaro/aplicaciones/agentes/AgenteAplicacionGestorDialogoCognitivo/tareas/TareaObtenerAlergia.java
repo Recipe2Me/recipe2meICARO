@@ -40,21 +40,21 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotación correcta
+			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
 			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
+			if(negativo!=null){
+				if(negativo.isEmpty()){
+					msg = "Muy bien tendre tus debilidades en cuenta a la hora de recomendarte la receta.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					msg = "Muy bien, ahora te recetaré alguna puta mierda";
+					msg = "Muy bien, veo que estas mas sano que una manzana jejeje. ¿Sabes cocinar como alguien de Master Chef?";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}
 			}
 			else{
-				msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
+				msg = "Muy bien tendre tus debilidades en cuenta a la hora de recomendarte la receta.";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 
