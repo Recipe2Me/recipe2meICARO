@@ -13,6 +13,10 @@
 	rel='stylesheet' type='text/css' />
 </head>
 <body>
+<div sec:authorize="isAuthenticated()">
+<img src="static/img/froggy_hablando.gif" style="position:absolute; bottom:50px; right:0" alt="Completo" height="300px" width="300px" />
+</div>
+
 	<nav class="navbar navbar-default">
 		<div class="container">
 			<div class="navbar-header">
@@ -28,18 +32,18 @@
 			<div class="collapse navbar-collapse" id="navbar">
 				<ul class="nav navbar-nav">
 					<li th:class="((${menu}=='home')?'active')" th:href="@{/home}"><a
-						href="#">Home</a></li>
+						href="#">Inicio</a></li>
 					<li th:class="((${menu}=='about')?'active')"><a
-						th:href="@{/about}" href="#about">About</a></li>
+						th:href="@{/about}" href="#about">¿Quienes Somos?</a></li>
 					<li th:class="((${menu}=='contact')?'active')"><a
-						th:href="@{/contact}" href="#contact">Contact</a></li>
+						th:href="@{/contact}" href="#contact">Contacto</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li sec:authorize="!isAuthenticated()"><a th:href="@{/signup}"
-						href="/signup">Sign Up</a></li>
+						href="/signup">Registrarse</a></li>
 					<li sec:authorize="!isAuthenticated()" class="dropdown"><a
 						class="dropdown-toggle" href="#" data-toggle="dropdown"
-						role="button" aria-expanded="false">Login<span class="caret"></span></a>
+						role="button" aria-expanded="false">Entrar<span class="caret"></span></a>
 						<div class="dropdown-menu" role="menu">
 							<div class="col-sm-12">
 								<form class="form" id="formLogin" th:action="@{/login}"
@@ -58,20 +62,60 @@
 			<!--/.nav-collapse -->
 		</div>
 	</nav>
-	<div sec:authorize="!isAuthenticated()" class="container">
-		<div class="row">
-			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
-				<h1>Bienvenido a Recipe2Me</h1>
-				<p>Antes de empezar necesito que te accedas al sistema o
-					registre antes de empezar.</p>
+	<div sec:authorize="!isAuthenticated()" class="container" style="margin-top:-20px">
+		<div class="row" style="background-image:url('static/img/background.jpg'); min-height:250px">
+			<div class="col-sm-6 col-xs-12 col-sm-offset-0">
+				<h1 style="color: #fff">Bienvenido a Recipe2Me</h1>
+				<h1 style="color: #fff">Yo lo pienso, tu lo cocinas</h1>
+				<h2 style="color: #fff"></h2>
+				<h2 style="color: #fff"></h2>
+				<h2 style="color: #fff"></h2>
+			</div>
+			<div class="col-sm-6 col-xs-12 col-sm-offset-0">
+				<img style="margin:10px; margin-left:auto; margin-right: auto;" class="media-object img-circle" src="static/img/logo.jpg" height="150px" width="150px"/>
 			</div>
 		</div>
-	</div>
+<div class="row">
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img class="media-object img-circle" src="static/img/intuitivo.jpg" alt="Intuitivo" height="150px" width="150px" />
+      <div class="caption">
+        <h3>Intuitivo</h3>
+        <p>Recipe2me es un chatbot. De esta manera podrás interactuar con el como si de una persona se tratara</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img class="media-object img-circle" src="static/img/inteligente.jpg" alt="Inteligente" height="150px" width="150px" />
+      <div class="caption">
+        <h3>Inteligente</h3>
+        <p>Recipe2Me te recomienda recetas basadas en tus gustos, preferencias, alergias... De esta manera, el sistema
+        aprende rápidamente, para poder mostrarte únicamente aquellas recetas que sabe que te van a gustar.</p>
+      </div>
+    </div>
+  </div>
+  <div class="col-xs-12 col-sm-6 col-md-4">
+    <div class="thumbnail">
+      <img class="media-object img-circle" src="static/img/completo.jpg" alt="Completo" height="150px" width="150px" />
+      <div class="caption">
+        <h3>Completo</h3>
+        <p>Por si todo esto fuera poco, recipe2Me cuenta con más de 4000 recetas en su base de datos. Así nos aseguramos que
+        siempre tengas algo nuevo para cocinar ;)</p>
+      </div>
+    </div>
+  </div>
+  
+  
+  
+</div>
+</div>
 	<div sec:authorize="isAuthenticated()" class="container">
 		<div class="row">
-			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
+			<div class="col-sm-8 col-xs-12 col-sm-offset-0">
 				<div>
 					<div id="conversationDiv">
+					
 						<p id="response"></p>
 						<label>Conversacion</label><br/>
 						<div class="panel panel-body" id="listaMensajes" style="height: 500px; overflow:scroll">

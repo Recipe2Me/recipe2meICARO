@@ -1551,9 +1551,9 @@ pre code {
 .container {
   margin-right: auto;
   margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
-}
+  /*padding-left: 15px;
+  padding-right: 15px*/;
+}/*)
 @media (min-width: 768px) {
   .container {
     width: 750px;
@@ -1568,7 +1568,7 @@ pre code {
   .container {
     width: 1170px;
   }
-}
+}*/
 .container-fluid {
   margin-right: auto;
   margin-left: auto;
@@ -4863,6 +4863,7 @@ a.badge:focus {
   background-color: #efefef;
   border: 1px solid #efefef;
   border-radius: 4px;
+  min-height:350px;
   -webkit-transition: border 0.2s ease-in-out;
   -o-transition: border 0.2s ease-in-out;
   transition: border 0.2s ease-in-out;
