@@ -5,19 +5,18 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelU
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
-import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaAsincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
 import java.util.List;
 import java.util.Map;
 
-public class TareaObtenerNivelCocina extends TareaSincrona{
-	
+public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	
-	public TareaObtenerNivelCocina(){
+	public TareaObtenerIngredienteOPlato(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -40,24 +39,30 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
+			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotación correcta
 			String msg="";
-			if(negativo!=null){
-				if(negativo.isEmpty()){
-					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			if(ingredientes!=null){
+				if(ingredientes.isEmpty()){
+					msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
+							+ "los ingredientes que deseas tomar";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
 				}
 				else{
-					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla."
-							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+					msg = "Muy bien, veo que has elegido los ingredientes :";
+					for(int i=0;i<ingredientes.size();i++){
+						String ingr = ingredientes.get(i);
+						msg=msg+" "+ingr;
+						
+					}
+					msg="Ahora necesito que me indiques los ingredientes que no quieres que"
+							+ "aparezcan en la receta";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
 				}
 			}
 			else{
-				msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-						+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+				msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
+						+ "los ingredientes que deseas tomar";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

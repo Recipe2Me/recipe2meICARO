@@ -43,16 +43,25 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
 			String msg="";
 			if(negativo!=null){
-				if(negativo.isEmpty()){
+				if(negativo.isEmpty()){				
 					List<String> ingredientes = anotaciones.get("Ingrediente");
-					msg="Veo que eres alérgico a:";
-					for(int i=0;i<ingredientes.size();i++){
-						String ingr = ingredientes.get(i);
-						msg=msg+" "+ingr;
+					if(ingredientes!=null){
+						msg="Veo que eres alérgico a:";
+					    for(int i=0;i<ingredientes.size();i++){
+						     String ingr = ingredientes.get(i);
+						     msg=msg+" "+ingr;
 						
+					     }
+					     msg=msg+"."+"¿Se te da bien cocinar?";
+					     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 					}
-					msg=msg+"."+"¿Se te da bien cocinar?";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
+					else{
+						msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo."
+								+ "Por cierto, ¿se te da bien cocinar?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+					}					
 				}
 				else{
 					msg = "Muy bien, veo que estas mas sano que una manzana jejeje. ¿Se te da bien cocinar?";
@@ -61,15 +70,24 @@ public class TareaObtenerAlergia extends TareaSincrona{
 				}
 			}
 			else{
-				List<String> ingredientes = anotaciones.get("Ingrediente");
-				msg="Veo que eres alérgico a:";
-				for(int i=0;i<ingredientes.size();i++){
-					String ingr = ingredientes.get(i);
-					msg=msg+" "+ingr;
+				List<String> ingredientes = anotaciones.get("Ingrediente");				
+				if(ingredientes!=null){
+					msg="Veo que eres alérgico a:";
+				    for(int i=0;i<ingredientes.size();i++){
+					     String ingr = ingredientes.get(i);
+					     msg=msg+" "+ingr;
 					
+				     }
+				     msg=msg+"."+"¿Se te da bien cocinar?";
+				     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}
-				msg=msg+"."+"¿Se te da bien cocinar?";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				else{
+					msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo."
+							+ "Por cierto, ¿se te da bien cocinar?";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+				}
 			}
 
 		} catch (Exception e) {

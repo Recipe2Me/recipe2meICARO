@@ -247,6 +247,50 @@ rule "Zanjar objetivo ObtenerNivelCocina"
      retract(informe);
  end
  
+    rule "Focalizo el objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerNivelCocina(state==Objetivo.SOLVED)
+    obj2:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
+
+ rule "Inicio el proceso para resolver el objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    Focus(foco == obj)
+  then
+    obj.setSolving();
+    update(obj);
+end
+
+rule "Obtener IngredienteOPlato"
+   when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+    evento:EventoMensajeDelUsuario()
+    criterio:Criterio()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener ingrediente o plato",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredienteOPlato.class);
+    tarea.ejecutar(evento,criterio);
+    retract(evento);
+
+end
+
+rule "Zanjar objetivo ObtenerIngredienteOPlato"
+   when
+     obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+     informe:InformeDeTarea(identTarea == "TareaObtenerIngredienteOPlato")
+     f:Focus(foco == obj)
+   then
+     obj.setSolved();
+     update(obj);   
+     retract(informe);
+ end
+ 
  rule "Reiniciar sistema tras desconexion"
   when
   	f:Focus()
