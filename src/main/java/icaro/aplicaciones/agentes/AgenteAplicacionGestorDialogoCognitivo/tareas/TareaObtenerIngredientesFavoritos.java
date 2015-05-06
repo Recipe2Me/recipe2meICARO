@@ -8,6 +8,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionEx
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.sentences.questionSentences.hated.HatedIngredientsQuestionSentence;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -53,7 +54,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 					Criterio criterio = new Criterio();
 					criterio.setPositivo(ingredientes);
 					this.getEnvioHechos().insertarHechoWithoutFireRules(criterio);
-					msg = "Muy bien, ahora dime los ingredientes que no quieres que aparezcan";
+					msg = (new HatedIngredientsQuestionSentence()).toString();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
 				}
