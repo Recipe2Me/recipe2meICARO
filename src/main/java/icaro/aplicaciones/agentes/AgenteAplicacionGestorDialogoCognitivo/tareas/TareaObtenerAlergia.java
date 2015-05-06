@@ -44,17 +44,31 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			String msg="";
 			if(negativo!=null){
 				if(negativo.isEmpty()){
-					msg = "Muy bien tendre tus debilidades en cuenta a la hora de recomendarte la receta.";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					List<String> ingredientes = anotaciones.get("Ingrediente");
+					msg="Veo que eres alérgico a:";
+					for(int i=0;i<ingredientes.size();i++){
+						String ingr = ingredientes.get(i);
+						msg=msg+" "+ingr;
+						
+					}
+					msg=msg+"."+"¿Se te da bien cocinar?";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
 				}
 				else{
-					msg = "Muy bien, veo que estas mas sano que una manzana jejeje. ¿Sabes cocinar como alguien de Master Chef?";
+					msg = "Muy bien, veo que estas mas sano que una manzana jejeje. ¿Se te da bien cocinar?";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}
 			}
 			else{
-				msg = "Muy bien tendre tus debilidades en cuenta a la hora de recomendarte la receta.";
+				List<String> ingredientes = anotaciones.get("Ingrediente");
+				msg="Veo que eres alérgico a:";
+				for(int i=0;i<ingredientes.size();i++){
+					String ingr = ingredientes.get(i);
+					msg=msg+" "+ingr;
+					
+				}
+				msg=msg+"."+"¿Se te da bien cocinar?";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 
