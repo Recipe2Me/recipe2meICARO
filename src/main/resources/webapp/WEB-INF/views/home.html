@@ -34,7 +34,7 @@
 					<li th:class="((${menu}=='home')?'active')" th:href="@{/home}"><a
 						href="#">Inicio</a></li>
 					<li th:class="((${menu}=='about')?'active')"><a
-						th:href="@{/quienes}" href="/quienes">¿Quienes Somos?</a></li>
+						th:href="@{/about}" href="/about">¿Quienes Somos?</a></li>
 					<li th:class="((${menu}=='contact')?'active')"><a
 						th:href="@{/contact}" href="#contact">Contacto</a></li>
 				</ul>
@@ -189,9 +189,20 @@
 			src="../static/js/bootstrap.js"></script>
 		<script sec:authorize="isAuthenticated()" th:inline="javascript">
 			/*<![CDATA[*/
+			           
+			var saludo = true;
 			var stompClient = null;
+			//var msg = null;
+
 			$(document).ready(
+					
 					function(){
+						
+						//msg = new SpeechSynthesisUtterance();
+						//msg.onend = function (event) {
+						  //  paraAccion();
+						//};
+						
 						$("#input").keyup(function(e){
 						    if((e.keyCode || e.which) == 13) { //Enter keycode
 						    	$("#input").prop( "disabled", true );
@@ -199,7 +210,8 @@
 						    	sendName();
 						      }
 						     });
-						 connect();    
+						setTimeout(connect,100);
+						// connect();    
 					    }
 					);
 
@@ -229,10 +241,11 @@
 														$('#inputbtn').prop(
 																"disabled",
 																false);
+														
 														showGreeting(JSON
 																.parse(greeting.body).content);
-														showRecipe(JSON
-																.parse(greeting.body).recipe);
+														//showRecipe(JSON
+															//	.parse(greeting.body).recipe);
 													});
 								});
 			}
@@ -301,7 +314,14 @@
 				response.appendChild(p);*/
 			}
 			function showGreeting(message) {
-				iniciaHablar();
+				if(saludo){
+					iniciaSaludo();
+					saludo = false;
+					sintetizaVoz(message);
+				}else{
+					iniciaHablar(message);
+				}
+				
 				var imagen = /*[[@{/static/img/logo.jpg}]]*// "static/img/logo.jpg\";
 				var f =new Date();
 				f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
@@ -365,22 +385,50 @@
 			}
 			
 			function iniciaSaludo(){
-			
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_saludando.gif";
 			}
 			
-			function paraSaludo(){
-				
-			}
-			
-			function iniciaHablar(){
+			function iniciaHablar(frase){
 				var gif = document.getElementById("gif");
 				gif.src = "static/img/froggy_hablando.gif";
-				setTimeout(paraHablar,3000);
+				
+				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
+					 // Synthesis support. Make your web apps talk!
+					 sintetizaVoz(frase);
+				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
+					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
+				}
+				
+
 			}
 			
-			function paraHablar(){
+			function paraAccion(){
 				var gif = document.getElementById("gif");
 				gif.src = "static/img/froggy_estatico.jpg";
+			}
+			
+			function sintetizaVoz(frase){
+				speechSynthesis.cancel()
+				var msg = new SpeechSynthesisUtterance();
+				msg.text = frase;
+				msg.lang = 'es-ES';
+				//msg.onend = paraAccion;
+				msg.addEventListener('end', function () {
+					 paraAccion();
+				})
+				speechSynthesis.speak(msg);
+				console.log(msg)
+			}
+			
+			function msEnFuncionDeLongitud(frase){
+				/*En una conversacion los humanos pronuncian unas 200 palabras por minuto
+				http://es.wikipedia.org/wiki/Palabras_por_minuto*/
+				var array = frase.split(" ");
+				var numPalabras = array.length;
+				// 1 palabra --> 0.3 segundos (60/200) -> 300 ms
+				var ms = 300 * numPalabras;
+				return ms;
 			}
 
 			/*]]>*/
