@@ -34,7 +34,7 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 		super(id);
 		try {
 			morphia = new Morphia();
-			ds = morphia.createDatastore(new MongoClient(), "test");
+			ds = morphia.createDatastore(new MongoClient(), "recipe2me");//"test"
 			morphia.map(UserProfile.class);
 			userRepository = new UserProfileRepository(ds);
 			recetaRepository = new RecetaRepository(ds);
