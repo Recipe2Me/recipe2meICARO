@@ -54,8 +54,6 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 						msg=msg+" "+ingr;
 						
 					}
-					msg="Ahora necesito que me indiques los ingredientes que no quieres que"
-							+ "aparezcan en la receta";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
 				}

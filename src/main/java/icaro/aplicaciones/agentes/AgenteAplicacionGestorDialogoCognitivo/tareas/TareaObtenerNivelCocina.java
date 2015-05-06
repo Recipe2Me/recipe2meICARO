@@ -47,6 +47,7 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
 							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 				}
 				else{
 					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla."
@@ -59,6 +60,7 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 				msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
 						+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 			}
 
 		} catch (Exception e) {

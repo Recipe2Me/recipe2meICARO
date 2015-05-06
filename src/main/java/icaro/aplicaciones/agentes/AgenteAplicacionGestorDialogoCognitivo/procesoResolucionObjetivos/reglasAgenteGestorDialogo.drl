@@ -159,7 +159,7 @@ rule "Zanjar objetivo ObtenerIngredientesOdiados"
      retract(informe);
  end
  
-  rule "Focalizo el objetivo ObtenerAlergia"
+ rule "Focalizo el objetivo ObtenerAlergia"
   when
     obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVED)
     obj2:ObtenerAlergia(state==Objetivo.PENDING)
@@ -203,7 +203,7 @@ rule "Zanjar objetivo ObtenerAlergia"
      retract(informe);
  end
  
-   rule "Focalizo el objetivo ObtenerNivelCocina"
+ rule "Focalizo el objetivo ObtenerNivelCocina"
   when
     obj:ObtenerAlergia(state==Objetivo.SOLVED)
     obj2:ObtenerNivelCocina(state==Objetivo.PENDING)
@@ -247,7 +247,7 @@ rule "Zanjar objetivo ObtenerNivelCocina"
      retract(informe);
  end
  
-    rule "Focalizo el objetivo ObtenerIngredienteOPlato"
+rule "Focalizo el objetivo ObtenerIngredienteOPlato"
   when
     obj:ObtenerNivelCocina(state==Objetivo.SOLVED)
     obj2:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
@@ -290,6 +290,16 @@ rule "Zanjar objetivo ObtenerIngredienteOPlato"
      update(obj);   
      retract(informe);
  end
+ 
+rule "Focalizo el objetivo ObtenerValoracionUsuario"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    obj2:ObtenerValoracionUsuario(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
  
  rule "Reiniciar sistema tras desconexion"
   when
