@@ -14,7 +14,7 @@
 </head>
 <body>
 <div sec:authorize="isAuthenticated()">
-<img src="static/img/froggy_hablando.gif" style="position:absolute; bottom:50px; right:0" alt="Completo" height="300px" width="300px" />
+<img id="gif" src="static/img/froggy_hablando.gif" style="position:absolute; bottom:50px; right:0" alt="Completo" height="300px" width="300px" />
 </div>
 
 	<nav class="navbar navbar-default">
@@ -301,6 +301,7 @@
 				response.appendChild(p);*/
 			}
 			function showGreeting(message) {
+				iniciaHablar();
 				var imagen = /*[[@{/static/img/logo.jpg}]]*// "static/img/logo.jpg\";
 				var f =new Date();
 				f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
@@ -361,6 +362,25 @@
 					'<p>' + recipe.cuerpo + '</p>' +
 				'</div>' +
 			'</div>';
+			}
+			
+			function iniciaSaludo(){
+			
+			}
+			
+			function paraSaludo(){
+				
+			}
+			
+			function iniciaHablar(){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_hablando.gif";
+				setTimeout(paraHablar,3000);
+			}
+			
+			function paraHablar(){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_estatico.jpg";
 			}
 
 			/*]]>*/
