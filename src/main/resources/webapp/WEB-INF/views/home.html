@@ -9,8 +9,14 @@
 	rel='stylesheet' type='text/css' />
 <!-- <link th:href="@{/static/css/bootstrap.css}"
 	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
+
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
 	rel='stylesheet' type='text/css' />
+<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+<script th:src="@{/static/js/bootstrap.js}"
+			src="../static/js/bootstrap.js"></script>
+<link th:href="@{/static/css/star-rating.min.css}" href="static/css/star-rating.min.css" media="all" rel="stylesheet" type="text/css" />
+<script th:src="@{/static/js/star-rating.min.js}" src="static/js/star-rating.min.js" type="text/javascript"></script>
 </head>
 <body>
 <div sec:authorize="isAuthenticated()">
@@ -179,7 +185,9 @@
 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-down"></span> No me gusta</button>
 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-stop"></span> Ahora no</button>
 <button type="button" class="btn btn-primary"><span class="glyphicon glyphicon-thumbs-up"></span> Me gusta</button>
-						
+						<br></br>
+						<br></br>
+						<input id="estrellas" type="number" class="rating" />
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -187,12 +195,12 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
-		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+		<!--<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>-->
 		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
 		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
 		<script th:src="@{/static/js/stomp.js}" src="../static/js/stomp.js"></script>
-		<script th:src="@{/static/js/bootstrap.js}"
-			src="../static/js/bootstrap.js"></script>
+		<!-- <script th:src="@{/static/js/bootstrap.js}"
+			src="../static/js/bootstrap.js"></script>-->
 		<script sec:authorize="isAuthenticated()" th:inline="javascript">
 			/*<![CDATA[*/
 			           
@@ -208,6 +216,10 @@
 						//msg.onend = function (event) {
 						  //  paraAccion();
 						//};
+						
+						$("#estrellas").rating();
+						// with plugin options
+						$("#estrellas").rating({'size':'lg'});
 						
 						$("#input").keyup(function(e){
 						    if((e.keyCode || e.which) == 13) { //Enter keycode
@@ -324,7 +336,9 @@
 					iniciaSaludo();
 					saludo = false;
 					sintetizaVoz(message);
-					showRecipe(null);
+					
+					//UNCOMMENT TO TEST MODAL WINDOW
+					//showRecipe(null);
 				}else{
 					iniciaHablar(message);
 				}
@@ -359,11 +373,16 @@
 				response.appendChild(p);*/
 			}
 			function showRecipe(recipe) {
-				//$('#recipe_title').html(recipe.title);
-				//$('#recipe_content').html(parseRecipe(recipe));
 				
-				$('#recipe_title').html("receta");
-				$('#recipe_content').html(parseRecipe2());
+				
+				//COMMENT TO TEST
+				$('#recipe_title').html(recipe.title);
+				$('#recipe_content').html(parseRecipe(recipe));
+				
+				//UNCOMMENT TO TEST
+				//$('#recipe_title').html("receta");
+				//$('#recipe_content').html(parseRecipe2());
+				
 				$('#myModal').modal('show');
 			}
 			function parseRecipe(recipe) {
@@ -394,6 +413,7 @@
 			'</div>';
 			}
 			
+			/* UNCOMMENT TO TEST
 			function parseRecipe2() {
 				var ingredientes="";
 				for (i = 0; i < 5; i++) {
@@ -420,7 +440,7 @@
 					'<p>' + "Aqui va el proceso de la receta" + '</p>' +
 				'</div>' +
 			'</div>';
-			}
+			}*/
 			
 			function iniciaSaludo(){
 				var gif = document.getElementById("gif");
