@@ -4,6 +4,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionEx
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -44,7 +45,7 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
+					msg = SentenceFactory.generateAllergiesComplain();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
@@ -54,7 +55,7 @@ public class TareaObtenerAlergia extends TareaSincrona{
 				}
 			}
 			else{
-				msg = "No has introducido ninguna alergia, debes decirme tus debilidades muajajaja, para que pueda envenenarte";
+				msg = SentenceFactory.generateAllergiesComplain();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

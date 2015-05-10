@@ -1,17 +1,17 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-import java.util.List;
-import java.util.Map;
-
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.sentences.questionSentences.hated.HatedIngredientsQuestionSentence;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
+
+import java.util.List;
+import java.util.Map;
 
 public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 	
@@ -47,20 +47,20 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+					msg = SentenceFactory.generateIngredientsComplain();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
 					Criterio criterio = new Criterio();
 					criterio.setPositivo(ingredientes);
 					this.getEnvioHechos().insertarHechoWithoutFireRules(criterio);
-					msg = (new HatedIngredientsQuestionSentence()).toString();
+					msg = SentenceFactory.generateHatedQuestion();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
 				}
 			}
 			else{
-				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+				msg = SentenceFactory.generateIngredientsComplain();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 
