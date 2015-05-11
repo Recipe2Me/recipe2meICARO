@@ -98,7 +98,7 @@ rule "Obtener ingredientes favoritos"
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
    then
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener ingredientes favoritos",InfoTraza.NivelTraza.debug));
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
     tarea.ejecutar(evento);
     retract(evento);
@@ -141,7 +141,7 @@ rule "Obtener ingredientes odiados"
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
    then
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener ingredientes odiados",InfoTraza.NivelTraza.debug));
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
     tarea.ejecutar(evento,criterio);
     retract(evento);
@@ -158,6 +158,148 @@ rule "Zanjar objetivo ObtenerIngredientesOdiados"
      update(obj);   
      retract(informe);
  end
+ 
+ rule "Focalizo el objetivo ObtenerAlergia"
+  when
+    obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVED)
+    obj2:ObtenerAlergia(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
+ 
+ rule "Inicio el proceso para resolver el objetivo ObtenerAlergia"
+  when
+    obj:ObtenerAlergia(state==Objetivo.PENDING)
+    Focus(foco == obj)
+  then
+    obj.setSolving();
+    update(obj);
+end
+
+rule "Obtener alergias"
+   when
+    obj:ObtenerAlergia(state==Objetivo.SOLVING)
+    evento:EventoMensajeDelUsuario()
+    criterio:Criterio()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener alergias",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerAlergia.class);
+    tarea.ejecutar(evento,criterio);
+    retract(evento);
+
+end
+
+rule "Zanjar objetivo ObtenerAlergia"
+   when
+     obj:ObtenerAlergia(state==Objetivo.SOLVING)
+     informe:InformeDeTarea(identTarea == "TareaObtenerAlergia")
+     f:Focus(foco == obj)
+   then
+     obj.setSolved();
+     update(obj);   
+     retract(informe);
+ end
+ 
+ rule "Focalizo el objetivo ObtenerNivelCocina"
+  when
+    obj:ObtenerAlergia(state==Objetivo.SOLVED)
+    obj2:ObtenerNivelCocina(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
+
+ rule "Inicio el proceso para resolver el objetivo ObtenerNivelCocina"
+  when
+    obj:ObtenerNivelCocina(state==Objetivo.PENDING)
+    Focus(foco == obj)
+  then
+    obj.setSolving();
+    update(obj);
+end
+
+rule "Obtener NivelCocina"
+   when
+    obj:ObtenerNivelCocina(state==Objetivo.SOLVING)
+    evento:EventoMensajeDelUsuario()
+    criterio:Criterio()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener nivel cocina",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerNivelCocina.class);
+    tarea.ejecutar(evento,criterio);
+    retract(evento);
+
+end
+
+rule "Zanjar objetivo ObtenerNivelCocina"
+   when
+     obj:ObtenerNivelCocina(state==Objetivo.SOLVING)
+     informe:InformeDeTarea(identTarea == "TareaObtenerNivelCocina")
+     f:Focus(foco == obj)
+   then
+     obj.setSolved();
+     update(obj);   
+     retract(informe);
+ end
+ 
+rule "Focalizo el objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerNivelCocina(state==Objetivo.SOLVED)
+    obj2:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
+
+ rule "Inicio el proceso para resolver el objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    Focus(foco == obj)
+  then
+    obj.setSolving();
+    update(obj);
+end
+
+rule "Obtener IngredienteOPlato"
+   when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+    evento:EventoMensajeDelUsuario()
+    criterio:Criterio()
+    f:Focus(foco == obj)
+   then
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : Obtener ingrediente o plato",InfoTraza.NivelTraza.debug));
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredienteOPlato.class);
+    tarea.ejecutar(evento,criterio);
+    retract(evento);
+
+end
+
+rule "Zanjar objetivo ObtenerIngredienteOPlato"
+   when
+     obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+     informe:InformeDeTarea(identTarea == "TareaObtenerIngredienteOPlato")
+     f:Focus(foco == obj)
+   then
+     obj.setSolved();
+     update(obj);   
+     retract(informe);
+ end
+ 
+rule "Focalizo el objetivo ObtenerValoracionUsuario"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    obj2:ObtenerValoracionUsuario(state==Objetivo.PENDING)
+    f:Focus(foco == obj)
+  then
+    f.setFoco(obj2);
+    update(f);
+end
  
  rule "Reiniciar sistema tras desconexion"
   when
