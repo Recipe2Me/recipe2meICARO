@@ -349,7 +349,7 @@
 				if(saludo){
 					iniciaSaludo();
 					saludo = false;
-					sintetizaVoz(message);
+					//sintetizaVoz(message);
 					
 					//UNCOMMENT TO TEST MODAL WINDOW
 					//showRecipe(null);
@@ -465,12 +465,15 @@
 				var gif = document.getElementById("gif");
 				gif.src = "static/img/froggy_hablando.gif";
 				
+				/* COMMENTED FOR DEMO
 				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
 					 // Synthesis support. Make your web apps talk!
 					 sintetizaVoz(frase);
 				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
 					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
-				}
+				}*/
+				
+				setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
 				
 
 			}
