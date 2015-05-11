@@ -1,0 +1,8 @@
+.jumbotron {
+	background-image: url('static/img/background.jpg');
+	min-height: 250px;
+}
+
+body {
+	padding-top: 70px;
+}
