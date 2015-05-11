@@ -116,9 +116,9 @@
 			</div>
 		</div>
 	</div>
-	<div sec:authorize="isAuthenticated()" class="container">
+	<div sec:authorize="isAuthenticated()" class="container" id="MainConversation">
 		<div class="row">
-			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
+			<div class="col-sm-8 col-xs-12">
 				<div>
 					<div id="conversationDiv">
 						<p id="response"></p>
@@ -131,7 +131,7 @@
 						</div>
 						<!--<textarea id="input" class="textarea"></textarea>-->
 						<div class="panel-footer"
-							style="position: fixed; bottom: 0; width: 100%; left: 0;">
+							style="position: fixed; bottom: 0; width: 100%; left: 0; z-index:100">
 							<div class="input-group">
 								<input type="text" id="input" class="form-control"
 									placeholder="Introduce Mensaje" /> <span
@@ -144,6 +144,12 @@
 					</div>
 
 				</div>
+			</div>
+			<div class="col-sm-4 col-xs-12">
+			<!-- style="position: absolute; bottom: 50px; right: 0" -->
+				<img id="gif" src="static/img/froggy_hablando.gif"
+				 alt="Completo" style="position: fixed; bottom: 40px; right:0; z-index:-1"
+				height="300px" width="300px" />
 			</div>
 		</div>
 	</div>
@@ -198,11 +204,11 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
-		<div sec:authorize="isAuthenticated()">
+		<!--<div sec:authorize="isAuthenticated()">
 			<img id="gif" src="static/img/froggy_hablando.gif"
 				style="position: absolute; bottom: 50px; right: 0" alt="Completo"
 				height="300px" width="300px" />
-		</div>
+		</div>-->
 		<!--<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>-->
 		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
 		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
@@ -339,6 +345,8 @@
            
            var chat = document.getElementById("listaMensajes");
            chat.scrollTop = chat.scrollHeight;
+           window.scrollTo(0,chat.scrollHeight);
+           
 				/*var response = document.getElementById('response');
 				var p = document.createElement('p');
 				p.style.wordWrap = 'break-word';
@@ -348,7 +356,7 @@
 			function showGreeting(message) {
 				if(saludo){
 					iniciaSaludo();
-					saludo = false;
+					
 					//sintetizaVoz(message);
 					
 					//UNCOMMENT TO TEST MODAL WINDOW
@@ -380,6 +388,15 @@
            
            var chat = document.getElementById("listaMensajes");
            chat.scrollTop = chat.scrollHeight;
+           //TO DEMO -- COMMENT AFTER DEMO
+           if(saludo){
+        	   saludo = false;
+           }else{
+           window.scrollTo(0,chat.scrollHeight);
+           }
+           //UNCOMMENT AFTER DEMO
+           //window.scrollTo(0,chat.scrollHeight);
+           
 				/*var response = document.getElementById('response');
 				var p = document.createElement('p');
 				p.style.wordWrap = 'break-word';
