@@ -7,13 +7,19 @@
 	th:href="@{/static/img/favicon-16x16.png}" href="/favicon-16x16.png" />
 <link href='http://fonts.googleapis.com/css?family=Roboto'
 	rel='stylesheet' type='text/css' />
-<!-- <link th:href="@{/static/css/bootstrap.css}"
-	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
+<link th:href="@{/static/css/bootstrap.css}" href='../static/css/bootstrap.css'
+	rel='stylesheet' type='text/css' />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
 	rel='stylesheet' type='text/css' />
+<link th:href="@{/static/css/style.css}" href='../static/css/style.css'
+	rel='stylesheet' type='text/css' />
+<link th:href="@{/static/css/star-rating.min.css}"
+	href="static/css/star-rating.min.css" media="all" rel="stylesheet"
+	type="text/css" />
 </head>
 <body>
-	<nav class="navbar navbar-default">
+	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container">
 			<div class="navbar-header">
 				<button aria-controls="navbar" aria-expanded="false"
@@ -28,18 +34,18 @@
 			<div class="collapse navbar-collapse" id="navbar">
 				<ul class="nav navbar-nav">
 					<li th:class="((${menu}=='home')?'active')" th:href="@{/home}"><a
-						href="#">Home</a></li>
+						href="#">Inicio</a></li>
 					<li th:class="((${menu}=='about')?'active')"><a
-						th:href="@{/about}" href="#about">About</a></li>
+						th:href="@{/about}" href="/about">&iquest;Quienes Somos?</a></li>
 					<li th:class="((${menu}=='contact')?'active')"><a
-						th:href="@{/contact}" href="#contact">Contact</a></li>
+						th:href="@{/contact}" href="#contact">Contacto</a></li>
 				</ul>
 				<ul class="nav navbar-nav navbar-right">
 					<li sec:authorize="!isAuthenticated()"><a th:href="@{/signup}"
-						href="/signup">Sign Up</a></li>
+						href="/signup">Registrarse</a></li>
 					<li sec:authorize="!isAuthenticated()" class="dropdown"><a
 						class="dropdown-toggle" href="#" data-toggle="dropdown"
-						role="button" aria-expanded="false">Login<span class="caret"></span></a>
+						role="button" aria-expanded="false">Entrar<span class="caret"></span></a>
 						<div class="dropdown-menu" role="menu">
 							<div class="col-sm-12">
 								<form class="form" id="formLogin" th:action="@{/login}"
@@ -58,12 +64,55 @@
 			<!--/.nav-collapse -->
 		</div>
 	</nav>
+	<div sec:authorize="!isAuthenticated()" class="jumbotron">
+		<div class="container">
+			<h1>&iexcl;Bienvenido a Recipe2Me!</h1>
+			<p>Yo lo pienso, tu lo cocina</p>
+			<div class="col-sm-6 col-xs-12 col-sm-offset-3">
+				<img style="margin: 10px; margin-left: auto; margin-right: auto;"
+					class="media-object img-circle" src="static/img/logo.jpg"
+					height="150px" width="150px" />
+			</div>
+		</div>
+	</div>
 	<div sec:authorize="!isAuthenticated()" class="container">
 		<div class="row">
-			<div class="col-sm-8 col-xs-12 col-sm-offset-2">
-				<h1>Bienvenido a Recipe2Me</h1>
-				<p>Antes de empezar necesito que te accedas al sistema o
-					registre antes de empezar.</p>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<img class="media-object img-circle" src="static/img/intuitivo.jpg"
+						alt="Intuitivo" height="150px" width="150px" />
+					<div class="caption">
+						<h3>Intuitivo</h3>
+						<p>Recipe2Me es un chatbot. De esta manera podr&aacute;s
+							interactuar con el como si de una persona se tratara</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<img class="media-object img-circle"
+						src="static/img/inteligente.jpg" alt="Inteligente" height="150px"
+						width="150px" />
+					<div class="caption">
+						<h3>Inteligente</h3>
+						<p>Recipe2Me te recomienda recetas basadas en tus gustos,
+							preferencias, alergias... De esta manera, el sistema aprende
+							r&aacute;pidamente, para poder mostrarte &uacute;nicamente
+							aquellas recetas que sabe que te van a gustar.</p>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12 col-sm-6 col-md-4">
+				<div class="thumbnail">
+					<img class="media-object img-circle" src="static/img/completo.jpg"
+						alt="Completo" height="150px" width="150px" />
+					<div class="caption">
+						<h3>Completo</h3>
+						<p>Por si todo esto fuera poco, Recipe2Me cuenta con
+							m&aacute;s de 4000 recetas en su base de datos. As&iacute; nos
+							aseguramos que siempre tengas algo nuevo para cocinar ;)</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -73,28 +122,32 @@
 				<div>
 					<div id="conversationDiv">
 						<p id="response"></p>
-						<label>Conversacion</label><br/>
-						<div class="panel panel-body" id="listaMensajes" style="height: 500px; overflow:scroll">
-								<ul class="media-list" id="mensajes">
+						<label>Conversacion</label><br />
+						<div class="panel panel-body" id="listaMensajes"
+							style="height: 500px; overflow: scroll">
+							<ul class="media-list" id="mensajes">
 
-                                </ul>
-           				 </div>
+							</ul>
+						</div>
 						<!--<textarea id="input" class="textarea"></textarea>-->
-						<div class="panel-footer" style="position:fixed; bottom:0; width:100%; left:0;">
-                <div class="input-group">
-                                    <input type="text" id="input" class="form-control" placeholder="Introduce Mensaje" />
-                                    <span class="input-group-btn">
-                                        <button class="btn btn-info" id="inputbtn" type="button" onClick="sendName()">Enviar</button>
-                                    </span>
-               </div>
-            </div>
+						<div class="panel-footer"
+							style="position: fixed; bottom: 0; width: 100%; left: 0;">
+							<div class="input-group">
+								<input type="text" id="input" class="form-control"
+									placeholder="Introduce Mensaje" /> <span
+									class="input-group-btn">
+									<button class="btn btn-info" id="inputbtn" type="button"
+										onClick="sendName()">Enviar</button>
+								</span>
+							</div>
+						</div>
 					</div>
-					 
+
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<footer>
 		<div th:each="mess : ${info}"
 			class="alert alert-success alert-dismissible" role="alert">
@@ -114,7 +167,8 @@
 			<strong>Warning! </strong>
 			<p th:text="${mess}"></p>
 		</div>
-		<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+			aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -124,12 +178,19 @@
 						</button>
 						<h4 id="recipe_title" class="modal-title">Modal title</h4>
 					</div>
-					<div id="recipe_content" class="modal-body">
-					</div>
+					<div id="recipe_content" class="modal-body"></div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save
-							changes</button>
+						<button type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-thumbs-down"></span> No me gusta
+						</button>
+						<button type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-stop"></span> Ahora no
+						</button>
+						<button type="button" class="btn btn-primary">
+							<span class="glyphicon glyphicon-thumbs-up"></span> Me gusta
+						</button>
+						<input id="estrellas" type="number" class="rating" min="0" max="5" step="0.5" data-size="lg"
+           data-symbol="&#xf0f5;" data-glyphicon="false" data-rating-class="rating-fa" data-show-caption="false"/>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -137,17 +198,42 @@
 			<!-- /.modal-dialog -->
 		</div>
 		<!-- /.modal -->
-		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+		<div sec:authorize="isAuthenticated()">
+			<img id="gif" src="static/img/froggy_hablando.gif"
+				style="position: absolute; bottom: 50px; right: 0" alt="Completo"
+				height="300px" width="300px" />
+		</div>
+		<!--<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>-->
 		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
 		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
 		<script th:src="@{/static/js/stomp.js}" src="../static/js/stomp.js"></script>
+		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
 		<script th:src="@{/static/js/bootstrap.js}"
 			src="../static/js/bootstrap.js"></script>
+		<script th:src="@{/static/js/star-rating.min.js}"
+			src="static/js/star-rating.min.js" type="text/javascript"></script>
+		<!-- <script th:src="@{/static/js/bootstrap.js}"
+			src="../static/js/bootstrap.js"></script>-->
 		<script sec:authorize="isAuthenticated()" th:inline="javascript">
 			/*<![CDATA[*/
+			           
+			var saludo = true;
 			var stompClient = null;
+			//var msg = null;
+
 			$(document).ready(
+					
 					function(){
+						
+						//msg = new SpeechSynthesisUtterance();
+						//msg.onend = function (event) {
+						  //  paraAccion();
+						//};
+						
+						//$("#estrellas").rating();
+						// with plugin options
+						//$("#estrellas").rating({'min':0, 'max':5, 'step':0.5, 'size':'lg'});
+						
 						$("#input").keyup(function(e){
 						    if((e.keyCode || e.which) == 13) { //Enter keycode
 						    	$("#input").prop( "disabled", true );
@@ -155,6 +241,7 @@
 						    	sendName();
 						      }
 						     });
+						//setTimeout(connect,100);
 						 connect();    
 					    }
 					);
@@ -185,6 +272,7 @@
 														$('#inputbtn').prop(
 																"disabled",
 																false);
+														
 														showGreeting(JSON
 																.parse(greeting.body).content);
 														showRecipe(JSON
@@ -222,11 +310,12 @@
 			function showGreeting2(message) {
 				var imagen = /*[[@{/static/img/favicon-32x32.png}]]*// "static/img/favicon-32x32.png\";
 				var userName = /*[[${#authentication.name}]]*/ 'sga.vmp';
+				var email = /*[[${#authentication.principal.email}]]*/ 'sga.vmp';
 				//userName = "sga.vmp@gmail.com";
 				userName = userName.toLowerCase();
 				//var hash = md5(userName);
 				//var rutaImagen = "http://www.gravatar.com/avatar/" + hash;
-				var rutaImagen = get_gravatar(userName, 50);
+				var rutaImagen = get_gravatar(email, 50);
 				var f =new Date();
 				f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
 				
@@ -257,6 +346,17 @@
 				response.appendChild(p);*/
 			}
 			function showGreeting(message) {
+				if(saludo){
+					iniciaSaludo();
+					saludo = false;
+					sintetizaVoz(message);
+					
+					//UNCOMMENT TO TEST MODAL WINDOW
+					//showRecipe(null);
+				}else{
+					iniciaHablar(message);
+				}
+				
 				var imagen = /*[[@{/static/img/logo.jpg}]]*// "static/img/logo.jpg\";
 				var f =new Date();
 				f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
@@ -287,8 +387,16 @@
 				response.appendChild(p);*/
 			}
 			function showRecipe(recipe) {
+				
+				
+				//COMMENT TO TEST
 				$('#recipe_title').html(recipe.title);
 				$('#recipe_content').html(parseRecipe(recipe));
+				
+				//UNCOMMENT TO TEST
+				//$('#recipe_title').html("receta");
+				//$('#recipe_content').html(parseRecipe2());
+				
 				$('#myModal').modal('show');
 			}
 			function parseRecipe(recipe) {
@@ -317,6 +425,79 @@
 					'<p>' + recipe.cuerpo + '</p>' +
 				'</div>' +
 			'</div>';
+			}
+			
+			// UNCOMMENT TO TEST
+			/*function parseRecipe2() {
+				var ingredientes="";
+				for (i = 0; i < 5; i++) {
+					ingredientes+= '<li>' + "Ingrediente "+ i + '</li>'
+				}
+				return '<div class="row">' +
+				'<div class="col-xs-12">' +
+					'<p>'+"Descripción de la receta" + '</p>' +
+				'</div>' +
+			'</div>' +
+			'<div class="row">' +
+				'<div class="col-xs-4">' +
+					'<img class="img-responsive" alt="Responsive image" src="' + '" />' +
+				'</div>' +
+				'<div class="col-xs-8">' +
+					'<ul>' +
+						"Ingrediente1 asdasdasdasdasdasdasd" +
+					'</ul>' +
+				'</div>' +
+			'</div>' +
+			'<div class="row">' +
+				'<div class="col-xs-12">' +
+					'<h4>Proceso:</h4>' +
+					'<p>' + "Aqui va el proceso de la receta" + '</p>' +
+				'</div>' +
+			'</div>';
+			}*/
+			
+			function iniciaSaludo(){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_saludando.gif";
+			}
+			
+			function iniciaHablar(frase){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_hablando.gif";
+				
+				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
+					 // Synthesis support. Make your web apps talk!
+					 sintetizaVoz(frase);
+				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
+					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
+				}
+				
+
+			}
+			
+			function paraAccion(){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_estatico.jpg";
+			}
+			
+			function sintetizaVoz(frase){
+				speechSynthesis.cancel()
+				var msg = new SpeechSynthesisUtterance();
+				msg.text = frase;
+				msg.lang = 'es-ES';
+				msg.onend = paraAccion();
+				speechSynthesis.speak(msg);
+				console.log(msg)
+			}
+			
+			function msEnFuncionDeLongitud(frase){
+				/*En una conversacion los humanos pronuncian unas 200 palabras por minuto
+				http://es.wikipedia.org/wiki/Palabras_por_minuto*/
+				var array = frase.split(" ");
+				var numPalabras = array.length;
+				// 1 palabra --> 0.3 segundos (60/200) -> 300 ms
+				var ms = 300 * numPalabras;
+				return ms;
 			}
 
 			/*]]>*/
