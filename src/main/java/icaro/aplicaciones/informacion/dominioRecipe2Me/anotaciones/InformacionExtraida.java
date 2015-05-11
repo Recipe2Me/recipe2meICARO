@@ -47,9 +47,14 @@ public class InformacionExtraida {
 
 	public void obtenerInformacionDeAnotaciones(Set<Annotation> anotaciones) {
 		int orden = 1;
+		int finAnterior = Integer.MIN_VALUE; 
 		for (Annotation anotacion : anotaciones) {
 			int posicionComienzoTexto = anotacion.getStartNode().getOffset().intValue();
 	        int posicionFinTexto = anotacion.getEndNode().getOffset().intValue();
+	        if (finAnterior<posicionFinTexto)
+	        	finAnterior = posicionFinTexto;
+	        else if (finAnterior==posicionFinTexto)
+	        	continue;
 	        String informacion = textoOriginal.substring(posicionComienzoTexto, posicionFinTexto);
 	        AnotacionInformacion par = new AnotacionInformacion(anotacion.getType(), informacion, orden, posicionComienzoTexto);
 	        paresOrdenados.add(par);

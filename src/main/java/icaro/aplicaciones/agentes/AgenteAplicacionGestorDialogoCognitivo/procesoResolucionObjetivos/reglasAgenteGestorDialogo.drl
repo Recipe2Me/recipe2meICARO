@@ -303,24 +303,10 @@ end
  
  rule "Reiniciar sistema tras desconexion"
   when
-  	f:Focus()
-  	obj1:ObtenerInfoSesion()
-  	obj2:ObtenerIngredientesOdiados()
-  	obj3:ObtenerIngredientesFavoritos()
-  	criterio:Criterio()
     evento:EventoDesconexion()
   then
-  	obj1.setPending();
-  	update(obj1);
-  	obj2.setPending();
-  	update(obj2);
-  	obj3.setPending();
-  	update(obj3);
-  	retract(criterio);
-	retract(evento);
-  	f.setFoco(obj1);
-  	update(f); 
-	recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+  	TareaSincrona tarea = gestorTareas.crearTareaSincrona(PeticionTerminacion.class);
+    tarea.ejecutar();
 end
 
 
