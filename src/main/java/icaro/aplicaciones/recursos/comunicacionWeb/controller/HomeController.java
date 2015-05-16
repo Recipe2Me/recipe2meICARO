@@ -101,6 +101,13 @@ public class HomeController {
         return "about";
     }
     
+    @RequestMapping(value = "/contact", method = RequestMethod.GET)
+    public String contact(Model model) {
+    	model.addAttribute("menu", "contact");
+        return "contact";
+    }
+    
+    
     @RequestMapping(value = "/signup", method = RequestMethod.POST)
     public String signin(Model model, @Valid UserProfileForm form,BindingResult result) {
     	if (result.hasErrors()) {
