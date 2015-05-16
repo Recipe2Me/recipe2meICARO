@@ -7,9 +7,12 @@
 	th:href="@{/static/img/favicon-16x16.png}" href="/favicon-16x16.png" />
 <link href='http://fonts.googleapis.com/css?family=Roboto'
 	rel='stylesheet' type='text/css' />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet"></link>
 <!-- <link th:href="@{/static/css/bootstrap.css}"
 	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
+	rel='stylesheet' type='text/css' />
+<link th:href="@{/static/css/form.css}" href='../static/css/form.css'
 	rel='stylesheet' type='text/css' />
 </head>
 <body>
@@ -61,22 +64,22 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-4 col-xs-12 col-sm-offset-4">
-				<form class="form" id="formSignin" val:validate="${user}"
+				<div class="testbox">
+  					<h1>Registro</h1>
+ 	 				<form id="formSignin" val:validate="${user}"
 					th:object="${user}" th:action="@{/signup}" method="POST">
-					<div class="form-group">
-						<label for="email">Correo electronico</label> <input type="email"
-							th:field="*{email}" />
-					</div>
-					<div class="form-group">
-						<label for="password">Password</label> <input type="password"
-							th:field="*{password}" />
-					</div>
-					<div class="form-group">
-						<label for="username">Nombre de usuario</label> <input type="text"
-							th:field="*{userName}" />
-					</div>
-					<button type="submit" class="btn btn-default">Submit</button>
-				</form>
+  						<hr></hr>
+  						<label id="icon" for="email"><i class="icon-envelope "></i></label>
+  						<input type="text" name="name" id="name" placeholder="Email" th:field="*{email}"  required="required"/>
+  						<label id="icon" for="username"><i class="icon-user"></i></label>
+  						<input type="text" name="name" id="name" placeholder="Nombre de usuario" th:field="*{userName}"  required="required"/>
+  						<label id="icon" for="password"><i class="icon-shield"></i></label>
+  						<input type="password" name="name" id="name" placeholder="Contraseña" th:field="*{password}" required="required"/>
+  
+   						<p>By clicking Register, you agree on our <a href="#">terms and condition</a>.</p>
+   						<a href="javascript:{}" onclick="document.getElementById('formSignin').submit();" class="button">Registro</a>
+  					</form>
+				</div>
 			</div>
 		</div>
 	</div>
