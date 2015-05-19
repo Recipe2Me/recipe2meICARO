@@ -1,5 +1,6 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -36,6 +37,7 @@ public class TareaObtenerAlergia extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -45,6 +47,7 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			if(negativo!=null){
 				if(negativo.isEmpty()){				
 					List<String> ingredientes = anotaciones.get("Ingrediente");
+					dialogo.setAlergias(ingredientes);
 					if(ingredientes!=null){
 						msg="Veo que eres alérgico a:";
 					    for(int i=0;i<ingredientes.size();i++){

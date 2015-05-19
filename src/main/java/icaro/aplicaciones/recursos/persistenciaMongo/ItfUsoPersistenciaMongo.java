@@ -15,5 +15,5 @@ public interface ItfUsoPersistenciaMongo extends ItfUsoRecursoSimple {
 	public UserProfile getUserByeUsername(String username) throws Exception;
 	public UserProfile insertaUsuario(UserProfileForm form) throws Exception;
 	public Recipe findOne(String idRecipe) throws Exception;
-	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo,List<String> ingredientesNegativos) throws Exception;
+	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo) throws Exception;
 }

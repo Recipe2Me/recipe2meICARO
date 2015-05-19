@@ -3,7 +3,10 @@ package icaro.aplicaciones.informacion.dominioRecipe2Me;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.validation.constraints.NotNull;
@@ -30,13 +33,15 @@ public class UserProfile implements Serializable, UserDetails {
 	private String userName;
 	@Property("pass")
 	private String password;
-	@Property("email")
 	private String email;
-	@Property("init")
 	private boolean init=false;
+	private List<String> alergias;
+	private Map<String,Double> gusto;
+	private boolean sabeCocinar = false;
 	
 	public UserProfile() {
-		
+		alergias = new ArrayList<String>();
+		gusto = new HashMap<String,Double>();
 	}
 	
 	public UserProfile(UserProfileForm from) {
@@ -120,5 +125,28 @@ public class UserProfile implements Serializable, UserDetails {
 		return true;
 	}
 
+	public List<String> getAlergias() {
+		return alergias;
+	}
+
+	public void setAlergias(List<String> alergias) {
+		this.alergias = alergias;
+	}
+
+	public Map<String, Double> getGusto() {
+		return gusto;
+	}
+
+	public void setGusto(Map<String, Double> gusto) {
+		this.gusto = gusto;
+	}
+
+	public boolean isSabeCocinar() {
+		return sabeCocinar;
+	}
+
+	public void setSabeCocinar(boolean sabeCocinar) {
+		this.sabeCocinar = sabeCocinar;
+	}
 	
 }

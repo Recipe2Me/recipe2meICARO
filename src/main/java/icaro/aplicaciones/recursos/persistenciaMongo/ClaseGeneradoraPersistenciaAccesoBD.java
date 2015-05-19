@@ -95,8 +95,8 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 		return recetaRepository.getRecipeById(idRecipe);
 	}
 	
-	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo,List<String> ingredientesNegativos) {
-		return recetaRepository.getRecipeWithCriteria(ingredientesAfirmativo, ingredientesNegativos);
+	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo) {
+		return recetaRepository.getRecipeWithCriteria(ingredientesAfirmativo);
 	}
 
 

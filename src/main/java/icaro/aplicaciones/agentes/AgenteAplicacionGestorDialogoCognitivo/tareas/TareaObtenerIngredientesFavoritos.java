@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -39,6 +40,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -51,9 +53,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					Criterio criterio = new Criterio();
-					criterio.setPositivo(ingredientes);
-					this.getEnvioHechos().insertarHechoWithoutFireRules(criterio);
+					dialogo.setIngredientesFavoritos(ingredientes);
 					msg = (new HatedIngredientsQuestionSentence()).toString();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");

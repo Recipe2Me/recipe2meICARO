@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
@@ -40,7 +41,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
-			Criterio criterio = (Criterio) params[1];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -53,7 +54,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					criterio.setNegativo(ingredientes);
+					dialogo.setIngredientesOdiados(ingredientes);
 					msg = "Muy bien, ahora dime si tienes algún tipo de alergia alimentaria";
 					//ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
 					//List<Recipe> recipes = mongo.getRecipeWithCriteria(criterio.getPositivo(), criterio.getNegativo());

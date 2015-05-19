@@ -1,9 +1,12 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaAsincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -54,6 +57,9 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 						msg=msg+" "+ingr;
 						
 					}
+					ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+					List<Recipe> recipes = mongo.getRecipeWithCriteria(ingredientes);
+					itfUsComunicacionoWeb.enviarRecetaAlUsuario(msg,recipes.get(0),mensaje.getUser());
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
 				}

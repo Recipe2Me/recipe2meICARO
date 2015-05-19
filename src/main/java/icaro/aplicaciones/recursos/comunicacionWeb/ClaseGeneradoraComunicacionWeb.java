@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoDesconexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
@@ -18,8 +19,13 @@ import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.comunicacion.ComunicacionAgentes;
 import icaro.infraestructura.entidadesBasicas.comunicacion.EventoSimple;
 import icaro.infraestructura.entidadesBasicas.comunicacion.MensajeSimple;
+import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaAgenteAplicacion;
 import icaro.infraestructura.entidadesBasicas.descEntidadesOrganizacion.DescInstanciaRecursoAplicacion;
 import icaro.infraestructura.entidadesBasicas.interfaces.InterfazUsoAgente;
+import icaro.infraestructura.patronAgenteCognitivo.factoriaEInterfacesPatCogn.FactoriaAgenteCognitivo;
+import icaro.infraestructura.patronAgenteCognitivo.percepcion.ItfGestPercepcionAgenteCognitivo;
+import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.ItfGestionAgenteReactivo;
+import icaro.infraestructura.patronAgenteReactivo.factoriaEInterfaces.ItfUsoAgenteReactivo;
 import icaro.infraestructura.patronRecursoSimple.imp.ImplRecursoSimple;
 import icaro.infraestructura.patronRecursoWeb.config.JettyConfiguration;
 import icaro.infraestructura.patronRecursoWeb.imp.ImplRecursoWeb;
@@ -48,6 +54,13 @@ public class ClaseGeneradoraComunicacionWeb extends ImplRecursoWeb implements It
 			ItfUsoConfiguracion config = (ItfUsoConfiguracion) ClaseGeneradoraRepositorioInterfaces.instance().obtenerInterfaz(NombresPredefinidos.ITF_USO+NombresPredefinidos.CONFIGURACION);
 			DescInstanciaRecursoAplicacion descRecurso = config.getDescInstanciaRecursoAplicacion(idRecurso);
 			identificadorAgenteGestorDialogo = descRecurso.getValorPropiedad("identAgenteAReportar");
+			//DescInstanciaAgenteAplicacion descAgente = config.getDescInstanciaAgenteAplicacion(VocabularioRecipe2Me.IdentAgenteAplicacionGestorDialogo);
+			//String id = descAgente.getId();
+			//descAgente.setId("AgentePruebaDinamico");
+			//FactoriaAgenteCognitivo.instance().crearAgenteCognitivo(descAgente);
+			//ItfGestPercepcionAgenteCognitivo intfAgenteCognitivo = (ItfGestPercepcionAgenteCognitivo)this.itfUsoRepositorioInterfaces.obtenerInterfazGestion("AgentePruebaDinamico");
+			//intfAgenteCognitivo.arranca();
+			//descAgente.setId(id);
 			//Definimos el recurso de persistencia de mongo
 			itfUsoPersistenciaMongo = (ItfUsoPersistenciaMongo) this.repoIntfaces
 					.obtenerInterfazUso("PersistenciaMongo1");

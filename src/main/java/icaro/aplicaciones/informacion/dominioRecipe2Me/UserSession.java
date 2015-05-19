@@ -30,7 +30,6 @@ public class UserSession implements Serializable {
 		this.user = user;
 		this.start = new Date();
 		this.update = (Date) start.clone();
-		
 	}
 	
 	public String getUser() {

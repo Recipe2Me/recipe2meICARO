@@ -1,5 +1,6 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -36,6 +37,7 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -44,12 +46,14 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 			String msg="";
 			if(negativo!=null){
 				if(negativo.isEmpty()){
+					dialogo.setSabeCocinar(true);
 					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
 							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 				}
 				else{
+					dialogo.setSabeCocinar(false);
 					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla."
 							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
