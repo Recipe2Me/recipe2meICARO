@@ -137,8 +137,17 @@ public class UserProfile implements Serializable, UserDetails {
 		return gusto;
 	}
 
-	public void setGusto(Map<String, Double> gusto) {
-		this.gusto = gusto;
+	public void setGusto(List<String> gustos){//Map<String, Double> gusto) {
+		
+		for (String i : gustos)
+			this.gusto.put(i, 100.0);
+		//this.gusto = gusto;
+	}
+	public void setNoGusto(List<String> gustos){//Map<String, Double> gusto) {
+		
+		for (String i : gustos)
+			this.gusto.put(i, 0.0);
+		//this.gusto = gusto;
 	}
 
 	public boolean isSabeCocinar() {

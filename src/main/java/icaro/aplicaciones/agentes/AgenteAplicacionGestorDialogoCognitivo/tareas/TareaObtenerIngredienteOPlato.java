@@ -1,6 +1,8 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
@@ -38,11 +40,12 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotación correcta
+			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotaciï¿½n correcta
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
