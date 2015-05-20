@@ -158,6 +158,7 @@ public class UserProfile implements Serializable, UserDetails {
 		this.sabeCocinar = sabeCocinar;
 	}
 	
+	//METODO QUE INCREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "ME GUSTA"
 	public void updateGustos(List<Ingrediente> pIngredientes){
 		
 		for(Ingrediente i : pIngredientes){
@@ -168,6 +169,19 @@ public class UserProfile implements Serializable, UserDetails {
 				if(this.gusto.get(pIngedName)!=0.0){
 					double aux = this.gusto.get(pIngedName);
 					this.gusto.replace(pIngedName, aux, aux+5.0);
+				}
+			}
+		}
+	}
+	//METODO QUE DECREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "NO ME GUSTA"
+	public void updateNoMeGusta(List<Ingrediente> pIngredientes){
+		
+		for(Ingrediente i : pIngredientes){
+			String pIngedName = i.getNombre();
+			if(this.gusto.containsKey(pIngedName)){
+				if((this.gusto.get(pIngedName)!=0.0)||(this.gusto.get(pIngedName)>5.0)){
+					double aux = this.gusto.get(pIngedName);
+					this.gusto.replace(pIngedName, aux, aux-5.0);
 				}
 			}
 			
