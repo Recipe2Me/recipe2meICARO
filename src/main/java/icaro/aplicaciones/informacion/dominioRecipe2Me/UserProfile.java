@@ -140,7 +140,7 @@ public class UserProfile implements Serializable, UserDetails {
 	public void setGusto(List<String> gustos){//Map<String, Double> gusto) {
 		
 		for (String i : gustos)
-			this.gusto.put(i, 100.0);
+			this.gusto.put(i, 5.0);
 		//this.gusto = gusto;
 	}
 	public void setNoGusto(List<String> gustos){//Map<String, Double> gusto) {
@@ -156,6 +156,24 @@ public class UserProfile implements Serializable, UserDetails {
 
 	public void setSabeCocinar(boolean sabeCocinar) {
 		this.sabeCocinar = sabeCocinar;
+	}
+	
+	public void updateGustos(List<Ingrediente> pIngredientes){
+		
+		for(Ingrediente i : pIngredientes){
+			
+			String pIngedName = i.getNombre();
+			
+			if(this.gusto.containsKey(pIngedName)){
+				if(this.gusto.get(pIngedName)!=0.0){
+					double aux = this.gusto.get(pIngedName);
+					this.gusto.replace(pIngedName, aux, aux+5.0);
+				}
+			}
+			
+		}
+			
+		
 	}
 	
 }
