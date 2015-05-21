@@ -55,19 +55,16 @@ public class TareaObtenerAlergia extends TareaSincrona{
 						     msg=msg+" "+ingr;
 						
 					     }
-					     msg=msg+"."+"¿Se te da bien cocinar?";
-					     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 					}
 					else{
-						msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo."
-								+ "Por cierto, ¿se te da bien cocinar?";
+						msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo.";
 						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 					}					
 				}
 				else{
-					msg = "Muy bien, veo que estas mas sano que una manzana jejeje. ¿Se te da bien cocinar?";
+					msg = "Muy bien, veo que estas mas sano que una manzana jejeje.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}

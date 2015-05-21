@@ -18,6 +18,7 @@
 	href="static/css/star-rating.min.css" media="all" rel="stylesheet"
 	type="text/css" />
 </head>
+<!--onload="inicio()"-->
 <body>
 	<nav class="navbar navbar-default navbar-fixed-top">
 		<div class="container">
@@ -67,7 +68,7 @@
 	<div sec:authorize="!isAuthenticated()" class="jumbotron">
 		<div class="container">
 			<h1>&iexcl;Bienvenido a Recipe2Me!</h1>
-			<p>Yo lo pienso, tu lo cocina</p>
+			<p>Yo lo pienso, tu lo cocinas</p>
 			<div class="col-sm-6 col-xs-12 col-sm-offset-3">
 				<img style="margin: 10px; margin-left: auto; margin-right: auto;"
 					class="media-object img-circle" src="static/img/logo.jpg"
@@ -186,17 +187,24 @@
 					</div>
 					<div id="recipe_content" class="modal-body"></div>
 					<div class="modal-footer">
-						<button type="button" class="btn btn-primary">
+						<div id="divBotones">
+						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('noMeGusta')">
 							<span class="glyphicon glyphicon-thumbs-down"></span> No me gusta
 						</button>
-						<button type="button" class="btn btn-primary">
+						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('ahoraNo')">
 							<span class="glyphicon glyphicon-stop"></span> Ahora no
 						</button>
-						<button type="button" class="btn btn-primary">
+						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('meGusta')">
 							<span class="glyphicon glyphicon-thumbs-up"></span> Me gusta
 						</button>
-						<input id="estrellas" type="number" class="rating" min="0" max="5" step="0.5" data-size="lg"
-           data-symbol="&#xf0f5;" data-glyphicon="false" data-rating-class="rating-fa" data-show-caption="false"/>
+						</div>
+					<div id="divEstrellas">
+						<input id="estrellas" type="number" class="rating" min="0" max="5" step="0.5" data-size="sm"
+           data-symbol="&#xf0f5;"  data-show-clear="false" data-glyphicon="false" data-rating-class="rating-fa" data-show-caption="false"/>
+           <button type="button" class="btn btn-primary" onclick="botonEnviarValoracionEstrellasPulsado()">
+							<span class="glyphicon glyphicon-send"></span> Enviar
+						</button>
+           </div>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -216,7 +224,7 @@
 		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
 		<script th:src="@{/static/js/bootstrap.js}"
 			src="../static/js/bootstrap.js"></script>
-		<script th:src="@{/static/js/star-rating.min.js}"
+		<script th:src="@{/static/js/star-rating.js}"
 			src="static/js/star-rating.min.js" type="text/javascript"></script>
 		<!-- <script th:src="@{/static/js/bootstrap.js}"
 			src="../static/js/bootstrap.js"></script>-->
@@ -225,17 +233,91 @@
 			           
 			var saludo = true;
 			var stompClient = null;
-			//var msg = null;
+			
+			function paraAccion(){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_estatico.jpg";
+				
+			}
+			
+			function sintetizaVoz(frase){
+				speechSynthesis.cancel()
+				var msg = new SpeechSynthesisUtterance();
+				msg.text = frase;
+				msg.lang = 'es-ES';
+				msg.onend = function (event) {
+				    paraAccion();
+				};
+				speechSynthesis.speak(msg);
+				console.log(msg)
+			}
 
-			$(document).ready(
+			
+			
+			function iniciarSaludo(frase){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_saludando.gif";
+				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
+					 // Synthesis support. Make your web apps talk!
+					 sintetizaVoz(frase);
+				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
+					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
+				}
+			}
+			
+			function iniciaHablar(frase){
+				var gif = document.getElementById("gif");
+				gif.src = "static/img/froggy_hablando.gif";
+				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
+					 // Synthesis support. Make your web apps talk!
+					 sintetizaVoz(frase);
+				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
+					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
+				}
+
+			}
+			
+			function botonGustosPulsado(opcion){
+				if(opcion == 'noMeGusta'){
+					//PUT CODE FOR "NO ME GUSTA" OPTION
+					console.log("No me gusta");
 					
+				}else if(opcion == 'ahoraNo'){
+					//PUT CODE FOR "AHORA NO" OPTION
+					console.log('ahora no');
+					
+					
+				}else if(opcion == 'meGusta'){
+					//PUT CODE FOR "ME GUSTA" OPTION
+					console.log('me gusta');
+				}
+			}
+			function botonEnviarValoracionEstrellasPulsado(){
+				//PUT CODE HERE
+				console.log("Enviar valoracion estrellas pulsado");
+			}
+			
+			function muestraBotonesGustos(mostrar){
+				var botones = document.getElementById("divBotones");
+				if(mostrar){
+					botones.style.display="inline";
+				}else{
+					botones.style.display="none";
+				}
+			}
+			
+			function muestraValoracionTenedores(mostrar){
+				var estrellas = document.getElementById("divEstrellas");
+				if(mostrar){
+					estrellas.style.display="inline";
+				}else{
+					estrellas.style.display="none";
+				}
+			}
+			
+			//When the document is ready...
+			$(document).ready(			
 					function(){
-						
-						//msg = new SpeechSynthesisUtterance();
-						//msg.onend = function (event) {
-						  //  paraAccion();
-						//};
-						
 						//$("#estrellas").rating();
 						// with plugin options
 						//$("#estrellas").rating({'min':0, 'max':5, 'step':0.5, 'size':'lg'});
@@ -247,7 +329,6 @@
 						    	sendName();
 						      }
 						     });
-						//setTimeout(connect,100);
 						 connect();    
 					    }
 					);
@@ -279,10 +360,10 @@
 																"disabled",
 																false);
 														
-														showGreeting(JSON
+														mensajeSistemaAUsuario(JSON
 																.parse(greeting.body).content);
-														showRecipe(JSON
-																.parse(greeting.body).recipe);
+														//showRecipe(JSON
+															//	.parse(greeting.body).recipe);
 													});
 								});
 			}
@@ -300,7 +381,7 @@
 				stompClient.send("/app/hello", {}, JSON.stringify({
 					'name' : name
 				}));
-				showGreeting2(name);
+				mensajeUsuarioASistema(name);
 			}
 			function get_gravatar(email, size) {
 				 
@@ -313,7 +394,7 @@
 			 
 			    return 'http://www.gravatar.com/avatar/' + MD5(email) + '.jpg';
 			}
-			function showGreeting2(message) {
+			function mensajeUsuarioASistema(message) {
 				var imagen = /*[[@{/static/img/favicon-32x32.png}]]*// "static/img/favicon-32x32.png\";
 				var userName = /*[[${#authentication.name}]]*/ 'sga.vmp';
 				var email = /*[[${#authentication.principal.email}]]*/ 'sga.vmp';
@@ -347,18 +428,11 @@
            chat.scrollTop = chat.scrollHeight;
            window.scrollTo(0,chat.scrollHeight);
            
-				/*var response = document.getElementById('response');
-				var p = document.createElement('p');
-				p.style.wordWrap = 'break-word';
-				p.appendChild(document.createTextNode(message));
-				response.appendChild(p);*/
 			}
-			function showGreeting(message) {
+			function mensajeSistemaAUsuario(message) {
 				if(saludo){
-					iniciaSaludo();
-					
-					//sintetizaVoz(message);
-					
+					iniciarSaludo(message);
+										
 					//UNCOMMENT TO TEST MODAL WINDOW
 					//showRecipe(null);
 				}else{
@@ -383,8 +457,7 @@
                 +"</div>"
            +"</li>";
            
-           /*var $chat = $(".media-list");
-           $chat.scrollTop($chat.height());*/
+          
            
            var chat = document.getElementById("listaMensajes");
            chat.scrollTop = chat.scrollHeight;
@@ -396,12 +469,7 @@
            }
            //UNCOMMENT AFTER DEMO
            //window.scrollTo(0,chat.scrollHeight);
-           
-				/*var response = document.getElementById('response');
-				var p = document.createElement('p');
-				p.style.wordWrap = 'break-word';
-				p.appendChild(document.createTextNode(message));
-				response.appendChild(p);*/
+          
 			}
 			function showRecipe(recipe) {
 				
@@ -473,42 +541,7 @@
 			'</div>';
 			}*/
 			
-			function iniciaSaludo(){
-				var gif = document.getElementById("gif");
-				gif.src = "static/img/froggy_saludando.gif";
-			}
 			
-			function iniciaHablar(frase){
-				var gif = document.getElementById("gif");
-				gif.src = "static/img/froggy_hablando.gif";
-				
-				/* COMMENTED FOR DEMO
-				if ('speechSynthesis' in window) { //Si disponemos de sintesis de voz...
-					 // Synthesis support. Make your web apps talk!
-					 sintetizaVoz(frase);
-				}else{ //Si no... fijamos un timeout para que pare de hablar la rana
-					setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
-				}*/
-				
-				setTimeout(paraAccion,msEnFuncionDeLongitud(frase));
-				
-
-			}
-			
-			function paraAccion(){
-				var gif = document.getElementById("gif");
-				gif.src = "static/img/froggy_estatico.jpg";
-			}
-			
-			function sintetizaVoz(frase){
-				speechSynthesis.cancel()
-				var msg = new SpeechSynthesisUtterance();
-				msg.text = frase;
-				msg.lang = 'es-ES';
-				msg.onend = paraAccion();
-				speechSynthesis.speak(msg);
-				console.log(msg)
-			}
 			
 			function msEnFuncionDeLongitud(frase){
 				/*En una conversacion los humanos pronuncian unas 200 palabras por minuto

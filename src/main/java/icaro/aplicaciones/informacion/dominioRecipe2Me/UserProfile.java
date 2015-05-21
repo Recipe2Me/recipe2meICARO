@@ -180,7 +180,7 @@ public class UserProfile implements Serializable, UserDetails {
 			if(this.gusto.containsKey(pIngedName)){
 				if(this.gusto.get(pIngedName)!=0.0){
 					double aux = this.gusto.get(pIngedName);
-					this.gusto.replace(pIngedName, aux, aux+5.0);
+					this.gusto.put(pIngedName, aux+5.0);
 				}
 			}
 		}
@@ -193,7 +193,7 @@ public class UserProfile implements Serializable, UserDetails {
 			if(this.gusto.containsKey(pIngedName)){
 				if((this.gusto.get(pIngedName)!=0.0)||(this.gusto.get(pIngedName)>5.0)){
 					double aux = this.gusto.get(pIngedName);
-					this.gusto.replace(pIngedName, aux, aux-5.0);
+					this.gusto.put(pIngedName, aux-5.0);
 				}
 			}
 			

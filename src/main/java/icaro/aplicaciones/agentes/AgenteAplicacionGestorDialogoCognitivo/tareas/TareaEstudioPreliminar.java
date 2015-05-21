@@ -1,29 +1,23 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
-public class TareaObtenerIngredientesOdiados extends TareaSincrona{
-	
+public class TareaEstudioPreliminar extends TareaSincrona{
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	
-	public TareaObtenerIngredientesOdiados(){
+	public TareaEstudioPreliminar(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -47,47 +41,21 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");
+			List<String> despedida = anotaciones.get("Despedida");//OJO cambiar por la anotación correcta
+			List<String> saludo = anotaciones.get("Saludo");
 			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-				}
-				else{
-					dialogo.setIngredientesOdiados(ingredientes);
-					List<String> favoritos=dialogo.getIngredientesFavoritos();
-					List<String> odiados=dialogo.getIngredientesOdiados();
-					ArrayList<String> errores=new ArrayList<String>();
-					boolean control=false;
-					if(favoritos!=null){
-						for(int i=0;i<favoritos.size();i++){
-							String ingFav=favoritos.get(i);
-							for(int j=0;j<odiados.size();j++){
-								if(ingFav.equalsIgnoreCase(odiados.get(j))){
-									errores.add(ingFav);
-									control=true;
-								}
-							}
-						}
-					}
-					if(control==false){
-						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
-					}
-					else{
-						msg="Me has dicho que te gustaban los siguientes ingredientes :";
-						for(int i=0;i<errores.size();i++){
-							String ing=errores.get(i);
-							msg = msg+" "+ing;
-						}
-						msg = msg+", ¿Me puedes repetir los ingredientes que no te gustan?";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					}
-				}
+			if(despedida!=null){
+			     msg="¡¡¡Hasta luego cocodrilo!!!";
+			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			     //this.generarInformeConCausaTerminacion(getIdentTarea(),null,"Despedida",null,null);
+			}
+			else if(saludo!=null){
+			     msg="¡¡¡Hola, chaval, encantado de saludarte, pero !!!";
+			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Estudio preliminar");
 			}
 			else{
-				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Estudio preliminar");
 			}
 
 		} catch (Exception e) {
