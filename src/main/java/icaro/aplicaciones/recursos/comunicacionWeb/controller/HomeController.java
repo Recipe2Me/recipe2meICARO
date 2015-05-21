@@ -88,6 +88,54 @@ public class HomeController {
         return "home";
     }
     
+    @RequestMapping(value = "/recomendacion/nomegusta", method = RequestMethod.GET)
+    public String noMeGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    	try {
+			//Recipe recipe = repository.findOne(idRecipe);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	model.addAttribute("menu", "home");
+        return "home";
+    }
+    
+    @RequestMapping(value = "/recomendacion/megusta", method = RequestMethod.GET)
+    public String meGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    	try {
+			//Recipe recipe = repository.findOne(idRecipe);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	model.addAttribute("menu", "home");
+        return "home";
+    }
+    
+    @RequestMapping(value = "/recomendacion/otrodia", method = RequestMethod.GET)
+    public String otroDiaRecomendacion(Locale locale, Model model, Principal principal) {
+    	try {
+			//Recipe recipe = repository.findOne(idRecipe);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	model.addAttribute("menu", "home");
+        return "home";
+    }
+    
+    @RequestMapping(value = "/recomendacion/valoracion/{valoracion}", method = RequestMethod.GET)
+    public String valoracionRecomendacion(Locale locale, @PathVariable("valoracion") Double valoracion, Model model) {
+    	try {
+			//Recipe recipe = repository.findOne(idRecipe);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	model.addAttribute("menu", "home");
+        return "home";
+    }
+    
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
     public String signin(Model model) {
     	model.addAttribute("user", new UserProfileForm());

@@ -72,8 +72,6 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 						}
 					}
 					if(control==false){
-						msg = "Muy bien, ahora dime si tienes algún tipo de alergia alimentaria";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
 					}
 					else{

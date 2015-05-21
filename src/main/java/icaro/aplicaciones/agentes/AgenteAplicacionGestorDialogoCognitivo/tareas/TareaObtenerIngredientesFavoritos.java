@@ -71,8 +71,6 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 						}
 					}
 					if(control==false){
-						msg = "Muy bien, ahora dime los ingredientes que no te gustan";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
 					}
 					else{

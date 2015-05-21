@@ -6,6 +6,7 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerEstudioPreliminar;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerAlergia;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerConocimientoInicial;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerInfoSesion;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredienteOPlato;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredientesFavoritos;
@@ -35,10 +36,7 @@ public class InicializarInfoWorkMem extends TareaSincrona{
              this.getItfConfigMotorDeReglas().setfactHandlesMonitoring_afterActivationFired_DEBUGGING(true);
              this.getEnvioHechos().insertarHechoWithoutFireRules(new Focus());
              this.getEnvioHechos().insertarHecho(new ObtenerInfoSesion());
-     		 this.getEnvioHechos().insertarHecho(new ObtenerIngredientesFavoritos());
-     		 this.getEnvioHechos().insertarHecho(new ObtenerIngredientesOdiados());
-     		 this.getEnvioHechos().insertarHecho(new ObtenerAlergia());
-     		 this.getEnvioHechos().insertarHecho(new ObtenerNivelCocina());
+             this.getEnvioHechos().insertarHecho(new ObtenerConocimientoInicial());
      		 this.getEnvioHechos().insertarHecho(new ObtenerIngredienteOPlato());
      		 this.getEnvioHechos().insertarHecho(new ObtenerValoracionUsuario());
      		 this.getEnvioHechos().insertarHecho(new ObtenerEstudioPreliminar());

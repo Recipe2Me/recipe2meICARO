@@ -49,8 +49,7 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 				if(negativo.isEmpty()){
 					if(afirmativo!=null){
 						dialogo.setSabeCocinar(true);
-						msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-								+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+						msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas.";
 						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 					}
@@ -62,16 +61,14 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 				}
 				else{
 					dialogo.setSabeCocinar(false);
-					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla."
-							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 				}
 			}
 			else{
 				if(afirmativo!=null){
-					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 				}
