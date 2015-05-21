@@ -38,6 +38,7 @@ public class UserProfile implements Serializable, UserDetails {
 	private List<String> alergias;
 	private Map<String,Double> gusto;
 	private boolean sabeCocinar = false;
+	private List<String> recetasNoGusta;
 	
 	public UserProfile() {
 		alergias = new ArrayList<String>();
@@ -157,6 +158,17 @@ public class UserProfile implements Serializable, UserDetails {
 	public void setSabeCocinar(boolean sabeCocinar) {
 		this.sabeCocinar = sabeCocinar;
 	}
+	
+	public void setRecetasNoGusto(List<String> recetas){//Map<String, Double> gusto) {
+		
+		this.recetasNoGusta = recetas;
+	}
+	
+	public List<String> getRecetasNoGusto(){//Map<String, Double> gusto) {
+		
+		return this.recetasNoGusta;
+	}
+	
 	
 	//METODO QUE INCREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "ME GUSTA"
 	public void updateGustos(List<Ingrediente> pIngredientes){
