@@ -434,7 +434,7 @@
 					iniciarSaludo(message);
 										
 					//UNCOMMENT TO TEST MODAL WINDOW
-					showRecipe(null);
+					//showRecipe(null);
 				}else{
 					iniciaHablar(message);
 				}
@@ -475,12 +475,12 @@
 				
 				
 				//COMMENT TO TEST
-				//$('#recipe_title').html(recipe.title);
-				//$('#recipe_content').html(parseRecipe(recipe));
+				$('#recipe_title').html(recipe.title);
+				$('#recipe_content').html(parseRecipe(recipe));
 				
 				//UNCOMMENT TO TEST
-				$('#recipe_title').html("receta");
-				$('#recipe_content').html(parseRecipe2());
+				//$('#recipe_title').html("receta");
+				//$('#recipe_content').html(parseRecipe2());
 				
 				$('#myModal').modal('show');
 			}
@@ -513,7 +513,7 @@
 			}
 			
 			// UNCOMMENT TO TEST
-			function parseRecipe2() {
+			/*function parseRecipe2() {
 				var ingredientes="";
 				for (i = 0; i < 5; i++) {
 					ingredientes+= '<li>' + "Ingrediente "+ i + '</li>'
@@ -539,7 +539,7 @@
 					'<p>' + "Aqui va el proceso de la receta" + '</p>' +
 				'</div>' +
 			'</div>';
-			}
+			}*/
 			
 			
 			
