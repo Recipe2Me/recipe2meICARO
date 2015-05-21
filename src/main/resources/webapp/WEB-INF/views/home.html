@@ -187,6 +187,7 @@
 					</div>
 					<div id="recipe_content" class="modal-body"></div>
 					<div class="modal-footer">
+						<div id="divBotones">
 						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('noMeGusta')">
 							<span class="glyphicon glyphicon-thumbs-down"></span> No me gusta
 						</button>
@@ -196,8 +197,14 @@
 						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('meGusta')">
 							<span class="glyphicon glyphicon-thumbs-up"></span> Me gusta
 						</button>
+						</div>
+					<div id="divEstrellas">
 						<input id="estrellas" type="number" class="rating" min="0" max="5" step="0.5" data-size="sm"
            data-symbol="&#xf0f5;"  data-show-clear="false" data-glyphicon="false" data-rating-class="rating-fa" data-show-caption="false"/>
+           <button type="button" class="btn btn-primary" onclick="botonEnviarValoracionEstrellasPulsado()">
+							<span class="glyphicon glyphicon-send"></span> Enviar
+						</button>
+           </div>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -283,6 +290,28 @@
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
 					console.log('me gusta');
+				}
+			}
+			function botonEnviarValoracionEstrellasPulsado(){
+				//PUT CODE HERE
+				console.log("Enviar valoracion estrellas pulsado");
+			}
+			
+			function muestraBotonesGustos(mostrar){
+				var botones = document.getElementById("divBotones");
+				if(mostrar){
+					botones.style.display="inline";
+				}else{
+					botones.style.display="none";
+				}
+			}
+			
+			function muestraValoracionTenedores(mostrar){
+				var estrellas = document.getElementById("divEstrellas");
+				if(mostrar){
+					estrellas.style.display="inline";
+				}else{
+					estrellas.style.display="none";
 				}
 			}
 			
@@ -405,7 +434,7 @@
 					iniciarSaludo(message);
 										
 					//UNCOMMENT TO TEST MODAL WINDOW
-					//showRecipe(null);
+					showRecipe(null);
 				}else{
 					iniciaHablar(message);
 				}
@@ -446,14 +475,14 @@
 				
 				
 				//COMMENT TO TEST
-				$('#recipe_title').html(recipe.title);
-				$('#recipe_content').html(parseRecipe(recipe));
+				//$('#recipe_title').html(recipe.title);
+				//$('#recipe_content').html(parseRecipe(recipe));
 				
 				//UNCOMMENT TO TEST
-				//$('#recipe_title').html("receta");
-				//$('#recipe_content').html(parseRecipe2());
+				$('#recipe_title').html("receta");
+				$('#recipe_content').html(parseRecipe2());
 				
-				//$('#myModal').modal('show');
+				$('#myModal').modal('show');
 			}
 			function parseRecipe(recipe) {
 				var ingredientes="";
@@ -484,7 +513,7 @@
 			}
 			
 			// UNCOMMENT TO TEST
-			/*function parseRecipe2() {
+			function parseRecipe2() {
 				var ingredientes="";
 				for (i = 0; i < 5; i++) {
 					ingredientes+= '<li>' + "Ingrediente "+ i + '</li>'
@@ -510,7 +539,7 @@
 					'<p>' + "Aqui va el proceso de la receta" + '</p>' +
 				'</div>' +
 			'</div>';
-			}*/
+			}
 			
 			
 			
