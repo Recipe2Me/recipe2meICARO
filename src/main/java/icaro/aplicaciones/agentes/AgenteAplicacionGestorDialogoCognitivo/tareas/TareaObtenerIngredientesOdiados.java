@@ -1,5 +1,6 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -55,20 +56,41 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 				}
 				else{
 					dialogo.setIngredientesOdiados(ingredientes);
-					msg = "Muy bien, ahora dime si tienes algún tipo de alergia alimentaria";
-					//ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
-					//List<Recipe> recipes = mongo.getRecipeWithCriteria(criterio.getPositivo(), criterio.getNegativo());
-					//itfUsComunicacionoWeb.enviarRecetaAlUsuario(msg,recipes.get(0),mensaje.getUser());
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					List<String> favoritos=dialogo.getIngredientesFavoritos();
+					List<String> odiados=dialogo.getIngredientesOdiados();
+					ArrayList<String> errores=new ArrayList<String>();
+					boolean control=false;
+					if(favoritos!=null){
+						for(int i=0;i<favoritos.size();i++){
+							String ingFav=favoritos.get(i);
+							for(int j=0;j<odiados.size();j++){
+								if(ingFav.equalsIgnoreCase(odiados.get(j))){
+									errores.add(ingFav);
+									control=true;
+								}
+							}
+						}
+					}
+					if(control==false){
+						msg = "Muy bien, ahora dime si tienes algún tipo de alergia alimentaria";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					}
+					else{
+						msg="Me has dicho que te gustaban los siguientes ingredientes :";
+						for(int i=0;i<errores.size();i++){
+							String ing=errores.get(i);
+							msg = msg+" "+ing;
+						}
+						msg = msg+", ¿Me puedes repetir los ingredientes que no te gustan?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					}
 				}
 			}
 			else{
 				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
-			//ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
-			//Recipe recipe = mongo.findOne("54f8edb18c30d0033cd70078");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

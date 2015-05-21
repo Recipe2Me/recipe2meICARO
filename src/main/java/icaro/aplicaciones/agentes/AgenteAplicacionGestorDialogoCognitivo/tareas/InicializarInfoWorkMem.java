@@ -4,6 +4,7 @@
  */
 
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerEstudioPreliminar;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerAlergia;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerInfoSesion;
 import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerIngredienteOPlato;
@@ -40,6 +41,7 @@ public class InicializarInfoWorkMem extends TareaSincrona{
      		 this.getEnvioHechos().insertarHecho(new ObtenerNivelCocina());
      		 this.getEnvioHechos().insertarHecho(new ObtenerIngredienteOPlato());
      		 this.getEnvioHechos().insertarHecho(new ObtenerValoracionUsuario());
+     		 this.getEnvioHechos().insertarHecho(new ObtenerEstudioPreliminar());
        } catch (Exception e) {
 			 e.printStackTrace();
                          trazas.aceptaNuevaTraza(new InfoTraza(this.getIdentAgente(), "Error al ejecutar la tarea : "+this.getIdentTarea() + e, InfoTraza.NivelTraza.error));
