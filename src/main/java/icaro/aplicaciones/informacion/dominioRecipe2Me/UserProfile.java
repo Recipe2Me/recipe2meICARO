@@ -38,6 +38,7 @@ public class UserProfile implements Serializable, UserDetails {
 	private List<String> alergias;
 	private Map<String,Double> gusto;
 	private boolean sabeCocinar = false;
+	private List<String> recetasNoGusta;
 	
 	public UserProfile() {
 		alergias = new ArrayList<String>();
@@ -137,8 +138,17 @@ public class UserProfile implements Serializable, UserDetails {
 		return gusto;
 	}
 
-	public void setGusto(Map<String, Double> gusto) {
-		this.gusto = gusto;
+	public void setGusto(List<String> gustos){//Map<String, Double> gusto) {
+		
+		for (String i : gustos)
+			this.gusto.put(i, 5.0);
+		//this.gusto = gusto;
+	}
+	public void setNoGusto(List<String> gustos){//Map<String, Double> gusto) {
+		
+		for (String i : gustos)
+			this.gusto.put(i, 0.0);
+		//this.gusto = gusto;
 	}
 
 	public boolean isSabeCocinar() {
@@ -147,6 +157,49 @@ public class UserProfile implements Serializable, UserDetails {
 
 	public void setSabeCocinar(boolean sabeCocinar) {
 		this.sabeCocinar = sabeCocinar;
+	}
+	
+	public void setRecetasNoGusto(List<String> recetas){//Map<String, Double> gusto) {
+		
+		this.recetasNoGusta = recetas;
+	}
+	
+	public List<String> getRecetasNoGusto(){//Map<String, Double> gusto) {
+		
+		return this.recetasNoGusta;
+	}
+	
+	
+	//METODO QUE INCREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "ME GUSTA"
+	public void updateGustos(List<Ingrediente> pIngredientes){
+		
+		for(Ingrediente i : pIngredientes){
+			
+			String pIngedName = i.getNombre();
+			
+			if(this.gusto.containsKey(pIngedName)){
+				if(this.gusto.get(pIngedName)!=0.0){
+					double aux = this.gusto.get(pIngedName);
+					this.gusto.put(pIngedName, aux+5.0);
+				}
+			}
+		}
+	}
+	//METODO QUE DECREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "NO ME GUSTA"
+	public void updateNoMeGusta(List<Ingrediente> pIngredientes){
+		
+		for(Ingrediente i : pIngredientes){
+			String pIngedName = i.getNombre();
+			if(this.gusto.containsKey(pIngedName)){
+				if((this.gusto.get(pIngedName)!=0.0)||(this.gusto.get(pIngedName)>5.0)){
+					double aux = this.gusto.get(pIngedName);
+					this.gusto.put(pIngedName, aux-5.0);
+				}
+			}
+			
+		}
+			
+		
 	}
 	
 }

@@ -6,10 +6,13 @@ import java.util.Map;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.aplicaciones.recursos.sentences.questionSentences.hated.HatedIngredientsQuestionSentence;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
@@ -50,7 +53,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+					msg = "No has introducido ningï¿½n ingrediente,por favor, dime tus ingredientes favoritos";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
@@ -85,7 +88,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 				}
 			}
 			else{
-				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes favoritos";
+				msg = "No has introducido ningï¿½n ingrediente,por favor, dime tus ingredientes favoritos";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

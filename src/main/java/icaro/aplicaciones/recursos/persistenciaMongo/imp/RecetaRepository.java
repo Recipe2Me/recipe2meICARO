@@ -2,6 +2,7 @@ package icaro.aplicaciones.recursos.persistenciaMongo.imp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import gate.creole.annic.apache.lucene.search.Sort;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Ingrediente;
@@ -83,6 +84,47 @@ public class RecetaRepository {
 			recipe.getIngredientes().add(ing);
 		}
 		return recipe;
+	}
+	
+	public List<Recipe> getRecipeWithList(Map<String,Double> pGustos ,List<String> ingredientesAfirmativo, List<String> recetasNoGusta ) {
+		/*db.recipes.find(
+		 * 					{
+		 * 						$text:{
+		 * 								$search:
+		 * 										"-\"Croquetas de calamares en su tinta\"Croquetas de bacalao\"leche harina -huevo -sal"
+		 * 							  }
+		 * 					},
+		 * 					{
+		 * 						score:{
+		 * 								$meta:
+		 * 									   "textScore"
+		 * 							  }
+		 *                  }
+		 *                ).sort({score:{$meta:"textScore"}}).limit(2).pretty()*/
+		
+		
+		
+		List<Recipe> recipes = new ArrayList<Recipe>();
+		String busqueda = "";
+		if(!recetasNoGusta.isEmpty()){
+			for(String receta : recetasNoGusta){
+				busqueda = busqueda.concat("-\"".concat(receta).concat("\""));
+					}
+		}
+		
+		for (String ing : ingredientesAfirmativo) {
+			busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
+		}
+//		for (String ing : ingredientesNegativos) {
+//			busqueda=busqueda.concat(" -".concat(ing));
+//		}
+		DBObject textSearch = new BasicDBObject("$text", new BasicDBObject("$search",busqueda));
+		DBObject resultQuery = new BasicDBObject("score",new BasicDBObject("$meta","textScore"));
+		List<DBObject> result = collection.find(textSearch,resultQuery).sort(resultQuery).limit(5).toArray();
+		for (DBObject r : result) {
+			recipes.add(parseDBObjectToRecipe(r));
+		}
+		return recipes;
 	}
 
 }
