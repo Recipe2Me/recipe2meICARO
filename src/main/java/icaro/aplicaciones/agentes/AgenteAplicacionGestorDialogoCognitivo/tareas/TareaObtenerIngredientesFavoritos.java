@@ -1,5 +1,6 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +55,35 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 				}
 				else{
 					dialogo.setIngredientesFavoritos(ingredientes);
-					msg = (new HatedIngredientsQuestionSentence()).toString();
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
+					List<String> favoritos=dialogo.getIngredientesFavoritos();
+					List<String> odiados=dialogo.getIngredientesOdiados();
+					ArrayList<String> errores=new ArrayList<String>();
+					boolean control=false;
+					if(odiados!=null){
+						for(int i=0;i<favoritos.size();i++){
+							String ingFav=favoritos.get(i);
+							for(int j=0;j<odiados.size();j++){
+								if(ingFav.equalsIgnoreCase(odiados.get(j))){
+									errores.add(ingFav);
+									control=true;
+								}
+							}
+						}
+					}
+					if(control==false){
+						msg = "Muy bien, ahora dime los ingredientes que no te gustan";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					}
+					else{
+						msg="Me has dicho que no te gustaban los siguientes ingredientes :";
+						for(int i=0;i<errores.size();i++){
+							String ing=errores.get(i);
+							msg = msg+" "+ing;
+						}
+						msg = msg+", ¿Me puedes repetir los ingredientes que te gustan?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					}
 				}
 			}
 			else{

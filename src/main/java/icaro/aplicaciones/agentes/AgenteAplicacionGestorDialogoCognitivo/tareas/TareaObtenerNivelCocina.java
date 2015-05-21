@@ -43,14 +43,22 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
 			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
+			List<String> afirmativo = anotaciones.get("Afirmacion");
 			String msg="";
 			if(negativo!=null){
 				if(negativo.isEmpty()){
-					dialogo.setSabeCocinar(true);
-					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					if(afirmativo!=null){
+						dialogo.setSabeCocinar(true);
+						msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
+								+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					}
+					else{
+						msg = "no me has contestado a la pregunta!!, ¿se te da bien cocinar o no?.";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						//this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					}
 				}
 				else{
 					dialogo.setSabeCocinar(false);
@@ -61,10 +69,18 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 				}
 			}
 			else{
-				msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
-						+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-				this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+				if(afirmativo!=null){
+					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas."
+							+ "Ahora dime los ingredientes que quieres que aparezcan en la receta.";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+				}
+				else{
+					msg = "no me has contestado a la pregunta!!, ¿se te da bien cocinar o no?.";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					//this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+				}
+
 			}
 
 		} catch (Exception e) {

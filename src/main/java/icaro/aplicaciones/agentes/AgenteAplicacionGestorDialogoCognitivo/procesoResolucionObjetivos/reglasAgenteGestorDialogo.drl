@@ -164,6 +164,7 @@ end
 rule "Obtener ingredientes favoritos"
   when
     obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
     dialogo:DialogoInicial()
@@ -171,6 +172,7 @@ rule "Obtener ingredientes favoritos"
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
     tarea.ejecutar(evento,dialogo);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -200,6 +202,7 @@ end
 rule "Obtener ingredientes odiados"
   when
     obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
     dialogo:DialogoInicial()
@@ -207,6 +210,7 @@ rule "Obtener ingredientes odiados"
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
     tarea.ejecutar(evento,dialogo);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -236,6 +240,7 @@ end
 rule "Obtener alergias"
   when
     obj:ObtenerAlergia(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
     dialogo:DialogoInicial()
@@ -243,6 +248,7 @@ rule "Obtener alergias"
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerAlergia.class);
     tarea.ejecutar(evento,dialogo);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -272,6 +278,7 @@ end
 rule "Obtener NivelCocina"
   when
     obj:ObtenerNivelCocina(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
     dialogo:DialogoInicial()
@@ -279,6 +286,7 @@ rule "Obtener NivelCocina"
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerNivelCocina.class);
     tarea.ejecutar(evento,dialogo);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -308,6 +316,7 @@ end
 rule "Obtener IngredienteOPlato"
   when
     obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
     consulta:QueryRecipe()
@@ -315,6 +324,7 @@ rule "Obtener IngredienteOPlato"
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredienteOPlato.class);
     tarea.ejecutar(evento,consulta);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -330,3 +340,17 @@ rule "Zanjar objetivo ObtenerIngredienteOPlato"
     retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
+
+rule "Estudio preliminar"
+  when
+    obj:ObtenerEstudioPreliminar(state==Objetivo.PENDING)
+    evento:EventoMensajeDelUsuario()
+    dialogo:DialogoInicial()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaEstudioPreliminar.class);
+    tarea.ejecutar(evento,dialogo);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+     
