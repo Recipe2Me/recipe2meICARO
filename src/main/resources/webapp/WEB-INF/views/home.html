@@ -7,9 +7,10 @@
 	th:href="@{/static/img/favicon-16x16.png}" href="/favicon-16x16.png" />
 <link href='http://fonts.googleapis.com/css?family=Roboto'
 	rel='stylesheet' type='text/css' />
-<link th:href="@{/static/css/bootstrap.css}" href='../static/css/bootstrap.css'
-	rel='stylesheet' type='text/css' />
-<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"/>
+<link th:href="@{/static/css/bootstrap.css}"
+	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />
+<link rel="stylesheet"
+	href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" />
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
 	rel='stylesheet' type='text/css' />
 <link th:href="@{/static/css/style.css}" href='../static/css/style.css'
@@ -117,7 +118,8 @@
 			</div>
 		</div>
 	</div>
-	<div sec:authorize="isAuthenticated()" class="container" id="MainConversation">
+	<div sec:authorize="isAuthenticated()" class="container"
+		id="MainConversation">
 		<div class="row">
 			<div class="col-sm-8 col-xs-12">
 				<div>
@@ -132,7 +134,7 @@
 						</div>
 						<!--<textarea id="input" class="textarea"></textarea>-->
 						<div class="panel-footer"
-							style="position: fixed; bottom: 0; width: 100%; left: 0; z-index:100">
+							style="position: fixed; bottom: 0; width: 100%; left: 0; z-index: 100">
 							<div class="input-group">
 								<input type="text" id="input" class="form-control"
 									placeholder="Introduce Mensaje" /> <span
@@ -147,10 +149,10 @@
 				</div>
 			</div>
 			<div class="col-sm-4 col-xs-12">
-			<!-- style="position: absolute; bottom: 50px; right: 0" -->
-				<img id="gif" src="static/img/froggy_hablando.gif"
-				 alt="Completo" style="position: fixed; bottom: 40px; right:0; z-index:-1"
-				height="300px" width="300px" />
+				<!-- style="position: absolute; bottom: 50px; right: 0" -->
+				<img id="gif" src="static/img/froggy_hablando.gif" alt="Completo"
+					style="position: fixed; bottom: 40px; right: 0; z-index: -1"
+					height="300px" width="300px" />
 			</div>
 		</div>
 	</div>
@@ -188,23 +190,30 @@
 					<div id="recipe_content" class="modal-body"></div>
 					<div class="modal-footer">
 						<div id="divBotones">
-						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('noMeGusta')">
-							<span class="glyphicon glyphicon-thumbs-down"></span> No me gusta
-						</button>
-						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('ahoraNo')">
-							<span class="glyphicon glyphicon-stop"></span> Ahora no
-						</button>
-						<button type="button" class="btn btn-primary" onclick="botonGustosPulsado('meGusta')">
-							<span class="glyphicon glyphicon-thumbs-up"></span> Me gusta
-						</button>
+							<button type="button" class="btn btn-primary"
+								onclick="botonGustosPulsado('noMeGusta')">
+								<span class="glyphicon glyphicon-thumbs-down"></span> No me
+								gusta
+							</button>
+							<button type="button" class="btn btn-primary"
+								onclick="botonGustosPulsado('ahoraNo')">
+								<span class="glyphicon glyphicon-stop"></span> Ahora no
+							</button>
+							<button type="button" class="btn btn-primary"
+								onclick="botonGustosPulsado('meGusta')">
+								<span class="glyphicon glyphicon-thumbs-up"></span> Me gusta
+							</button>
 						</div>
-					<div id="divEstrellas">
-						<input id="estrellas" type="number" class="rating" min="0" max="5" step="0.5" data-size="sm"
-           data-symbol="&#xf0f5;"  data-show-clear="false" data-glyphicon="false" data-rating-class="rating-fa" data-show-caption="false"/>
-           <button type="button" class="btn btn-primary" onclick="botonEnviarValoracionEstrellasPulsado()">
-							<span class="glyphicon glyphicon-send"></span> Enviar
-						</button>
-           </div>
+						<div id="divEstrellas">
+							<input id="estrellas" type="number" class="rating" min="0"
+								max="5" step="0.5" data-size="sm" data-symbol="&#xf0f5;"
+								data-show-clear="false" data-glyphicon="false"
+								data-rating-class="rating-fa" data-show-caption="false" />
+							<button type="button" class="btn btn-primary"
+								onclick="botonEnviarValoracionEstrellasPulsado()">
+								<span class="glyphicon glyphicon-send"></span> Enviar
+							</button>
+						</div>
 					</div>
 				</div>
 				<!-- /.modal-content -->
@@ -222,6 +231,7 @@
 		<script src="//cdn.jsdelivr.net/sockjs/0.3.4/sockjs.min.js"></script>
 		<script th:src="@{/static/js/stomp.js}" src="../static/js/stomp.js"></script>
 		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+		<script th:src="@{/static/js/wait.js}" src="../static/js/wait.js"></script>
 		<script th:src="@{/static/js/bootstrap.js}"
 			src="../static/js/bootstrap.js"></script>
 		<script th:src="@{/static/js/star-rating.js}"
@@ -280,15 +290,27 @@
 			function botonGustosPulsado(opcion){
 				if(opcion == 'noMeGusta'){
 					//PUT CODE FOR "NO ME GUSTA" OPTION
+					$.get("/recomendacion/nomegusta",function (data) {
+						$("#myModal").modal('toggle');
+						$(".modal-backdrop").hide();
+						waitingDialog.show("Espera mientras cargamos otra receta");
+					});
 					console.log("No me gusta");
 					
 				}else if(opcion == 'ahoraNo'){
 					//PUT CODE FOR "AHORA NO" OPTION
+					$.get("/recomendacion/otrodia",function (data) {
+						$("#myModal").modal('toggle');
+						$(".modal-backdrop").hide();
+						waitingDialog.show("Espera mientras cargamos otra receta");
+					});
 					console.log('ahora no');
-					
-					
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
+					$.get("/recomendacion/megusta",function (data) {
+						$("#myModal").modal('toggle');
+						$(".modal-backdrop").hide();
+					});
 					console.log('me gusta');
 				}
 			}
@@ -362,8 +384,8 @@
 														
 														mensajeSistemaAUsuario(JSON
 																.parse(greeting.body).content);
-														//showRecipe(JSON
-															//	.parse(greeting.body).recipe);
+														showRecipe(JSON
+																.parse(greeting.body).recipe);
 													});
 								});
 			}
@@ -430,59 +452,67 @@
            
 			}
 			function mensajeSistemaAUsuario(message) {
-				if(saludo){
-					iniciarSaludo(message);
-										
-					//UNCOMMENT TO TEST MODAL WINDOW
-					//showRecipe(null);
-				}else{
-					iniciaHablar(message);
+				if (message!=null) {
+					if (message != "end") {
+					if(saludo){
+						iniciarSaludo(message);
+											
+						//UNCOMMENT TO TEST MODAL WINDOW
+						//showRecipe(null);
+					}else{
+						iniciaHablar(message);
+					}
+					
+					var imagen = /*[[@{/static/img/logo.jpg}]]*// "static/img/logo.jpg\";
+					var f =new Date();
+					f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
+					document.getElementById('mensajes').innerHTML += "<li class=\"media\"> <div class=\"media-body\"> <div class=\"media\">" + 
+	"<a class=\"pull-left\" href=\"#\">" +
+	                            "<img class=\"media-object img-circle\" style=\"height: 50px; width: 50px;\" src=" + imagen + " />" +
+	                            
+	                      	 "</a>"
+	                       +  "<div class=\"media-body\" >" + message 
+	                         
+	                           + " <br /><small class=\"text-muted\" style=\"color:#000\">Froggy | " + f + "</small>" 
+	                           + "<hr />"
+	                       +" </div>"
+	                    +"</div>"
+	
+	                +"</div>"
+	           +"</li>";
+	           
+	          
+	           
+	           var chat = document.getElementById("listaMensajes");
+	           chat.scrollTop = chat.scrollHeight;
+	           //TO DEMO -- COMMENT AFTER DEMO
+	           if(saludo){
+	        	   saludo = false;
+	           }else{
+	           window.scrollTo(0,chat.scrollHeight);
+	           }
+	           //UNCOMMENT AFTER DEMO
+	           //window.scrollTo(0,chat.scrollHeight);
+					} else {
+						//Cambiar esto por un modal vistoso
+						waitingDialog.show("Hasta la proxima!!");	
+					}
 				}
-				
-				var imagen = /*[[@{/static/img/logo.jpg}]]*// "static/img/logo.jpg\";
-				var f =new Date();
-				f = f.getHours()+":"+f.getMinutes()+":"+f.getSeconds(); 
-				document.getElementById('mensajes').innerHTML += "<li class=\"media\"> <div class=\"media-body\"> <div class=\"media\">" + 
-"<a class=\"pull-left\" href=\"#\">" +
-                            "<img class=\"media-object img-circle\" style=\"height: 50px; width: 50px;\" src=" + imagen + " />" +
-                            
-                      	 "</a>"
-                       +  "<div class=\"media-body\" >" + message 
-                         
-                           + " <br /><small class=\"text-muted\" style=\"color:#000\">Froggy | " + f + "</small>" 
-                           + "<hr />"
-                       +" </div>"
-                    +"</div>"
-
-                +"</div>"
-           +"</li>";
-           
-          
-           
-           var chat = document.getElementById("listaMensajes");
-           chat.scrollTop = chat.scrollHeight;
-           //TO DEMO -- COMMENT AFTER DEMO
-           if(saludo){
-        	   saludo = false;
-           }else{
-           window.scrollTo(0,chat.scrollHeight);
-           }
-           //UNCOMMENT AFTER DEMO
-           //window.scrollTo(0,chat.scrollHeight);
-          
 			}
 			function showRecipe(recipe) {
-				
-				
-				//COMMENT TO TEST
-				$('#recipe_title').html(recipe.title);
-				$('#recipe_content').html(parseRecipe(recipe));
-				
-				//UNCOMMENT TO TEST
-				//$('#recipe_title').html("receta");
-				//$('#recipe_content').html(parseRecipe2());
-				
-				$('#myModal').modal('show');
+				if (recipe!=null) {
+					waitingDialog.hide();
+					//COMMENT TO TEST
+					$('#recipe_title').html(recipe.title);
+					$('#recipe_content').html(parseRecipe(recipe));
+					
+					//UNCOMMENT TO TEST
+					//$('#recipe_title').html("receta");
+					//$('#recipe_content').html(parseRecipe2());
+					
+					$('#myModal').modal({backdrop: 'static',keyboard: false })  
+					$('#myModal').modal('show');
+				}
 			}
 			function parseRecipe(recipe) {
 				var ingredientes="";

@@ -72,6 +72,7 @@ public class TareaObtenerNivelCocina extends TareaSincrona{
 			}
 			else{
 				if(afirmativo!=null){
+					dialogo.setSabeCocinar(true);
 					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");

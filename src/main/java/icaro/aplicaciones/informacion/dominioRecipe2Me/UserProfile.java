@@ -3,6 +3,7 @@ package icaro.aplicaciones.informacion.dominioRecipe2Me;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Property;
+import org.mongodb.morphia.annotations.Reference;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,11 +40,15 @@ public class UserProfile implements Serializable, UserDetails {
 	private List<String> alergias;
 	private Map<String,Double> gusto;
 	private boolean sabeCocinar = false;
-	private List<String> recetasNoGusta;
+	private List<ObjectId> recetasNoGusta;
+	private boolean pendiente = false;
+	private ObjectId recetaPendiente;
+	private Date ultimoAcceso;
 	
 	public UserProfile() {
 		alergias = new ArrayList<String>();
 		gusto = new HashMap<String,Double>();
+		recetasNoGusta = new ArrayList<ObjectId>();
 	}
 	
 	public UserProfile(UserProfileForm from) {
@@ -159,17 +165,42 @@ public class UserProfile implements Serializable, UserDetails {
 		this.sabeCocinar = sabeCocinar;
 	}
 	
-	public void setRecetasNoGusto(List<String> recetas){//Map<String, Double> gusto) {
-		
-		this.recetasNoGusta = recetas;
+	public List<ObjectId> getRecetasNoGusta() {
+		return recetasNoGusta;
 	}
-	
-	public List<String> getRecetasNoGusto(){//Map<String, Double> gusto) {
-		
-		return this.recetasNoGusta;
+
+	public void setRecetasNoGusta(List<ObjectId> recetasNoGusta) {
+		this.recetasNoGusta = recetasNoGusta;
 	}
-	
-	
+
+	public boolean isPendiente() {
+		return pendiente;
+	}
+
+	public void setPendiente(boolean pendiente) {
+		this.pendiente = pendiente;
+	}
+
+	public ObjectId getRecetaPendiente() {
+		return recetaPendiente;
+	}
+
+	public void setRecetaPendiente(ObjectId recetaPendiente) {
+		this.recetaPendiente = recetaPendiente;
+	}
+
+	public void setGusto(Map<String, Double> gusto) {
+		this.gusto = gusto;
+	}
+
+	public Date getUltimoAcceso() {
+		return ultimoAcceso;
+	}
+
+	public void setUltimoAcceso(Date ultimoAcceso) {
+		this.ultimoAcceso = ultimoAcceso;
+	}
+
 	//METODO QUE INCREMENTA EN 5.0 EL VALOR DEL INGREDIENTE QUE "GUSTA" AL CLIENTE, EN LA LISTA DE SUS PREFERIDOS, CUANDO A LA RECETA DA "ME GUSTA"
 	public void updateGustos(List<Ingrediente> pIngredientes){
 		

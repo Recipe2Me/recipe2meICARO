@@ -12,11 +12,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.mongodb.MongoClient;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfileForm;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.recursos.persistenciaMongo.imp.RecetaRepository;
 import icaro.aplicaciones.recursos.persistenciaMongo.imp.UserProfileRepository;
+import icaro.aplicaciones.recursos.persistenciaMongo.imp.UserSessionRepository;
 import icaro.infraestructura.patronRecursoSimple.imp.ImplRecursoSimple;
 import icaro.infraestructura.recursosOrganizacion.recursoTrazas.imp.componentes.InfoTraza;
 
@@ -27,6 +30,7 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 	private static final long serialVersionUID = 1L;
     private UserProfileRepository userRepository;
     private RecetaRepository recetaRepository;
+    private UserSessionRepository userSessionRepository;
     private Morphia morphia;
 	private Datastore ds;
 
@@ -38,6 +42,7 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 			morphia.map(UserProfile.class);
 			userRepository = new UserProfileRepository(ds);
 			recetaRepository = new RecetaRepository(ds);
+			userSessionRepository = new UserSessionRepository(ds);
             trazas.aceptaNuevaTraza(new InfoTraza(this.getId(),
   				"Creando el esquema "+id,
   				InfoTraza.NivelTraza.debug));
@@ -98,6 +103,28 @@ public class ClaseGeneradoraPersistenciaAccesoBD extends ImplRecursoSimple imple
 	
 	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo) {
 		return recetaRepository.getRecipeWithCriteria(ingredientesAfirmativo);
+	}
+
+
+	@Override
+	public UserProfile actualizarUsuario(UserProfile user) throws Exception {
+		userRepository.save(user);
+		return user;
+	}
+
+
+	@Override
+	public List<Recipe> getRecipeWithCriteria(QueryRecipe consulta) throws Exception {
+		return recetaRepository.getRecipeWithQueryRecipe(consulta);
+	}
+
+
+	@Override
+	public UserSession guardarSesionDeUsuario(UserSession session)
+			throws Exception {
+		Key<UserSession> key = userSessionRepository.save(session);
+		session.setId((ObjectId) key.getId());
+		return session;
 	}
 
 

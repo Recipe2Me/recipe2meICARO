@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.DecisionUsuario;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoDesconexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
@@ -181,10 +182,30 @@ public class ClaseGeneradoraComunicacionWeb extends ImplRecursoWeb implements It
 	}
 
 	@Override
-	public void enviarRecetaAlUsuario(String mensaje, Recipe recipe,
+	public void enviarRecetaAlUsuario(Recipe recipe,
 			String usuario) throws Exception {
-		controller.sendRecipeToUser(mensaje, usuario, recipe);
+		controller.sendRecipeToUser(usuario, recipe);
 		
+	}
+
+	@Override
+	public void notificarDecisionUsuario(DecisionUsuario decision)
+			throws Exception {
+		if (getAgente() != null) {
+			try {
+				MensajeSimple mensaje = new MensajeSimple(decision,decision.getUser(),identificadorAgenteGestorDialogo);
+				itfUsoAgenteGestDialogo.aceptaMensaje(mensaje);
+			} catch (RemoteException ex) {
+				Logger.getLogger(
+						ClaseGeneradoraComunicacionWeb.class.getName())
+						.log(Level.SEVERE, null, ex);
+			}
+		}
+	}
+
+	@Override
+	public void terminarConversacion(String usuario) throws Exception {
+		controller.sendMessageToUser("end", usuario);
 	}
 
 }

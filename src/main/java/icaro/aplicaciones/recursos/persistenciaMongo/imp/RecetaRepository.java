@@ -6,6 +6,7 @@ import java.util.Map;
 
 import gate.creole.annic.apache.lucene.search.Sort;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Ingrediente;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 
 import org.bson.types.ObjectId;
@@ -86,7 +87,7 @@ public class RecetaRepository {
 		return recipe;
 	}
 	
-	public List<Recipe> getRecipeWithList(Map<String,Double> pGustos ,List<String> ingredientesAfirmativo, List<String> recetasNoGusta ) {
+	public List<Recipe> getRecipeWithQueryRecipe(QueryRecipe consulta) {
 		/*db.recipes.find(
 		 * 					{
 		 * 						$text:{
@@ -106,18 +107,19 @@ public class RecetaRepository {
 		
 		List<Recipe> recipes = new ArrayList<Recipe>();
 		String busqueda = "";
-		if(!recetasNoGusta.isEmpty()){
-			for(String receta : recetasNoGusta){
-				busqueda = busqueda.concat("-\"".concat(receta).concat("\""));
+		if(!consulta.getListaRecetasRechazadas().isEmpty()){
+			for(ObjectId receta : consulta.getListaRecetasRechazadas()){
+				busqueda = busqueda.concat("-\"".concat(receta.toString()).concat("\""));
 					}
 		}
 		
-		for (String ing : ingredientesAfirmativo) {
+		for (String ing : consulta.getIngredientes()) {
 			busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
 		}
-//		for (String ing : ingredientesNegativos) {
-//			busqueda=busqueda.concat(" -".concat(ing));
-//		}
+		
+		for (String ing : consulta.getAlergias()) {
+			busqueda=busqueda.concat(" -".concat(ing));
+		}
 		DBObject textSearch = new BasicDBObject("$text", new BasicDBObject("$search",busqueda));
 		DBObject resultQuery = new BasicDBObject("score",new BasicDBObject("$meta","textScore"));
 		List<DBObject> result = collection.find(textSearch,resultQuery).sort(resultQuery).limit(5).toArray();

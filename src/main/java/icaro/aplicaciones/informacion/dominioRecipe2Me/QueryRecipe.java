@@ -4,18 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.bson.types.ObjectId;
+
 public class QueryRecipe {
 	
 	private List<String> ingredientes;
 	private List<String> alergias;
 	private boolean sabeCocinar;
-	private Map<String,Double> ingredientesPuntuados;
+	private Map<String,Double> gusto;
+	private List<ObjectId> listaRecetasRechazadas;
+	private List<Recipe> listaRecomendaciones;
 	
 	public QueryRecipe(UserProfile perfil) {
 		ingredientes = new ArrayList<String>();
 		alergias = perfil.getAlergias();
 		sabeCocinar = perfil.isSabeCocinar();
-		ingredientesPuntuados = perfil.getGusto();
+		gusto = perfil.getGusto();
+		listaRecetasRechazadas = perfil.getRecetasNoGusta();
+		listaRecomendaciones = new ArrayList<Recipe>();
 	}
 
 	public List<String> getIngredientes() {
@@ -42,13 +48,28 @@ public class QueryRecipe {
 		this.sabeCocinar = sabeCocinar;
 	}
 
-	public Map<String, Double> getIngredientesPuntuados() {
-		return ingredientesPuntuados;
+	public Map<String, Double> getGusto() {
+		return gusto;
 	}
 
-	public void setIngredientesPuntuados(Map<String, Double> ingredientesPuntuados) {
-		this.ingredientesPuntuados = ingredientesPuntuados;
+	public void setGusto(Map<String, Double> gusto) {
+		this.gusto = gusto;
 	}
 
+	public List<ObjectId> getListaRecetasRechazadas() {
+		return listaRecetasRechazadas;
+	}
+
+	public void setListaRecetasRechazadas(List<ObjectId> listaRecetasRechazadas) {
+		this.listaRecetasRechazadas = listaRecetasRechazadas;
+	}
+
+	public List<Recipe> getListaRecomendaciones() {
+		return listaRecomendaciones;
+	}
+
+	public void setListaRecomendaciones(List<Recipe> listaRecomendaciones) {
+		this.listaRecomendaciones = listaRecomendaciones;
+	}
 	
 }

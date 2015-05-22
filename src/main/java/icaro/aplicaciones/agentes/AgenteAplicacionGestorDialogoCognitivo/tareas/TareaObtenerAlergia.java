@@ -47,8 +47,8 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			if(negativo!=null){
 				if(negativo.isEmpty()){				
 					List<String> ingredientes = anotaciones.get("Ingrediente");
-					dialogo.setAlergias(ingredientes);
 					if(ingredientes!=null){
+						dialogo.setAlergias(ingredientes);
 						msg="Veo que eres alérgico a:";
 					    for(int i=0;i<ingredientes.size();i++){
 						     String ingr = ingredientes.get(i);
@@ -72,13 +72,13 @@ public class TareaObtenerAlergia extends TareaSincrona{
 			else{
 				List<String> ingredientes = anotaciones.get("Ingrediente");				
 				if(ingredientes!=null){
+					dialogo.setAlergias(ingredientes);
 					msg="Veo que eres alérgico a:";
 				    for(int i=0;i<ingredientes.size();i++){
 					     String ingr = ingredientes.get(i);
 					     msg=msg+" "+ingr;
 					
 				     }
-				     msg=msg+"."+"¿Se te da bien cocinar?";
 				     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}

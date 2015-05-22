@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Message;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -36,7 +38,8 @@ public class TareaEstudioPreliminar extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
-			DialogoInicial dialogo = (DialogoInicial) params[1];
+			UserSession session = (UserSession) params[1];
+			session.getMessages().add(new Message(mensaje.getMensaje()));
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -47,6 +50,7 @@ public class TareaEstudioPreliminar extends TareaSincrona{
 			if(despedida!=null){
 			     msg="¡¡¡Hasta luego cocodrilo!!!";
 			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			     itfUsComunicacionoWeb.terminarConversacion(mensaje.getUser());
 			     //this.generarInformeConCausaTerminacion(getIdentTarea(),null,"Despedida",null,null);
 			}
 			else if(saludo!=null){

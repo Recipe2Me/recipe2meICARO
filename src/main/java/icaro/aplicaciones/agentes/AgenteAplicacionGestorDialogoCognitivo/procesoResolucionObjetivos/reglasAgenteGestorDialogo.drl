@@ -28,9 +28,12 @@ end
 rule "Reiniciar sistema tras desconexion"
   when
     evento:EventoDesconexion()
+    session:UserSession()
+    user:UserProfile()
   then
   	TareaSincrona tarea = gestorTareas.crearTareaSincrona(PeticionTerminacion.class);
-    tarea.ejecutar();
+    tarea.ejecutar(user,session);
+    retract(evento);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -68,11 +71,22 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato (Segundo objetivo si no es l
     update(f);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
- 
-rule "Focalizo el objetivo ObtenerValoracionUsuario"
+
+rule "Focalizo el objetivo ObtenerRecetasSegunRequisitos"
   when
-    obj:ObtenerValoracionUsuario(state==Objetivo.PENDING)
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.PENDING)
     objA:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+ 
+rule "Focalizo el objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.PENDING)
+    objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
     f.setFoco(obj);
@@ -129,11 +143,16 @@ end
 
 rule "Zanjo proceso de obtencion del conocimiento inicial"
   when
-    obj:ObtenerConocimientoInicial(isComplete() == true)
+    obj:ObtenerConocimientoInicial(isComplete() == true , state == Objetivo.SOLVING)
     Focus(foco == obj)
+    dialogo:DialogoInicial()
+    session:UserSession()
+    user:UserProfile()
   then
     obj.setSolved();
     update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaActualizarPerfilUsuario.class);
+    tarea.ejecutar(dialogo,session,user);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -352,14 +371,95 @@ rule "Zanjar objetivo ObtenerIngredienteOPlato"
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
+rule "Inicio el proceso para resolver el objetivo ObtenerRecetasSegunRequisitos"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.PENDING)
+    Focus(foco == obj)
+    session:UserSession()
+  then
+    obj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Obtener Recetas A Recomendar"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
+    f:Focus(foco == obj)
+    sesion:UserSession()
+    consulta:QueryRecipe()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerRecetasARecomendar.class);
+    tarea.ejecutar(sesion,consulta);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "Zanjar objetivo ObtenerRecetasSegunRequisitos"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerRecetasARecomendar")
+    f:Focus(foco == obj)
+  then
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Inicio el proceso para resolver el objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.PENDING)
+    Focus(foco == obj)
+    session:UserSession()
+    consulta:QueryRecipe()
+  then
+    obj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,session);
+    TareaSincrona tarea2 = gestorTareas.crearTareaSincrona(TareaObtenerConfirmacionUsuario.class);
+    tarea2.ejecutar(consulta,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Obtener Confirmacion del Usuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
+    decision:DecisionUsuario()
+    f:Focus(foco == obj)
+    consulta:QueryRecipe()
+    session:UserSession()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerConfirmacionUsuario.class);
+    tarea.ejecutar(consulta,session,decision);
+    retract(decision);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "Zanjar objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerIngredienteOPlato")
+    f:Focus(foco == obj)
+  then
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
 rule "Estudio preliminar"
   when
     obj:ObtenerEstudioPreliminar(state==Objetivo.PENDING)
     evento:EventoMensajeDelUsuario()
-    dialogo:DialogoInicial()
+    session:UserSession()
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaEstudioPreliminar.class);
-    tarea.ejecutar(evento,dialogo);
+    tarea.ejecutar(evento,session);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end

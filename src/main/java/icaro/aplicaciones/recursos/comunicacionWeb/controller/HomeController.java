@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Greeting;
@@ -24,6 +25,8 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.HelloMessage;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfileForm;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.DecisionUsuario;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.Decisiones;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 
@@ -81,7 +84,6 @@ public class HomeController {
     	try {
 			//Recipe recipe = repository.findOne(idRecipe);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	model.addAttribute("menu", "home");
@@ -89,51 +91,41 @@ public class HomeController {
     }
     
     @RequestMapping(value = "/recomendacion/nomegusta", method = RequestMethod.GET)
-    public String noMeGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    public @ResponseBody String noMeGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    	DecisionUsuario decisionUsuario = new DecisionUsuario(principal.getName(), Decisiones.no_gusta);
     	try {
-			//Recipe recipe = repository.findOne(idRecipe);
+			web.notificarDecisionUsuario(decisionUsuario);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	model.addAttribute("menu", "home");
-        return "home";
+    	return "OK";
     }
     
     @RequestMapping(value = "/recomendacion/megusta", method = RequestMethod.GET)
-    public String meGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    public @ResponseBody String meGustaRecomendacion(Locale locale, Model model, Principal principal) {
+    	DecisionUsuario decisionUsuario = new DecisionUsuario(principal.getName(), Decisiones.gusta);
     	try {
-			//Recipe recipe = repository.findOne(idRecipe);
+			web.notificarDecisionUsuario(decisionUsuario);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	model.addAttribute("menu", "home");
-        return "home";
+    	return "OK";
     }
     
     @RequestMapping(value = "/recomendacion/otrodia", method = RequestMethod.GET)
-    public String otroDiaRecomendacion(Locale locale, Model model, Principal principal) {
+    public @ResponseBody String otroDiaRecomendacion(Locale locale, Model model, Principal principal) {
+    	DecisionUsuario decisionUsuario = new DecisionUsuario(principal.getName(), Decisiones.posponer);
     	try {
-			//Recipe recipe = repository.findOne(idRecipe);
+			web.notificarDecisionUsuario(decisionUsuario);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	model.addAttribute("menu", "home");
-        return "home";
+    	return "OK";
     }
     
     @RequestMapping(value = "/recomendacion/valoracion/{valoracion}", method = RequestMethod.GET)
-    public String valoracionRecomendacion(Locale locale, @PathVariable("valoracion") Double valoracion, Model model) {
-    	try {
-			//Recipe recipe = repository.findOne(idRecipe);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-    	model.addAttribute("menu", "home");
-        return "home";
+    public @ResponseBody String valoracionRecomendacion(Locale locale, @PathVariable("valoracion") Double valoracion, Model model) {
+    	return "OK";
     }
     
     @RequestMapping(value = "/signup", method = RequestMethod.GET)
@@ -186,8 +178,8 @@ public class HomeController {
     	template.convertAndSendToUser(user,"/chat", new Greeting( message ));
     }
     
-    public void sendRecipeToUser(String message, String user, Recipe recipe) {
-    	template.convertAndSendToUser(user,"/chat", new Greeting( message , recipe ));
+    public void sendRecipeToUser(String user, Recipe recipe) {
+    	template.convertAndSendToUser(user,"/chat", new Greeting( null , recipe ));
     }
 
 	public ItfUsoPersistenciaMongo getRepository() {

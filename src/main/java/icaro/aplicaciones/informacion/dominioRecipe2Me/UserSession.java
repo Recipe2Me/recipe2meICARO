@@ -10,6 +10,7 @@ import org.mongodb.morphia.annotations.Embedded;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
 import org.mongodb.morphia.annotations.Reference;
+import org.mongodb.morphia.annotations.Transient;
 
 @Entity("session")
 public class UserSession implements Serializable {
@@ -21,9 +22,12 @@ public class UserSession implements Serializable {
 	public Date end;
 	public Date update;
 	public boolean first=true;
-	@Embedded(concreteClass=Message.class) public List<Message> messages = new ArrayList<Message>();
-	public List<String> recipes = new ArrayList<String>();
-	public String recipeAccept;
+	@Embedded("messages") 
+	public List<Message> messages = new ArrayList<Message>();
+	@Transient
+	public List<Recipe> recipes = new ArrayList<Recipe>();
+	public List<ObjectId> recipesReject = new ArrayList<ObjectId>();
+	public ObjectId recipeAccept;
 	public boolean finished;
 	
 	public UserSession(String user) {
@@ -62,16 +66,16 @@ public class UserSession implements Serializable {
 	public void setMessages(List<Message> messages) {
 		this.messages = messages;
 	}
-	public List<String> getRecipes() {
+	public List<Recipe> getRecipes() {
 		return recipes;
 	}
-	public void setRecipes(List<String> recipes) {
+	public void setRecipes(List<Recipe> recipes) {
 		this.recipes = recipes;
 	}
-	public String getRecipeAccept() {
+	public ObjectId getRecipeAccept() {
 		return recipeAccept;
 	}
-	public void setRecipeAccept(String recipeAccept) {
+	public void setRecipeAccept(ObjectId recipeAccept) {
 		this.recipeAccept = recipeAccept;
 	}
 	public boolean isFinished() {
@@ -88,6 +92,21 @@ public class UserSession implements Serializable {
 	public void setFirst(boolean first) {
 		this.first = first;
 	}
-	
+
+	public List<ObjectId> getRecipesReject() {
+		return recipesReject;
+	}
+
+	public void setRecipesReject(List<ObjectId> recipesReject) {
+		this.recipesReject = recipesReject;
+	}
+
+	public ObjectId getId() {
+		return id;
+	}
+
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
 
 }
