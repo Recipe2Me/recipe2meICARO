@@ -316,7 +316,13 @@
 			}
 			function botonEnviarValoracionEstrellasPulsado(){
 				//PUT CODE HERE
-				console.log("Enviar valoracion estrellas pulsado");
+				var valoracion = document.getElementById("estrellas").value;
+				$.get("/recomendacion/valoracion/"+valoracion,function (data) {
+					$("#myModal").modal('toggle');
+					$(".modal-backdrop").hide();
+				});
+				console.log("/recomendacion/valoracion/"+valoracion );
+				
 			}
 			
 			function muestraBotonesGustos(mostrar){
