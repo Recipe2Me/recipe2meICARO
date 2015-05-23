@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;

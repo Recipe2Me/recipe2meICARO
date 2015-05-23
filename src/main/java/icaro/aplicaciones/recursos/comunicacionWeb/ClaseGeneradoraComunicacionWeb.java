@@ -11,6 +11,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.DecisionUsuario;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoDesconexion;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.ValoracionUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.config.DisconnectInterceptor;
 import icaro.aplicaciones.recursos.comunicacionWeb.config.SecurityConfiguration;
 import icaro.aplicaciones.recursos.comunicacionWeb.config.WebSocketConfig;
@@ -206,6 +207,21 @@ public class ClaseGeneradoraComunicacionWeb extends ImplRecursoWeb implements It
 	@Override
 	public void terminarConversacion(String usuario) throws Exception {
 		controller.sendMessageToUser("end", usuario);
+	}
+
+	@Override
+	public void notificarValoracionUsuario(ValoracionUsuario valoracion) throws Exception {
+		
+		if (getAgente() != null) {
+			try {
+				MensajeSimple mensaje = new MensajeSimple(valoracion,valoracion.getUser(),identificadorAgenteGestorDialogo);
+				itfUsoAgenteGestDialogo.aceptaMensaje(mensaje);
+			} catch (RemoteException ex) {
+				Logger.getLogger(
+						ClaseGeneradoraComunicacionWeb.class.getName())
+						.log(Level.SEVERE, null, ex);
+			}
+		}
 	}
 
 }

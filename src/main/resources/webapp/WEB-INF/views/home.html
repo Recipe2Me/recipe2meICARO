@@ -317,7 +317,7 @@
 			function botonEnviarValoracionEstrellasPulsado(){
 				//PUT CODE HERE
 				var valoracion = document.getElementById("estrellas").value;
-				$.get("/recomendacion/valoracion/"+valoracion,function (data) {
+				$.get("/recomendacion/valoracion/"+valoracion+"/",function (data) {
 					$("#myModal").modal('toggle');
 					$(".modal-backdrop").hide();
 				});

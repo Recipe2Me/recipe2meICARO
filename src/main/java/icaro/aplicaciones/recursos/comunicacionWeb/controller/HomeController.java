@@ -27,6 +27,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfileForm;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.DecisionUsuario;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.Decisiones;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.ValoracionUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 
@@ -123,8 +124,14 @@ public class HomeController {
     	return "OK";
     }
     
-    @RequestMapping(value = "/recomendacion/valoracion/{valoracion}", method = RequestMethod.GET)
-    public @ResponseBody String valoracionRecomendacion(Locale locale, @PathVariable("valoracion") Double valoracion, Model model) {
+    @RequestMapping(value = "/recomendacion/valoracion/{valoracion}/", method = RequestMethod.GET)
+    public @ResponseBody String valoracionRecomendacion(Locale locale, @PathVariable("valoracion") Double valoracion, Model model, Principal principal) {
+    	ValoracionUsuario valoracionUsuario = new ValoracionUsuario(principal.getName(), valoracion);
+    	try {
+			web.notificarValoracionUsuario(valoracionUsuario);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
     	return "OK";
     }
     

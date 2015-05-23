@@ -55,7 +55,6 @@ public class PeticionTerminacion extends TareaSincrona {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		// Cerramos el visualizador y pedimos al gestor de agentes que termine
 		String identDeEstaTarea=getClass().getSimpleName();
 		Collection<Object> memoria = this.getItfMotorDeReglas().getStatefulKnowledgeSession().getObjects();
 		for (Object objeto : memoria) {

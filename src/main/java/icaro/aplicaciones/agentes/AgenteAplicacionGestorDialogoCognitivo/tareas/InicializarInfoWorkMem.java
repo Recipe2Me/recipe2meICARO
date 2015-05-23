@@ -44,6 +44,7 @@ public class InicializarInfoWorkMem extends TareaSincrona{
      		 this.getEnvioHechos().insertarHecho(new ObtenerEstudioPreliminar());
      		this.getEnvioHechos().insertarHecho(new ObtenerRecetasSegunRequisitos());
      		this.getEnvioHechos().insertarHecho(new ObtenerConfirmacionUsuario());
+     		this.getEnvioHechos().insertarHecho(new ObtenerValoracionUsuario());
        } catch (Exception e) {
 			 e.printStackTrace();
                          trazas.aceptaNuevaTraza(new InfoTraza(this.getIdentAgente(), "Error al ejecutar la tarea : "+this.getIdentTarea() + e, InfoTraza.NivelTraza.error));

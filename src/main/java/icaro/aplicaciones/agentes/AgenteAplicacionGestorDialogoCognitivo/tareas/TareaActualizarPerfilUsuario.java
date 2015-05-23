@@ -1,6 +1,7 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
@@ -48,7 +49,7 @@ public class TareaActualizarPerfilUsuario extends TareaSincrona{
 		user.setGusto(dialogo.getIngredientesFavoritos());
 		user.setNoGusto(dialogo.getIngredientesOdiados());
 		user.setInit(true);
-		session.setFirst(false);
+		this.getEnvioHechos().insertarHechoWithoutFireRules(new QueryRecipe(user));
 		try {
 			itfPersistenciaMongo.actualizarUsuario(user);
 		} catch (Exception e) {
