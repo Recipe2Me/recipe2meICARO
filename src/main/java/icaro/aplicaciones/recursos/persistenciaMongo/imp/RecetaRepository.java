@@ -1,6 +1,8 @@
 package icaro.aplicaciones.recursos.persistenciaMongo.imp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -88,34 +90,39 @@ public class RecetaRepository {
 	}
 	
 	public List<Recipe> getRecipeWithQueryRecipe(QueryRecipe consulta) {
-		/*db.recipes.find(
-		 * 					{
-		 * 						$text:{
-		 * 								$search:
-		 * 										"-\"Croquetas de calamares en su tinta\"Croquetas de bacalao\"leche harina -huevo -sal"
-		 * 							  }
-		 * 					},
-		 * 					{
-		 * 						score:{
-		 * 								$meta:
-		 * 									   "textScore"
-		 * 							  }
-		 *                  }
-		 *                ).sort({score:{$meta:"textScore"}}).limit(2).pretty()*/
-		
-		
-		
+				
 		List<Recipe> recipes = new ArrayList<Recipe>();
+		
+		//Esta lista sirve para mostrar las recetas distintas a las que dio "No me gusta"
+		List<String> recipesNoLike = new ArrayList<String>();
+		
 		String busqueda = "";
+		//---------------------
 		if(!consulta.getListaRecetasRechazadas().isEmpty()){
 			for(ObjectId receta : consulta.getListaRecetasRechazadas()){
-				busqueda = busqueda.concat("-\"".concat(receta.toString()).concat("\""));
+				//busqueda = busqueda.concat("-\"".concat(receta.toString()).concat("\""));//
+				//--ESTA CONCATENACION NO FUNCIONA---///
+				recipesNoLike.add(receta.toString());
 					}
 		}
-		
+		//-----------------------
 		for (String ing : consulta.getIngredientes()) {
 			busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
 		}
+		
+		//------------AGREGA A LA BUSQUEDA LOS INGREDIENTES CON VALORACION MENOR A 3.0 PARA EVITARLOS
+		Map<String, Double> mapAux = consulta.getGusto();
+		Iterator<String> it = mapAux.keySet().iterator();
+		while(it.hasNext()){
+		  String ingrediente = it.next();
+		  Double valor = mapAux.get(ingrediente);
+		  if(valor < 3.0)
+			  busqueda = busqueda.concat(" -".concat(ingrediente));
+		  else
+			  busqueda=busqueda.concat("\"".concat(ingrediente).concat("\" "));
+		}
+		//---------En el caso de que la valoracion del ingrediente sea mayor a 5.0, entra en la Query
+		
 		
 		for (String ing : consulta.getAlergias()) {
 			busqueda=busqueda.concat(" -".concat(ing));
@@ -124,8 +131,11 @@ public class RecetaRepository {
 		DBObject resultQuery = new BasicDBObject("score",new BasicDBObject("$meta","textScore"));
 		List<DBObject> result = collection.find(textSearch,resultQuery).sort(resultQuery).limit(5).toArray();
 		for (DBObject r : result) {
-			recipes.add(parseDBObjectToRecipe(r));
+			Recipe recipeAux = parseDBObjectToRecipe(r);
+			if(!recipesNoLike.contains(recipeAux.getTitle()))
+				recipes.add(parseDBObjectToRecipe(r));
 		}
+		
 		return recipes;
 	}
 
