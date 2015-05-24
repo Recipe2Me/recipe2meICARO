@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetivos.ObtenerConocimientoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
@@ -13,6 +14,7 @@ import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Objetivo;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
@@ -24,8 +26,11 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
+	private int contador;
+	private static final int insitencia=2;
 	
 	public TareaObtenerIngredientesFavoritos(){
+		contador=0;
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -46,6 +51,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
 			DialogoInicial dialogo = (DialogoInicial) params[1];
+			ObtenerConocimientoInicial inicial=(ObtenerConocimientoInicial) params[2];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -54,8 +60,18 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ning�n ingrediente,por favor, dime tus ingredientes favoritos";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					contador++;
+					if(contador==insitencia){
+						msg = "Creo que no nos enstamos entendiendo, a otra cosa mariposa!!";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						contador=0;
+						inicial.atasco=true;
+					}
+					else{
+						msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					}
+
 				}
 				else{
 					dialogo.setIngredientesFavoritos(ingredientes);
@@ -75,7 +91,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 						}
 					}
 					if(control==false){
-						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
 					}
 					else{
 						msg="Me has dicho que no te gustaban los siguientes ingredientes :";
@@ -89,8 +105,18 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 				}
 			}
 			else{
-				msg = "No has introducido ning�n ingrediente,por favor, dime tus ingredientes favoritos";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				contador++;
+				if(contador==2){
+					msg = "Creo que no nos enstamos entendiendo, a otra cosa mariposa!!";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					contador=0;
+					inicial.atasco=true;
+					this.getEnvioHechos().actualizarHecho(inicial);
+				}
+				else{
+					msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				}
 			}
 
 		} catch (Exception e) {

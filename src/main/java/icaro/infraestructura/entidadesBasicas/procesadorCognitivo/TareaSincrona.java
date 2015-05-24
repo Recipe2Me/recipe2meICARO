@@ -65,7 +65,7 @@ public abstract class TareaSincrona {
         itfProcObjetivos.insertarHecho(resultadoTarea);
     //    envioHechos.insertarHecho(contenido);
     }
-    
+        
     public void generarInforme (InformeDeTarea informe){
         itfProcObjetivos.insertarHecho(informe);
  //       envioHechos.insertarHecho(informe.getContenidoInforme());
