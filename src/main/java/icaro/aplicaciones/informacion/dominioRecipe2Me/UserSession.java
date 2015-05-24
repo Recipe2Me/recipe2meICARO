@@ -33,6 +33,8 @@ public class UserSession implements Serializable {
 	private boolean noReceta = false;
 	@Transient
 	private boolean noMasRecetas = false;
+	@Transient
+	private Integer intentos = 0;
 	
 	public UserSession(String user) {
 		this.user = user;
@@ -127,6 +129,14 @@ public class UserSession implements Serializable {
 
 	public void setNoMasRecetas(boolean noMasRecetas) {
 		this.noMasRecetas = noMasRecetas;
+	}
+
+	public Integer getIntentos() {
+		return intentos;
+	}
+
+	public void setIntentos(Integer intentos) {
+		this.intentos = intentos;
 	}
 
 }

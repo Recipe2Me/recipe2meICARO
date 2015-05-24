@@ -55,8 +55,10 @@ rule "Focaliza el objetivo ObtenerConocimientoInicial (Segundo objetivo si es la
     objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
     f:Focus(foco == objA )
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -68,8 +70,10 @@ rule "Focalizo el objetivo ObtenerValoracionUsuario (Segundo objetivo si no es l
     objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
     f:Focus(foco == objA )
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -81,8 +85,10 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato (Segundo objetivo si no es l
     objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -94,8 +100,10 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato (Tercer objetivo si es la pr
     objA:ObtenerConocimientoInicial(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -107,30 +115,38 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato (Tercer objetivo si no es la
     objA:ObtenerValoracionUsuario(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
 rule "Focalizo el objetivo ObtenerRecetasSegunRequisitos"
   when
+  	sesion:UserSession()
     obj:ObtenerRecetasSegunRequisitos(state==Objetivo.PENDING)
     objA:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
  
 rule "Focalizo el objetivo ObtenerConfirmacionUsuario"
   when
+  	sesion:UserSession()
     obj:ObtenerConfirmacionUsuario(state==Objetivo.PENDING)
     objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVED)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     update(f);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -142,6 +158,7 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato si no hay mas recetas para r
     objB:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
     f:Focus(foco == objB)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     obj.setPending();
     objA.setPending();
@@ -150,6 +167,7 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato si no hay mas recetas para r
     update(obj);
     update(objA);
     update(objB);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -160,12 +178,14 @@ rule "Focalizo el objetivo ObtenerIngredienteOPlato si no hemos encontrado ningu
     objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
     f:Focus(foco == objA)
   then
+  	sesion.setIntentos(0);
     f.setFoco(obj);
     obj.setPending();
     objA.setPending();
     update(f);
     update(obj);
     update(objA);
+    update(sesion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 //=======================================================================
@@ -321,7 +341,7 @@ rule "SubObjetivo de ObtenerConocimientoInicial: Obtener ingredientes favoritos"
     dialogo:DialogoInicial()
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
-    tarea.ejecutar(evento,dialogo,obj);
+    tarea.ejecutar(evento,dialogo);
     retract(evento);
     retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
@@ -588,23 +608,14 @@ end
 rule "Estudio preliminar"
   when
     obj:ObtenerEstudioPreliminar(state==Objetivo.PENDING)
+    f:Focus()
     evento:EventoMensajeDelUsuario()
     session:UserSession()
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaEstudioPreliminar.class);
-    tarea.ejecutar(evento,session);
+    tarea.ejecutar(evento,session,f,evento);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
-end
-
-rule "Desencasquillar"
-  when
-    obj:ObtenerConocimientoInicial(state==Objetivo.SOLVING , atasco==true)
-    Focus(foco == obj)
-  then
-    obj.getSubObjetivoAleatorio();
-    update(obj)
-    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
 

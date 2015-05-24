@@ -21,102 +21,86 @@ import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRe
 import java.util.List;
 import java.util.Map;
 
-public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
-	
+public class TareaObtenerIngredientesFavoritos extends TareaSincrona {
+
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	private int contador;
-	private static final int insitencia=2;
-	
-	public TareaObtenerIngredientesFavoritos(){
-		contador=0;
+	private static final int insitencia = 2;
+
+	public TareaObtenerIngredientesFavoritos() {
+		contador = 0;
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
-		//Definimos el recurso extractor semantico
+		// Definimos el recurso extractor semantico
 		try {
 			itfUsoExtractorSemantico = (ItfUsoExtractorSemantico) this.repoIntfaces
 					.obtenerInterfazUso("ExtractorSemantico1");
 			itfUsComunicacionoWeb = (ItfUsoComunicacionWeb) this.repoIntfaces
 					.obtenerInterfazUso("ComunicacionWeb1");
-					
+
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
-	public void ejecutar(Object... params) {//Params[0] sera el evento de tipo EventoMensajeUsuario
+	public void ejecutar(Object... params) {// Params[0] sera el evento de tipo
+											// EventoMensajeUsuario
 		// TODO Auto-generated method stub
 		try {
-			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			EventoMensajeDelUsuario mensaje = (EventoMensajeDelUsuario) params[0];
 			DialogoInicial dialogo = (DialogoInicial) params[1];
-			ObtenerConocimientoInicial inicial=(ObtenerConocimientoInicial) params[2];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
-			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
-			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
+			informacionExtraida = itfUsoExtractorSemantico
+					.extraerAnotaciones(contenido);
+			Map<String, List<String>> anotaciones = informacionExtraida
+					.getInformacionPorAnotacion();
 			List<String> ingredientes = anotaciones.get("Ingrediente");
-			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					contador++;
-					if(contador==insitencia){
-						msg = "Creo que no nos enstamos entendiendo, a otra cosa mariposa!!";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-						contador=0;
-						inicial.atasco=true;
-					}
-					else{
-						msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					}
-
-				}
-				else{
+			String msg = "";
+			if (ingredientes != null) {
+				if (ingredientes.isEmpty()) {
+					msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
+							mensaje.getUser());
+				} else {
 					dialogo.setIngredientesFavoritos(ingredientes);
-					List<String> favoritos=dialogo.getIngredientesFavoritos();
-					List<String> odiados=dialogo.getIngredientesOdiados();
-					ArrayList<String> errores=new ArrayList<String>();
-					boolean control=false;
-					if(odiados!=null){
-						for(int i=0;i<favoritos.size();i++){
-							String ingFav=favoritos.get(i);
-							for(int j=0;j<odiados.size();j++){
-								if(ingFav.equalsIgnoreCase(odiados.get(j))){
+					List<String> favoritos = dialogo.getIngredientesFavoritos();
+					List<String> odiados = dialogo.getIngredientesOdiados();
+					ArrayList<String> errores = new ArrayList<String>();
+					boolean control = false;
+					if (odiados != null) {
+						for (int i = 0; i < favoritos.size(); i++) {
+							String ingFav = favoritos.get(i);
+							for (int j = 0; j < odiados.size(); j++) {
+								if (ingFav.equalsIgnoreCase(odiados.get(j))) {
 									errores.add(ingFav);
-									control=true;
+									control = true;
 								}
 							}
 						}
 					}
-					if(control==false){
-						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
-					}
-					else{
-						msg="Me has dicho que no te gustaban los siguientes ingredientes :";
-						for(int i=0;i<errores.size();i++){
-							String ing=errores.get(i);
-							msg = msg+" "+ing;
+					if (control == false) {
+						this.generarInformeOK(getIdentTarea(), null,
+								getIdentAgente(), "Zanjar_Ingredientes_Fav");
+					} else {
+						msg = "Me has dicho que no te gustaban los siguientes ingredientes :";
+						for (int i = 0; i < errores.size(); i++) {
+							String ing = errores.get(i);
+							msg = msg + " " + ing;
 						}
-						msg = msg+", ¿Me puedes repetir los ingredientes que te gustan?";
-						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						msg = msg
+								+ ", ¿Me puedes repetir los ingredientes que te gustan?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
+								mensaje.getUser());
 					}
 				}
-			}
-			else{
-				contador++;
-				if(contador==2){
-					msg = "Creo que no nos enstamos entendiendo, a otra cosa mariposa!!";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					contador=0;
-					inicial.atasco=true;
-					this.getEnvioHechos().actualizarHecho(inicial);
-				}
-				else{
-					msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-				}
+			} else {
+				msg = "No has introducido ningun ingrediente,por favor, dime tus ingredientes favoritos";
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
+						mensaje.getUser());
 			}
 
 		} catch (Exception e) {

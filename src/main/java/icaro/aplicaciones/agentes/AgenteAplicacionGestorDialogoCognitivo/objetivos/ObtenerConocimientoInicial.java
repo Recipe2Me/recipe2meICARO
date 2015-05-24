@@ -11,7 +11,7 @@ public class ObtenerConocimientoInicial extends Objetivo {
 	public Objetivo subFocus = null;
 	
 	public boolean isComplete = false;
-	public boolean atasco=false;
+	public Integer intentos = 0;
 	
 	public List<Objetivo> subObjetivos;
 	
@@ -29,6 +29,8 @@ public class ObtenerConocimientoInicial extends Objetivo {
 		Objetivo next = new Objetivo();
 		if (subFocus.getState() == Objetivo.SOLVED) {
 			subObjetivos.remove(subFocus);
+		} else {
+			subFocus.setPending();
 		}
 		if (subObjetivos.isEmpty()) {
 			isComplete = true;
@@ -64,16 +66,13 @@ public class ObtenerConocimientoInicial extends Objetivo {
 	public void setSubObjetivos(List<Objetivo> subObjetivos) {
 		this.subObjetivos = subObjetivos;
 	}
-	
-	public void setAtasco(boolean a){
-		atasco=a;
+
+	public Integer getIntentos() {
+		return intentos;
 	}
-	
-	public boolean isAtasco(){
-		return atasco;
+
+	public void setIntentos(Integer intentos) {
+		this.intentos = intentos;
 	}
-	
-	
-	
 	
 }
