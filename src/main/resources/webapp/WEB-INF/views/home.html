@@ -243,6 +243,7 @@
 			           
 			var saludo = true;
 			var stompClient = null;
+			
 			function paraAccion(){
 				var gif = document.getElementById("gif");
 				gif.src = "static/img/froggy_estatico.jpg";
@@ -291,8 +292,9 @@
 					//PUT CODE FOR "NO ME GUSTA" OPTION
 					$.get("/recomendacion/nomegusta",function (data) {
 						$("#myModal").modal('toggle');
-						$(".modal-backdrop").hide();
-						waitingDialog.show("Espera mientras cargamos otra receta");
+						$(".modal-backdrop").each(function () {
+							$(this).remove();
+						});
 					});
 					console.log("No me gusta");
 					
@@ -300,15 +302,18 @@
 					//PUT CODE FOR "AHORA NO" OPTION
 					$.get("/recomendacion/otrodia",function (data) {
 						$("#myModal").modal('toggle');
-						$(".modal-backdrop").hide();
-						waitingDialog.show("Espera mientras cargamos otra receta");
+						$(".modal-backdrop").each(function () {
+							$(this).remove();
+						});
 					});
 					console.log('ahora no');
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
 					$.get("/recomendacion/megusta",function (data) {
 						$("#myModal").modal('toggle');
-						$(".modal-backdrop").hide();
+						$(".modal-backdrop").each(function () {
+							$(this).remove();
+						});
 					});
 					console.log('me gusta');
 				}
@@ -318,7 +323,7 @@
 				var valoracion = document.getElementById("estrellas").value;
 				$.get("/recomendacion/valoracion/"+valoracion+"/",function (data) {
 					$("#myModal").modal('toggle');
-					$(".modal-backdrop").hide();
+					$(".modal-backdrop").remove();
 				});
 				console.log("/recomendacion/valoracion/"+valoracion );
 				
@@ -356,7 +361,6 @@
 						    	sendName();
 						      }
 						     });
-						//setTimeout(connect,100);
 						 connect();    
 					    }
 					);
@@ -387,6 +391,7 @@
 														$('#inputbtn').prop(
 																"disabled",
 																false);
+														
 														mensajeSistemaAUsuario(JSON
 																.parse(greeting.body).content);
 														showRecipe(JSON
@@ -453,7 +458,8 @@
            
            var chat = document.getElementById("listaMensajes");
            chat.scrollTop = chat.scrollHeight;
-           window.scrollTo(0,chat.scrollHeight);           
+           window.scrollTo(0,chat.scrollHeight);
+           
 			}
 			function mensajeSistemaAUsuario(message) {
 				if (message!=null) {
@@ -505,7 +511,6 @@
 			}
 			function showRecipe(recipe) {
 				if (recipe!=null) {
-					waitingDialog.hide();
 					//COMMENT TO TEST
 					$('#recipe_title').html(recipe.title);
 					$('#recipe_content').html(parseRecipe(recipe));
@@ -574,6 +579,8 @@
 				'</div>' +
 			'</div>';
 			}*/
+			
+			
 			
 			function msEnFuncionDeLongitud(frase){
 				/*En una conversacion los humanos pronuncian unas 200 palabras por minuto

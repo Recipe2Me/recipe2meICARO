@@ -6,3 +6,8 @@
 body {
 	padding-top: 70px;
 }
+
+.modal .modal-dialog {
+    max-height: 90%;
+    overflow-y: auto;
+}
