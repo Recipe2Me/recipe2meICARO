@@ -142,6 +142,13 @@ public class HomeController {
         return "signup";
     }
     
+    @RequestMapping(value = "/login", method = RequestMethod.GET)
+    public String login(Model model) {
+    	model.addAttribute("menu", "login");
+        return "login";
+    }
+    
+    
     @RequestMapping(value = "/about", method = RequestMethod.GET)
     public String about(Model model) {
     	model.addAttribute("menu", "about");

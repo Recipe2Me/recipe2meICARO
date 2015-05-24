@@ -1,30 +1,100 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
-    <title>Login</title>
+<title>Recipe2Me - Yo lo pienso, tu solo lo cocinas</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="icon" type="image/png" sizes="16x16"
+	th:href="@{/static/img/favicon-16x16.png}" href="/favicon-16x16.png" />
+<link href='http://fonts.googleapis.com/css?family=Roboto'
+	rel='stylesheet' type='text/css' />
+	<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.css" rel="stylesheet"></link>
+<!-- <link th:href="@{/static/css/bootstrap.css}"
+	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
+<link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
+	rel='stylesheet' type='text/css' />
+<link th:href="@{/static/css/form.css}" href='../static/css/form.css'
+	rel='stylesheet' type='text/css' />
+
 </head>
 <body>
-
-<!--/* A very crude way of telling the user the login failed. */-->
-<p th:if="${param.error}">Login failed.</p>
-
-<form th:action="@{/j_spring_security_check}" method="POST">
-    <table>
-        <tr>
-            <td>User:</td>
-            <td><input type='text' name='j_username' value=''/></td>
-        </tr>
-        <tr>
-            <td>Password:</td>
-            <td><input type='password' name='j_password'/></td>
-        </tr>
-        <tr>
-            <td colspan='2'><input name="submit" type="submit" value="Login"/>
-            </td>
-        </tr>
-    </table>
-</form>
-
+	<nav th:include="home :: nav" class="navbar navbar-default">
+		<div class="container">
+			<div class="navbar-header">
+				<button aria-controls="navbar" aria-expanded="false"
+					data-target="#navbar" data-toggle="collapse"
+					class="navbar-toggle collapsed" type="button">
+					<span class="sr-only">Toggle navigation</span> <span
+						class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a href="#" class="navbar-brand">Recipe2Me</a>
+			</div>
+			<div class="collapse navbar-collapse" id="navbar">
+				<ul class="nav navbar-nav">
+					<li th:class="((${menu}=='home')?'active')" th:href="@{/home}"><a
+						href="/">Home</a></li>
+					<li th:class="((${menu}=='about')?'active')"><a
+						th:href="@{/about}" href="#about">About</a></li>
+					<li th:class="((${menu}=='contact')?'active')"><a
+						th:href="@{/contact}" href="#contact">Contact</a></li>
+				</ul>
+				<ul class="nav navbar-nav navbar-right">
+					<li sec:authorize="!isAuthenticated()"><a th:href="@{/signup}"
+						href="/signup">Sign Up</a></li>
+					<li sec:authorize="!isAuthenticated()" class="dropdown"><a
+						class="dropdown-toggle" href="#" data-toggle="dropdown"
+						role="button" aria-expanded="false">Login<span class="caret"></span></a>
+						<div class="dropdown-menu" role="menu">
+							<div class="col-sm-12">
+								<form class="form" id="formLogin" th:action="@{/login}"
+									method="POST">
+									<input name="username" id="username" placeholder="Username"
+										type="text" /> <input name="password" id="password"
+										placeholder="Password" type="password" /><br />
+									<button type="submit" id="btnLogin" class="btn">Login</button>
+								</form>
+							</div>
+						</div></li>
+					<li sec:authorize="isAuthenticated()"><a th:href="@{/logout}"
+						href="/logout">Logout</a></li>
+				</ul>
+			</div>
+			<!--/.nav-collapse -->
+		</div>
+	</nav>
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-4 col-xs-12 col-sm-offset-4">
+				<div class="testbox">
+  					<h1>Login</h1>
+  					<form class="form" id="formLogin" th:action="@{/login}"
+									method="POST">
+									<div th:if="${param.error}" class="alert alert-error" style="color:#f00">    
+                    Usuario o contraseña incorrectos
+                </div>
+                <div th:if="${param.logout}" class="alert alert-success" style="color:#f00"> 
+                    Te has desconectado con éxito
+                </div>
+                <label id="icon" for="username"><i class="icon-user"></i></label>
+									<input name="username" id="username" placeholder="Nombre de usuario"
+										type="text" /> 
+										<label id="icon" for="password"><i class="icon-shield"></i></label><input name="password" id="password"
+										placeholder="Contraseña" type="password" /><br />
+									<button type="submit" id="btnLogin" class="btn">Login</button>
+								</form>
+  				
+ 	 				
+					
+			</div>
+		</div>
+	</div>
+	</div>
+	<footer th:include="home :: footer">
+		<script th:src="@{/static/js/script.js}" src="../static/js/script.js"></script>
+		<script th:src="@{/static/js/jquery.js}" src="../static/js/jquery.js"></script>
+		<script th:src="@{/static/js/npm.js}" src="../static/js/npm.js"></script>
+		<script th:src="@{/static/js/bootstrap.js}"
+			src="../static/js/bootstrap.js"></script>
+	</footer>
 </body>
-
 </html>
