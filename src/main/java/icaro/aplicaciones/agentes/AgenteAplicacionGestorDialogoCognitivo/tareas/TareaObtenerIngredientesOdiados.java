@@ -11,10 +11,13 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionEx
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
+
+import java.util.List;
+import java.util.Map;
 
 public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 	
@@ -50,7 +53,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
+					msg = SentenceFactory.generateIngredientsComplain();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
@@ -85,7 +88,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 				}
 			}
 			else{
-				msg = "No has introducido ningún ingrediente,por favor, dime tus ingredientes que no te gustan";
+				msg = SentenceFactory.generateIngredientsComplain();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

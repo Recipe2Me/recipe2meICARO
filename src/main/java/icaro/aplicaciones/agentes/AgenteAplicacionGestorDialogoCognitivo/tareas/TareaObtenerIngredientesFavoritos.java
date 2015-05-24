@@ -12,10 +12,12 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelU
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
-import icaro.aplicaciones.recursos.sentences.questionSentences.hated.HatedIngredientsQuestionSentence;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
+
+import java.util.List;
+import java.util.Map;
 
 public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 	

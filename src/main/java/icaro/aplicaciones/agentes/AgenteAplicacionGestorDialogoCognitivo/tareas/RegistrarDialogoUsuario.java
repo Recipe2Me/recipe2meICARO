@@ -21,6 +21,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
@@ -53,12 +54,12 @@ public class RegistrarDialogoUsuario extends TareaSincrona {
 		if (sesion.isFirst()) {
 			//La primera vez enviamos un saludo de presentacion y introducimos el objeto 
 			//donde almacenar el dialogo inicial mientras lo vamos recopilando
-			mensaje = VocabularioRecipe2Me.SaludoInicial1;
+			mensaje = SentenceFactory.generateHelloUnknownUser();
 			this.getEnvioHechos().insertarHechoWithoutFireRules(new DialogoInicial());
 		} else {
 			//La proximas veces enviamos un saludo y introducimos el objeto 
 			//donde almacenar los datos para la consulta
-			mensaje = VocabularioRecipe2Me.SaludoInicial2;
+			mensaje = SentenceFactory.generateHelloKnownUser(interlocutor.getUsername());
 			this.getEnvioHechos().insertarHechoWithoutFireRules(new QueryRecipe(interlocutor));
 		}
 		sesion.messages.add(new Message(mensaje));

@@ -1,9 +1,11 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
+
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;

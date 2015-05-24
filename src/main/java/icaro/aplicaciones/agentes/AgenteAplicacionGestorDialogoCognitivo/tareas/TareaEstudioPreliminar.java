@@ -10,6 +10,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionEx
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -48,7 +49,7 @@ public class TareaEstudioPreliminar extends TareaSincrona{
 			List<String> saludo = anotaciones.get("Saludo");
 			String msg="";
 			if(despedida!=null){
-			     msg="¡¡¡Hasta luego cocodrilo!!!";
+			     msg= SentenceFactory.generateGoodbyKnownUser(session.getUser());
 			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			     itfUsComunicacionoWeb.terminarConversacion(mensaje.getUser());
 			     //this.generarInformeConCausaTerminacion(getIdentTarea(),null,"Despedida",null,null);

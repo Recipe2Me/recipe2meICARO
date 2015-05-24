@@ -29,6 +29,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeHaci
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
@@ -71,13 +72,13 @@ public class EnviarMensajeInicialDeObjetivo extends TareaAsincrona {
 		if (objetivo instanceof ObtenerConocimientoInicial) {
 			ObtenerConocimientoInicial conocimiento = (ObtenerConocimientoInicial) objetivo;
 			if (conocimiento.getSubFocus() instanceof ObtenerIngredientesFavoritos) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes favoritos",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateFavoriteQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerIngredientesOdiados) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes odiados",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateHatedQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerAlergia) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener alergias",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateAllergiesQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerNivelCocina) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener nivel de cocina",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateLevelQuestion(),session.getUser());
 			}
 		} else if (objetivo instanceof ObtenerIngredienteOPlato) {
 			itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes o plato",session.getUser());
