@@ -1,14 +1,16 @@
 package icaro.aplicaciones.informacion.dominioRecipe2Me;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import org.bson.types.ObjectId;
 import org.mongodb.morphia.annotations.Entity;
 import org.mongodb.morphia.annotations.Id;
+import org.mongodb.morphia.annotations.Transient;
 
 @Entity("recipes")
-public class Recipe {
+public class Recipe implements Comparable<Recipe> {
 	
 	@Id
 	private ObjectId id;
@@ -23,6 +25,8 @@ public class Recipe {
 	private List<Ingrediente> ingredientes;
 	private String cuerpo;
 	private String image;
+	@Transient
+	private Double score;
 	
 	public Recipe() {
 		this.enfermedades = new ArrayList<String>();
@@ -102,7 +106,19 @@ public class Recipe {
 	public void setImage(String image) {
 		this.image = image;
 	}
-	
-	
 
+	public Double getScore() {
+		return score;
+	}
+
+	public void setScore(Double score) {
+		this.score = score;
+	}
+
+	@Override
+	public int compareTo(Recipe o) {
+		return this.score.compareTo(o.getScore());
+	}
+
+	
 }
