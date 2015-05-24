@@ -222,9 +222,9 @@ public class UserProfile implements Serializable, UserDetails {
 		for(Ingrediente i : pIngredientes){
 			String pIngedName = i.getNombre();
 			if(this.gusto.containsKey(pIngedName)){
-				if((this.gusto.get(pIngedName)!=0.0)||(this.gusto.get(pIngedName)>5.0)){
+				if((this.gusto.get(pIngedName)!=0.0)||(this.gusto.get(pIngedName)>2.5)){
 					double aux = this.gusto.get(pIngedName);
-					this.gusto.put(pIngedName, aux-5.0);
+					this.gusto.put(pIngedName, aux-2.5);
 				}
 			}
 			
