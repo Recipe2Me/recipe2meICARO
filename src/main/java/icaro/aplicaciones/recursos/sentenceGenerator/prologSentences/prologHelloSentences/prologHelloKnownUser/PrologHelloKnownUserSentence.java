@@ -52,14 +52,8 @@ public class PrologHelloKnownUserSentence extends PrologHelloSentence {
 		int rand = r.nextInt(100000) % saludos.size();
 		
 		String string_frase_saludo = saludos.get(rand);
-		
-		r = new Random();
-		rand = r.nextInt(100000) % recomendaciones.size();
-		
-		String string_recomendacion = recomendaciones.get(rand);
-		
 
-		return string_frase_saludo + ". " + string_recomendacion;
+		return string_frase_saludo + ". ";
 	}
 
 }
