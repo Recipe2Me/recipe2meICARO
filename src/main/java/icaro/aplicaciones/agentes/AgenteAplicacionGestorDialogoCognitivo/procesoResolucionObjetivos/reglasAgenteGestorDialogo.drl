@@ -238,10 +238,11 @@ rule "Obtener valoracion del usuario"
     obj:ObtenerValoracionUsuario(state==Objetivo.SOLVING)
     valoracion:ValoracionUsuario()
     user:UserProfile(pendiente == true)
+    consulta:QueryRecipe()
     f:Focus(foco == obj)
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerValoracionUsuario.class);
-    tarea.ejecutar(user,valoracion);
+    tarea.ejecutar(user,valoracion,consulta);
     retract(valoracion);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));

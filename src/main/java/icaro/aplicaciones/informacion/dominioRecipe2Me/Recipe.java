@@ -117,7 +117,7 @@ public class Recipe implements Comparable<Recipe> {
 
 	@Override
 	public int compareTo(Recipe o) {
-		return this.score.compareTo(o.getScore());
+		return o.getScore().compareTo(this.score);
 	}
 
 	

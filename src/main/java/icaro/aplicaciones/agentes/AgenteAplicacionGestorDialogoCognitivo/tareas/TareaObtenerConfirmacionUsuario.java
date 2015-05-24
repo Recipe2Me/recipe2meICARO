@@ -65,13 +65,13 @@ public class TareaObtenerConfirmacionUsuario extends TareaAsincrona {
 									.getId());
 					itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
 							.getListaRecomendaciones().get(0), session
-							.getUser());
+							.getUser(),false);
 				} else {
 					consulta.getListaRecomendaciones().remove(0);
 					if (consulta.getListaRecomendaciones().size() > 0) {
 						itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
 								.getListaRecomendaciones().get(0), session
-								.getUser());
+								.getUser(),false);
 					} else {
 						session.setNoMasRecetas(true);
 						getEnvioHechos().actualizarHecho(session);
@@ -79,7 +79,7 @@ public class TareaObtenerConfirmacionUsuario extends TareaAsincrona {
 				}
 			} else {
 				itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
-						.getListaRecomendaciones().get(0), session.getUser());
+						.getListaRecomendaciones().get(0), session.getUser(),false);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -288,11 +288,13 @@
 			}
 			
 			function botonGustosPulsado(opcion){
+				$('body').removeClass('modal-open');
+				$('.modal-backdrop fade in').remove();
 				if(opcion == 'noMeGusta'){
 					//PUT CODE FOR "NO ME GUSTA" OPTION
-					$('#myModal').modal('hide');
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
+					$('#myModal').modal('hide');
 					$.get("/recomendacion/nomegusta",function (data) {
 						
 					});
@@ -300,18 +302,18 @@
 					
 				}else if(opcion == 'ahoraNo'){
 					//PUT CODE FOR "AHORA NO" OPTION
-					$('#myModal').modal('hide');
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
+					$('#myModal').modal('hide');
 					$.get("/recomendacion/otrodia",function (data) {
 
 					});
 					console.log('ahora no');
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
-					$('#myModal').modal('hide');
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
+					$('#myModal').modal('hide');
 					$.get("/recomendacion/megusta",function (data) {
 
 					});
@@ -391,11 +393,9 @@
 														$('#inputbtn').prop(
 																"disabled",
 																false);
-														
-														mensajeSistemaAUsuario(JSON
-																.parse(greeting.body).content);
-														showRecipe(JSON
-																.parse(greeting.body).recipe);
+														var mes = JSON.parse(greeting.body);
+														mensajeSistemaAUsuario(mes.content);
+														showRecipe(mes.recipe,mes.tenedor);
 													});
 								});
 			}
@@ -509,8 +509,15 @@
 					}
 				}
 			}
-			function showRecipe(recipe) {
+			function showRecipe(recipe,tenedor) {
 				if (recipe!=null) {
+					if (!tenedor) {
+						muestraBotonesGustos(true);
+						muestraValoracionTenedores(false);
+					} else {
+						muestraBotonesGustos(false);
+						muestraValoracionTenedores(true);
+					}
 					//COMMENT TO TEST
 					$('#recipe_title').html(recipe.title);
 					$('#recipe_content').html(parseRecipe(recipe));
@@ -520,7 +527,7 @@
 					//$('#recipe_content').html(parseRecipe2());
 					
 					$('#myModal').modal({backdrop: 'static',keyboard: false })  
-					$('#myModal').modal('show');
+					//$('#myModal').modal('show');
 				}
 			}
 			function parseRecipe(recipe) {

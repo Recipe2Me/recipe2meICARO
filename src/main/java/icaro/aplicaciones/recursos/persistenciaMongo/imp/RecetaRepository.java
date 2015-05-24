@@ -101,16 +101,16 @@ public class RecetaRepository {
 		
 		for (String ing : consulta.getGusto().keySet()) {
 			if (consulta.getGusto().get(ing)>5.0)
-				busqueda=busqueda.concat(ing);
+				busqueda=busqueda.concat(ing.concat(" "));
 		}
 		
 		for (String ing : consulta.getIngredientes()) {
 			if (!consulta.getGusto().containsKey(ing)) {
-				busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
+				busqueda=busqueda.concat(ing.concat(" "));
 			}
 			else {
 				if (consulta.getGusto().get(ing)<=5.0)
-					busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
+					busqueda=busqueda.concat(ing.concat(" "));
 			}
 		}
 		

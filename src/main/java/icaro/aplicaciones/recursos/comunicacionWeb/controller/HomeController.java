@@ -192,8 +192,8 @@ public class HomeController {
     	template.convertAndSendToUser(user,"/chat", new Greeting( message ));
     }
     
-    public void sendRecipeToUser(String user, Recipe recipe) {
-    	template.convertAndSendToUser(user,"/chat", new Greeting( null , recipe ));
+    public void sendRecipeToUser(String user, Recipe recipe, boolean valorar) {
+    	template.convertAndSendToUser(user,"/chat", new Greeting( null , recipe , valorar));
     }
 
 	public ItfUsoPersistenciaMongo getRepository() {

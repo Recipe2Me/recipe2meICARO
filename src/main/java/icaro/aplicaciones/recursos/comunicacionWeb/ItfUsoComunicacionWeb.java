@@ -12,7 +12,7 @@ public interface ItfUsoComunicacionWeb extends ItfUsoRecursoWeb {
 	public void notificarConexion(UserProfile user) throws Exception;
 	public void notificarDesconexion(UserProfile user) throws Exception;
 	public void enviarMensageAlUsuario(String mensaje, String usuario) throws Exception;
-	public void enviarRecetaAlUsuario(Recipe recipe, String usuario) throws Exception;
+	public void enviarRecetaAlUsuario(Recipe recipe, String usuario, boolean valorar) throws Exception;
 	public void notificarDecisionUsuario(DecisionUsuario decision) throws Exception;
 	public void terminarConversacion(String usuario) throws Exception;
 	public void notificarValoracionUsuario(ValoracionUsuario valoracion) throws Exception;

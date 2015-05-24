@@ -184,8 +184,8 @@ public class ClaseGeneradoraComunicacionWeb extends ImplRecursoWeb implements It
 
 	@Override
 	public void enviarRecetaAlUsuario(Recipe recipe,
-			String usuario) throws Exception {
-		controller.sendRecipeToUser(usuario, recipe);
+			String usuario, boolean valorar) throws Exception {
+		controller.sendRecipeToUser(usuario, recipe, valorar);
 		
 	}
 

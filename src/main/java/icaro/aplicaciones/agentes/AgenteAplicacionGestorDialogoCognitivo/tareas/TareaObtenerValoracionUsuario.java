@@ -66,7 +66,7 @@ public class TareaObtenerValoracionUsuario extends TareaAsincrona {
 					if (negativo.isEmpty()) {
 						if (afirmativo != null) {
 							itfUsComunicacionoWeb.enviarRecetaAlUsuario(recipe,
-									user.getUsername());
+									user.getUsername(),true);
 						} else {
 							msg = "no me has contestado a la pregunta!!, ¿quieres valorar la receta?";
 							itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
@@ -83,7 +83,7 @@ public class TareaObtenerValoracionUsuario extends TareaAsincrona {
 				} else {
 					if (afirmativo != null) {
 						itfUsComunicacionoWeb.enviarRecetaAlUsuario(recipe,
-								user.getUsername());
+								user.getUsername(),true);
 					} else {
 						msg = "no me has contestado a la pregunta!!, ¿quieres valorar la receta?";
 						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
@@ -93,6 +93,13 @@ public class TareaObtenerValoracionUsuario extends TareaAsincrona {
 				}
 			} else {
 				valoracion = (ValoracionUsuario) params[1];
+				QueryRecipe consulta = (QueryRecipe) params[2];
+				Recipe recipe = itfUsoPersistenciaMongo.findOne(user
+						.getRecetaPendiente().toString());
+				user.updateValoracion(recipe, valoracion.getValoracion());
+				getEnvioHechos().eliminarHechoWithoutFireRules(consulta);
+				consulta = new QueryRecipe(user);
+				getEnvioHechos().actualizarHechoWithoutFireRules(consulta);
 				String msg = "Gracias por tu valoracion, la tendremos en cuanta para recomendarte nuevas.";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
 						valoracion.getUser());
