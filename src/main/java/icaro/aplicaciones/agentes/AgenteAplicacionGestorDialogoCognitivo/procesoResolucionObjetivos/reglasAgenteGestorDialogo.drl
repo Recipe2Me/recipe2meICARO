@@ -320,7 +320,7 @@ rule "SubObjetivo de ObtenerConocimientoInicial: Obtener ingredientes favoritos"
     dialogo:DialogoInicial()
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
-    tarea.ejecutar(evento,dialogo);
+    tarea.ejecutar(evento,dialogo,obj);
     retract(evento);
     retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
@@ -595,5 +595,16 @@ rule "Estudio preliminar"
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
+
+rule "Desencasquillar"
+  when
+    obj:ObtenerConocimientoInicial(state==Objetivo.SOLVING , atasco==true)
+    Focus(foco == obj)
+  then
+    obj.getSubObjetivoAleatorio();
+    update(obj)
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
 
      

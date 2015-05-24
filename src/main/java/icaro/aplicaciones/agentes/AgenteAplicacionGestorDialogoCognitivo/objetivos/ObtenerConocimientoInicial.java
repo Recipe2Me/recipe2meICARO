@@ -11,6 +11,7 @@ public class ObtenerConocimientoInicial extends Objetivo {
 	public Objetivo subFocus = null;
 	
 	public boolean isComplete = false;
+	public boolean atasco=false;
 	
 	public List<Objetivo> subObjetivos;
 	
@@ -63,6 +64,16 @@ public class ObtenerConocimientoInicial extends Objetivo {
 	public void setSubObjetivos(List<Objetivo> subObjetivos) {
 		this.subObjetivos = subObjetivos;
 	}
+	
+	public void setAtasco(boolean a){
+		atasco=a;
+	}
+	
+	public boolean isAtasco(){
+		return atasco;
+	}
+	
+	
 	
 	
 }
