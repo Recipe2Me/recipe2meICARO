@@ -29,6 +29,10 @@ public class UserSession implements Serializable {
 	public List<ObjectId> recipesReject = new ArrayList<ObjectId>();
 	public ObjectId recipeAccept;
 	public boolean finished;
+	@Transient
+	private boolean noReceta = false;
+	@Transient
+	private boolean noMasRecetas = false;
 	
 	public UserSession(String user) {
 		this.user = user;
@@ -107,6 +111,22 @@ public class UserSession implements Serializable {
 
 	public void setId(ObjectId id) {
 		this.id = id;
+	}
+
+	public boolean isNoReceta() {
+		return noReceta;
+	}
+
+	public void setNoReceta(boolean noReceta) {
+		this.noReceta = noReceta;
+	}
+
+	public boolean isNoMasRecetas() {
+		return noMasRecetas;
+	}
+
+	public void setNoMasRecetas(boolean noMasRecetas) {
+		this.noMasRecetas = noMasRecetas;
 	}
 
 }

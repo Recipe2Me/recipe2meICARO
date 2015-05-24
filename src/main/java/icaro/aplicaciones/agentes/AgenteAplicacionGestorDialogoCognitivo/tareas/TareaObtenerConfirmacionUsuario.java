@@ -42,7 +42,7 @@ public class TareaObtenerConfirmacionUsuario extends TareaAsincrona {
 		UserSession session = (UserSession) params[1];
 		DecisionUsuario decision = null;
 		session.setUpdate(new Date());
-		if (params.length>2)
+		if (params.length > 2)
 			decision = (DecisionUsuario) params[2];
 		try {
 			if (decision != null) {
@@ -51,7 +51,8 @@ public class TareaObtenerConfirmacionUsuario extends TareaAsincrona {
 							.get(0).getId());
 					session.setFinished(true);
 					String msg = "Muy bien, has escogido "
-							+ consulta.getListaRecomendaciones().get(0).getTitle()
+							+ consulta.getListaRecomendaciones().get(0)
+									.getTitle()
 							+ ", la proxima vez que accedas te preguntare tu valoración, así que espero que te guste y ya me cuentas. Adioos.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
 							session.getUser());
@@ -59,19 +60,29 @@ public class TareaObtenerConfirmacionUsuario extends TareaAsincrona {
 							getIdentAgente(),
 							"Zanjar_TareaObtenerConfirmacionUsuario");
 				} else if (decision.getDecision().equals(Decisiones.no_gusta)) {
-					session.getRecipesReject().add(consulta.getListaRecomendaciones().remove(0).getId());
-					itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta.getListaRecomendaciones().get(0), session.getUser());
+					session.getRecipesReject().add(
+							consulta.getListaRecomendaciones().remove(0)
+									.getId());
+					itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
+							.getListaRecomendaciones().get(0), session
+							.getUser());
 				} else {
 					consulta.getListaRecomendaciones().remove(0);
-					itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta.getListaRecomendaciones().get(0), session.getUser());
+					if (consulta.getListaRecomendaciones().size() > 0) {
+						itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
+								.getListaRecomendaciones().get(0), session
+								.getUser());
+					} else {
+						session.setNoMasRecetas(true);
+						getEnvioHechos().actualizarHecho(session);
+					}
 				}
 			} else {
-				itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta.getListaRecomendaciones().get(0), session.getUser());
+				itfUsComunicacionoWeb.enviarRecetaAlUsuario(consulta
+						.getListaRecomendaciones().get(0), session.getUser());
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
-
 }

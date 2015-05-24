@@ -45,10 +45,18 @@ public class TareaObtenerRecetasARecomendar extends TareaAsincrona {
 			ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces
 					.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
 			List<Recipe> recipes = mongo.getRecipeWithCriteria(consulta);
-			session.getRecipes().addAll(recipes);
-			consulta.setListaRecomendaciones(recipes);
-			this.generarInformeOK(getIdentTarea(), null, getIdentAgente(),
-					"Zanjar_TareaObtenerRecetasARecomendar");
+			if (recipes.size() == 0) {
+				session.setNoReceta(true);
+				getEnvioHechos().actualizarHecho(session);
+			} else {
+				session.setNoMasRecetas(false);
+				session.setNoReceta(false);
+				session.getRecipes().addAll(recipes);
+				consulta.setListaRecomendaciones(recipes);
+				getEnvioHechos().actualizarHecho(session);
+				this.generarInformeOK(getIdentTarea(), null, getIdentAgente(),
+						"Zanjar_TareaObtenerRecetasARecomendar");
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

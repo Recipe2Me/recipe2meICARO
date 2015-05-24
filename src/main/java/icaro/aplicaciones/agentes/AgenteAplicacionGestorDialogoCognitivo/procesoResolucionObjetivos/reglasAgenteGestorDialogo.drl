@@ -133,6 +133,41 @@ rule "Focalizo el objetivo ObtenerConfirmacionUsuario"
     update(f);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
+
+rule "Focalizo el objetivo ObtenerIngredienteOPlato si no hay mas recetas para recomendarle al usuario"
+  when
+  	sesion:UserSession(noMasRecetas == true)
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVED)
+    objB:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
+    f:Focus(foco == objB)
+  then
+    f.setFoco(obj);
+    obj.setPending();
+    objA.setPending();
+    objB.setPending();
+    update(f);
+    update(obj);
+    update(objA);
+    update(objB);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerIngredienteOPlato si no hemos encontrado ninguna receta con los criterios"
+  when
+  	sesion:UserSession(noReceta == true)
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    obj.setPending();
+    objA.setPending();
+    update(f);
+    update(obj);
+    update(objA);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
 //=======================================================================
 ///Reglas de Consecucion del Objetivo ObtenerInfoSesion
 rule "Inicio del proceso de consecucion del  objetivo ObtenerInfoSesion"

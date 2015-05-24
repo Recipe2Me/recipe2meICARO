@@ -81,7 +81,13 @@ public class EnviarMensajeInicialDeObjetivo extends TareaAsincrona {
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateLevelQuestion(),session.getUser());
 			}
 		} else if (objetivo instanceof ObtenerIngredienteOPlato) {
-			itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes o plato",session.getUser());
+			if (session.isNoReceta()) {
+				itfUsComunicacionoWeb.enviarMensageAlUsuario("no hemos encontrado ninguna receta con los ingredientes que nos has indicado, por favor vuelva a indicarnos oros ingredientes distintos",session.getUser());
+			} else if (session.isNoMasRecetas()) {
+				itfUsComunicacionoWeb.enviarMensageAlUsuario("no tenemos mas recetas con el criterio que nos has dado, por favor vuelva a introducir nuevos ingredientes",session.getUser());
+			} else {
+				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes o plato",session.getUser());
+			}
 		} else if (objetivo instanceof ObtenerValoracionUsuario) {
 			itfUsComunicacionoWeb.enviarMensageAlUsuario("La ultima vez que accediste elegiste cocinar la receta x, ¿te gustaria valorarla?",session.getUser());
 		} 

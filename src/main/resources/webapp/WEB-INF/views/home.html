@@ -290,30 +290,30 @@
 			function botonGustosPulsado(opcion){
 				if(opcion == 'noMeGusta'){
 					//PUT CODE FOR "NO ME GUSTA" OPTION
+					$('#myModal').modal('hide');
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
 					$.get("/recomendacion/nomegusta",function (data) {
-						$("#myModal").modal('toggle');
-						$(".modal-backdrop").each(function () {
-							$(this).remove();
-						});
+						
 					});
 					console.log("No me gusta");
 					
 				}else if(opcion == 'ahoraNo'){
 					//PUT CODE FOR "AHORA NO" OPTION
+					$('#myModal').modal('hide');
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
 					$.get("/recomendacion/otrodia",function (data) {
-						$("#myModal").modal('toggle');
-						$(".modal-backdrop").each(function () {
-							$(this).remove();
-						});
+
 					});
 					console.log('ahora no');
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
+					$('#myModal').modal('hide');
+					$('body').removeClass('modal-open');
+					$('.modal-backdrop').remove();
 					$.get("/recomendacion/megusta",function (data) {
-						$("#myModal").modal('toggle');
-						$(".modal-backdrop").each(function () {
-							$(this).remove();
-						});
+
 					});
 					console.log('me gusta');
 				}
