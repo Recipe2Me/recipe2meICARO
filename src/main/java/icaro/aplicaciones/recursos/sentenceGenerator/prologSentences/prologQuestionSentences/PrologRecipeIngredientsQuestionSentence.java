@@ -1,4 +1,4 @@
-package icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologHelloSentences.prologHelloKnownUser;
+package icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologQuestionSentences;
 
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
@@ -8,19 +8,22 @@ import gnu.prolog.vm.Environment;
 import gnu.prolog.vm.Interpreter;
 import gnu.prolog.vm.Interpreter.Goal;
 import gnu.prolog.vm.PrologCode;
-import icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologHelloSentences.PrologHelloSentence;
+import icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.PrologSentence;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class PrologHelloKnownUserSentence extends PrologHelloSentence {
+public class PrologRecipeIngredientsQuestionSentence extends PrologSentence {
+
+	private List<String> peticiones;
 	
-	public PrologHelloKnownUserSentence(String user) {
+	public PrologRecipeIngredientsQuestionSentence() {
 		try {
 			Environment env = new Environment();
 
 			// get the filename relative to the class file
-			env.ensureLoaded(AtomTerm.get("frase_saludo_usuario.pl"));
+			env.ensureLoaded(AtomTerm.get("frase_ingredientes_receta.pl"));
 
 			// Get the interpreter.
 			Interpreter interpreter = env.createInterpreter();
@@ -28,30 +31,31 @@ public class PrologHelloKnownUserSentence extends PrologHelloSentence {
 			env.runInitialization(interpreter);
 
 			VariableTerm x = new VariableTerm("X");
-			AtomTerm t = AtomTerm.get(user);
-			Term [] ar = {x, t};
+			Term [] ar = {x};
 
-			CompoundTerm goalTerm = new CompoundTerm(AtomTerm.get("frase_saludo_usuario_conocido"), ar);		
+			CompoundTerm goalTerm = new CompoundTerm(AtomTerm.get("frase"), ar);		
 			Goal g = interpreter.prepareGoal(goalTerm);
-			saludos = new ArrayList<String>();
+			peticiones = new ArrayList<String>();
 
 			int rc = interpreter.execute(g);
 			while (rc == PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST) {
-				saludos.add(trataFrase(x.toString()));
+				peticiones.add(trataFrase(x.toString()));
 				x.dereference();
 				rc = interpreter.execute(g);
 			} 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override
 	public String genera_frase() {
 		Random r = new Random();
-		int rand = r.nextInt(100000) % saludos.size();
+		int rand = r.nextInt(100000) % peticiones.size();
 		
-		String string_frase_saludo = saludos.get(rand);
+		String string_frase_peticion = peticiones.get(rand);
 
-		return string_frase_saludo + ". ";
+		return string_frase_peticion;
 	}
 
 }

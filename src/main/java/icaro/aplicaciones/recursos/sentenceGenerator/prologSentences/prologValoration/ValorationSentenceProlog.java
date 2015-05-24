@@ -1,4 +1,4 @@
-package icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologHelloSentences.prologHelloKnownUser;
+package icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologValoration;
 
 import gnu.prolog.term.AtomTerm;
 import gnu.prolog.term.CompoundTerm;
@@ -8,19 +8,22 @@ import gnu.prolog.vm.Environment;
 import gnu.prolog.vm.Interpreter;
 import gnu.prolog.vm.Interpreter.Goal;
 import gnu.prolog.vm.PrologCode;
-import icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.prologHelloSentences.PrologHelloSentence;
+import icaro.aplicaciones.recursos.sentenceGenerator.prologSentences.PrologSentence;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
-public class PrologHelloKnownUserSentence extends PrologHelloSentence {
+public class ValorationSentenceProlog extends PrologSentence {
+
+	private List<String> valoracion;
 	
-	public PrologHelloKnownUserSentence(String user) {
+	public ValorationSentenceProlog() {
 		try {
 			Environment env = new Environment();
 
 			// get the filename relative to the class file
-			env.ensureLoaded(AtomTerm.get("frase_saludo_usuario.pl"));
+			env.ensureLoaded(AtomTerm.get("frase_valora_receta.pl"));
 
 			// Get the interpreter.
 			Interpreter interpreter = env.createInterpreter();
@@ -28,16 +31,16 @@ public class PrologHelloKnownUserSentence extends PrologHelloSentence {
 			env.runInitialization(interpreter);
 
 			VariableTerm x = new VariableTerm("X");
-			AtomTerm t = AtomTerm.get(user);
+			AtomTerm t = AtomTerm.get("nombre_de_la_receta");
 			Term [] ar = {x, t};
 
-			CompoundTerm goalTerm = new CompoundTerm(AtomTerm.get("frase_saludo_usuario_conocido"), ar);		
+			CompoundTerm goalTerm = new CompoundTerm(AtomTerm.get("frase"), ar);		
 			Goal g = interpreter.prepareGoal(goalTerm);
-			saludos = new ArrayList<String>();
+			valoracion = new ArrayList<String>();
 
 			int rc = interpreter.execute(g);
 			while (rc == PrologCode.SUCCESS || rc == PrologCode.SUCCESS_LAST) {
-				saludos.add(trataFrase(x.toString()));
+				valoracion.add(trataFrase(x.toString()));
 				x.dereference();
 				rc = interpreter.execute(g);
 			} 
@@ -47,11 +50,11 @@ public class PrologHelloKnownUserSentence extends PrologHelloSentence {
 	@Override
 	public String genera_frase() {
 		Random r = new Random();
-		int rand = r.nextInt(100000) % saludos.size();
+		int rand = r.nextInt(100000) % valoracion.size();
 		
-		String string_frase_saludo = saludos.get(rand);
+		String string_frase_saludo = valoracion.get(rand);
 
-		return string_frase_saludo + ". ";
+		return string_frase_saludo + ". ¿Quieres valorarla?";
 	}
 
 }
