@@ -1,5 +1,6 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -37,26 +38,57 @@ public class TareaObtenerAlergia extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotación correcta
+			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
 			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg = SentenceFactory.generateAllergiesComplain();
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			if(negativo!=null){
+				if(negativo.isEmpty()){				
+					List<String> ingredientes = anotaciones.get("Ingrediente");
+					if(ingredientes!=null){
+						dialogo.setAlergias(ingredientes);
+						msg="Veo que eres alérgico a:";
+					    for(int i=0;i<ingredientes.size();i++){
+						     String ingr = ingredientes.get(i);
+						     msg=msg+" "+ingr;
+						
+					     }
+					     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+					}
+					else{
+						msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo.";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+					}					
 				}
 				else{
-					msg = "Muy bien, ahora te recetaré alguna puta mierda";
+					msg = "Muy bien, veo que estas mas sano que una manzana jejeje.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
 				}
 			}
 			else{
-				msg = SentenceFactory.generateAllergiesComplain();
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				List<String> ingredientes = anotaciones.get("Ingrediente");				
+				if(ingredientes!=null){
+					dialogo.setAlergias(ingredientes);
+					msg="Veo que eres alérgico a:";
+				    for(int i=0;i<ingredientes.size();i++){
+					     String ingr = ingredientes.get(i);
+					     msg=msg+" "+ingr;
+					
+				     }
+				     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+				}
+				else{
+					msg="El ingrediente no está contemplado en mis recetas, puedes estar tranquilo."
+							+ "Por cierto, ¿se te da bien cocinar?";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Alergia");
+				}
 			}
 
 		} catch (Exception e) {

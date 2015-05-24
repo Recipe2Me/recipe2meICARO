@@ -1,30 +1,26 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import java.util.List;
+import java.util.Map;
 
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
-
-import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Message;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
+import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
-import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaAsincrona;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
-import java.util.List;
-import java.util.Map;
-
-public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
+public class TareaEstudioPreliminar extends TareaSincrona{
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	
-	public TareaObtenerIngredienteOPlato(){
+	public TareaEstudioPreliminar(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -43,35 +39,28 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
-			QueryRecipe consulta = (QueryRecipe) params[1];
+			UserSession session = (UserSession) params[1];
+			session.getMessages().add(new Message(mensaje.getMensaje()));
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotaciï¿½n correcta
+			List<String> despedida = anotaciones.get("Despedida");//OJO cambiar por la anotación correcta
+			List<String> saludo = anotaciones.get("Saludo");
 			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-							+ "los ingredientes que deseas tomar";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
-				}
-				else{
-					msg = "Muy bien, veo que has elegido los ingredientes :";
-					for(int i=0;i<ingredientes.size();i++){
-						String ingr = ingredientes.get(i);
-						msg=msg+" "+ingr;
-						
-					}
-					consulta.setIngredientes(ingredientes);
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
-				}
+			if(despedida!=null){
+			     msg= SentenceFactory.generateGoodbyKnownUser(session.getUser());
+			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			     itfUsComunicacionoWeb.terminarConversacion(mensaje.getUser());
+			     //this.generarInformeConCausaTerminacion(getIdentTarea(),null,"Despedida",null,null);
+			}
+			else if(saludo!=null){
+			     msg="¡¡¡Hola, chaval, encantado de saludarte, pero !!!";
+			     itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+			     this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Estudio preliminar");
 			}
 			else{
-				msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-						+ "los ingredientes que deseas tomar";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+				this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Estudio preliminar");
 			}
 
 		} catch (Exception e) {

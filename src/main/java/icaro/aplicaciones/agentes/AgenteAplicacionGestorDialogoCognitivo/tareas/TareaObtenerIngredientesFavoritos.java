@@ -1,11 +1,17 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Criterio;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
+import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -39,6 +45,7 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
@@ -47,20 +54,42 @@ public class TareaObtenerIngredientesFavoritos extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = SentenceFactory.generateIngredientsComplain();
+					msg = "No has introducido ningï¿½n ingrediente,por favor, dime tus ingredientes favoritos";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
-					Criterio criterio = new Criterio();
-					criterio.setPositivo(ingredientes);
-					this.getEnvioHechos().insertarHechoWithoutFireRules(criterio);
-					msg = SentenceFactory.generateHatedQuestion();
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Fav");
+					dialogo.setIngredientesFavoritos(ingredientes);
+					List<String> favoritos=dialogo.getIngredientesFavoritos();
+					List<String> odiados=dialogo.getIngredientesOdiados();
+					ArrayList<String> errores=new ArrayList<String>();
+					boolean control=false;
+					if(odiados!=null){
+						for(int i=0;i<favoritos.size();i++){
+							String ingFav=favoritos.get(i);
+							for(int j=0;j<odiados.size();j++){
+								if(ingFav.equalsIgnoreCase(odiados.get(j))){
+									errores.add(ingFav);
+									control=true;
+								}
+							}
+						}
+					}
+					if(control==false){
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					}
+					else{
+						msg="Me has dicho que no te gustaban los siguientes ingredientes :";
+						for(int i=0;i<errores.size();i++){
+							String ing=errores.get(i);
+							msg = msg+" "+ing;
+						}
+						msg = msg+", ¿Me puedes repetir los ingredientes que te gustan?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					}
 				}
 			}
 			else{
-				msg = SentenceFactory.generateIngredientsComplain();
+				msg = "No has introducido ningï¿½n ingrediente,por favor, dime tus ingredientes favoritos";
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

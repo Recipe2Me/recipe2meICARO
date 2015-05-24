@@ -1,11 +1,10 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
-
+import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
@@ -19,14 +18,14 @@ import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRe
 import java.util.List;
 import java.util.Map;
 
-public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
+public class TareaObtenerRecetasARecomendar extends TareaAsincrona {
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
-	
-	public TareaObtenerIngredienteOPlato(){
+
+	public TareaObtenerRecetasARecomendar() {
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
-		//Definimos el recurso extractor semantico
+		// Definimos el recurso extractor semantico
 		try {
 			itfUsoExtractorSemantico = (ItfUsoExtractorSemantico) this.repoIntfaces
 					.obtenerInterfazUso("ExtractorSemantico1");
@@ -40,44 +39,21 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 
 	@Override
 	public void ejecutar(Object... params) {
-		// TODO Auto-generated method stub
 		try {
-			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
+			UserSession session = (UserSession) params[0];
 			QueryRecipe consulta = (QueryRecipe) params[1];
-			String contenido = mensaje.getMensaje();
-			InformacionExtraida informacionExtraida;
-			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
-			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotaci�n correcta
-			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-							+ "los ingredientes que deseas tomar";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
-				}
-				else{
-					msg = "Muy bien, veo que has elegido los ingredientes :";
-					for(int i=0;i<ingredientes.size();i++){
-						String ingr = ingredientes.get(i);
-						msg=msg+" "+ingr;
-						
-					}
-					consulta.setIngredientes(ingredientes);
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
-				}
-			}
-			else{
-				msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-						+ "los ingredientes que deseas tomar";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-			}
-
+			ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces
+					.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+			List<Recipe> recipes = mongo.getRecipeWithCriteria(consulta);
+			session.getRecipes().addAll(recipes);
+			consulta.setListaRecomendaciones(recipes);
+			this.generarInformeOK(getIdentTarea(), null, getIdentAgente(),
+					"Zanjar_TareaObtenerRecetasARecomendar");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
 	}
 
 }

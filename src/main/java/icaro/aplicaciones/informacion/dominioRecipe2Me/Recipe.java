@@ -4,10 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bson.types.ObjectId;
+import org.mongodb.morphia.annotations.Entity;
+import org.mongodb.morphia.annotations.Id;
 
-
+@Entity("recipes")
 public class Recipe {
 	
+	@Id
 	private ObjectId id;
 	private String title;
 	private String description;

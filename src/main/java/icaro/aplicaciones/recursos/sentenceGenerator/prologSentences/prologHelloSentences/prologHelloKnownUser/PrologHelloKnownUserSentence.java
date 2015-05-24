@@ -41,7 +41,9 @@ public class PrologHelloKnownUserSentence extends PrologHelloSentence {
 				x.dereference();
 				rc = interpreter.execute(g);
 			} 
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	@Override

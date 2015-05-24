@@ -84,5 +84,5 @@ dependencies {
 	compile 'org.springframework:spring-websocket:4.1.6.RELEASE'
 	compile 'org.springframework.security:spring-security-web:4.0.0.RELEASE'
 	compile 'org.springframework.security:spring-security-config:4.0.0.RELEASE'
-    //compile fileTree(dir: 'lib', include: ['*.jar','*/*.jar'])
+    compile fileTree(dir: 'lib', include: ['*.jar','*/*.jar'])
 }

@@ -12,8 +12,6 @@
 	href='../static/css/bootstrap.css' rel='stylesheet' type='text/css' />  -->
 <link th:href="@{/static/css/theme.css}" href='../static/css/theme.css'
 	rel='stylesheet' type='text/css' />
-<link th:href="@{/static/css/form.css}" href='../static/css/form.css'
-	rel='stylesheet' type='text/css' />
 </head>
 <body>
 	<nav th:include="home :: nav" class="navbar navbar-default">
@@ -63,23 +61,18 @@
 	</nav>
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-4 col-xs-12 col-sm-offset-4">
-				<div class="testbox">
-  					<h1>Registro</h1>
- 	 				<form id="formSignin" val:validate="${user}"
-					th:object="${user}" th:action="@{/signup}" method="POST">
-  						<hr></hr>
-  						<label id="icon" for="email"><i class="icon-envelope "></i></label>
-  						<input type="text" name="name" id="name" placeholder="Email" th:field="*{email}"  required="required"/>
-  						<label id="icon" for="username"><i class="icon-user"></i></label>
-  						<input type="text" name="name" id="name" placeholder="Nombre de usuario" th:field="*{userName}"  required="required"/>
-  						<label id="icon" for="password"><i class="icon-shield"></i></label>
-  						<input type="password" name="name" id="name" placeholder="Contraseña" th:field="*{password}" required="required"/>
-  
-   						<p>By clicking Register, you agree on our <a href="#">terms and condition</a>.</p>
-   						<a href="javascript:{}" onclick="document.getElementById('formSignin').submit();" class="button">Registro</a>
-  					</form>
-				</div>
+			<div class="col-sm-12 col-xs-12">
+				<h1>Contacto</h1>
+				<hr></hr>
+				<p>Puedes contactar con cualquier miembro del grupo, resolveremos tus inquietudes de inmediato:</p>
+				<ul>
+					<a href="mailto:esteban.alej@yahoo.es"><li>Esteban Armas: esteban.alej@yahoo.es </li></a>
+					<a href="mailto:sga.vmp@gmail.com"><li>Sergio García: sga.vmp@gmail.com </li></a>
+					<a href="mailto:ilaclaus@ucm.es"><li>Iván Laclaustra: ilaclaus@ucm.es</li></a>
+					<a href="mailto:jmmjn21@gmail.com"><li>Javier Mansilla: jmmjn21@gmail.com</li></a>
+					<a href="mailto:jesusm01@ucm.es"><li>Jesús Martín: jesusm01@ucm.es</li></a>
+				</ul>
+				<hr></hr>
 			</div>
 		</div>
 	</div>

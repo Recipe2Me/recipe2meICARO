@@ -39,4 +39,7 @@ public class PersistenciaAccesoMongo {
 		return user;
 	}
 
+	public void saveUserUpdate(UserProfile user) {
+		ds.save(user);
+	}
 }

@@ -1,6 +1,12 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
@@ -52,20 +58,39 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 				}
 				else{
 					dialogo.setIngredientesOdiados(ingredientes);
-					msg = SentenceFactory.generateAllergiesQuestion();
-					//ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
-					//List<Recipe> recipes = mongo.getRecipeWithCriteria(criterio.getPositivo(), criterio.getNegativo());
-					//itfUsComunicacionoWeb.enviarRecetaAlUsuario(msg,recipes.get(0),mensaje.getUser());
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					List<String> favoritos=dialogo.getIngredientesFavoritos();
+					List<String> odiados=dialogo.getIngredientesOdiados();
+					ArrayList<String> errores=new ArrayList<String>();
+					boolean control=false;
+					if(favoritos!=null){
+						for(int i=0;i<favoritos.size();i++){
+							String ingFav=favoritos.get(i);
+							for(int j=0;j<odiados.size();j++){
+								if(ingFav.equalsIgnoreCase(odiados.get(j))){
+									errores.add(ingFav);
+									control=true;
+								}
+							}
+						}
+					}
+					if(control==false){
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_Ingredientes_Od");
+					}
+					else{
+						msg="Me has dicho que te gustaban los siguientes ingredientes :";
+						for(int i=0;i<errores.size();i++){
+							String ing=errores.get(i);
+							msg = msg+" "+ing;
+						}
+						msg = msg+", ¿Me puedes repetir los ingredientes que no te gustan?";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					}
 				}
 			}
 			else{
 				msg = SentenceFactory.generateIngredientsComplain();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
-			//ItfUsoPersistenciaMongo mongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
-			//Recipe recipe = mongo.findOne("54f8edb18c30d0033cd70078");
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

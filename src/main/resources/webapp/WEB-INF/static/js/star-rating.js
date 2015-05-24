@@ -286,6 +286,7 @@
             var self = this, numStars = self.stars, stars = '', i;
             for (i = 1; i <= numStars; i++) {
                 stars += self.symbol;
+                stars += " ";
             }
             return stars;
         },

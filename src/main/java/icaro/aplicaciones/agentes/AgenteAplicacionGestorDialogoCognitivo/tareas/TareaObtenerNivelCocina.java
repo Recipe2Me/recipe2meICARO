@@ -1,30 +1,28 @@
 package icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.tareas;
 
-
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
-import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserProfile;
-
 import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
+import icaro.aplicaciones.recursos.persistenciaMongo.imp.PersistenciaAccesoMongo;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
-import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaAsincrona;
+import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
 
 import java.util.List;
 import java.util.Map;
 
-public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
+public class TareaObtenerNivelCocina extends TareaSincrona{
+	
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	
-	public TareaObtenerIngredienteOPlato(){
+	public TareaObtenerNivelCocina(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
 		//Definimos el recurso extractor semantico
 		try {
@@ -43,37 +41,50 @@ public class TareaObtenerIngredienteOPlato extends TareaAsincrona{
 		// TODO Auto-generated method stub
 		try {
 			EventoMensajeDelUsuario mensaje=(EventoMensajeDelUsuario) params[0];
-			QueryRecipe consulta = (QueryRecipe) params[1];
+			DialogoInicial dialogo = (DialogoInicial) params[1];
 			String contenido = mensaje.getMensaje();
 			InformacionExtraida informacionExtraida;
 			informacionExtraida=itfUsoExtractorSemantico.extraerAnotaciones(contenido);
 			Map<String, List<String>> anotaciones = informacionExtraida.getInformacionPorAnotacion();
-			List<String> ingredientes = anotaciones.get("Ingrediente");//OJO cambiar por la anotaciï¿½n correcta
+			List<String> negativo = anotaciones.get("Negacion");//OJO cambiar por la anotación correcta
+			List<String> afirmativo = anotaciones.get("Afirmacion");
 			String msg="";
-			if(ingredientes!=null){
-				if(ingredientes.isEmpty()){
-					msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-							+ "los ingredientes que deseas tomar";
-					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());					
+			if(negativo!=null){
+				if(negativo.isEmpty()){
+					if(afirmativo!=null){
+						dialogo.setSabeCocinar(true);
+						msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas.";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					}
+					else{
+						msg = "no me has contestado a la pregunta!!, ¿se te da bien cocinar o no?.";
+						itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+						//this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+					}
 				}
 				else{
-					msg = "Muy bien, veo que has elegido los ingredientes :";
-					for(int i=0;i<ingredientes.size();i++){
-						String ingr = ingredientes.get(i);
-						msg=msg+" "+ingr;
-						
-					}
-					consulta.setIngredientes(ingredientes);
+					dialogo.setSabeCocinar(false);
+					msg = "No te preocupes, te recomendaré una receta de preparación más sencilla.";
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_ObtenerIngredientesOPlato");
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
 				}
 			}
 			else{
-				msg="Lo siento, para que pueda recomendarle algo necesito que me digas "
-						+ "los ingredientes que deseas tomar";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
-			}
+				if(afirmativo!=null){
+					dialogo.setSabeCocinar(true);
+					msg = "Me alegra saber que tienes cierto nivel de cocina, eso ampliará el abanico de recetas.";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+				}
+				else{
+					msg = "no me has contestado a la pregunta!!, ¿se te da bien cocinar o no?.";
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
+					//this.generarInformeOK(getIdentTarea(),null,getIdentAgente(),"Zanjar_NivelCocina");
+				}
 
+			}
+			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

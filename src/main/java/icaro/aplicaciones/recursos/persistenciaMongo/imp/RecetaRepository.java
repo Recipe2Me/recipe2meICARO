@@ -2,9 +2,11 @@ package icaro.aplicaciones.recursos.persistenciaMongo.imp;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import gate.creole.annic.apache.lucene.search.Sort;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Ingrediente;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.QueryRecipe;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Recipe;
 
 import org.bson.types.ObjectId;
@@ -31,15 +33,15 @@ public class RecetaRepository {
 		return recipe;
 	}
 	
-	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo,List<String> ingredientesNegativos) {
+	public List<Recipe> getRecipeWithCriteria(List<String> ingredientesAfirmativo) {
 		List<Recipe> recipes = new ArrayList<Recipe>();
 		String busqueda = "";
 		for (String ing : ingredientesAfirmativo) {
 			busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
 		}
-		for (String ing : ingredientesNegativos) {
-			busqueda=busqueda.concat(" -".concat(ing));
-		}
+//		for (String ing : ingredientesNegativos) {
+//			busqueda=busqueda.concat(" -".concat(ing));
+//		}
 		DBObject textSearch = new BasicDBObject("$text", new BasicDBObject("$search",busqueda));
 		DBObject resultQuery = new BasicDBObject("score",new BasicDBObject("$meta","textScore"));
 		List<DBObject> result = collection.find(textSearch,resultQuery).sort(resultQuery).limit(5).toArray();
@@ -83,6 +85,48 @@ public class RecetaRepository {
 			recipe.getIngredientes().add(ing);
 		}
 		return recipe;
+	}
+	
+	public List<Recipe> getRecipeWithQueryRecipe(QueryRecipe consulta) {
+		/*db.recipes.find(
+		 * 					{
+		 * 						$text:{
+		 * 								$search:
+		 * 										"-\"Croquetas de calamares en su tinta\"Croquetas de bacalao\"leche harina -huevo -sal"
+		 * 							  }
+		 * 					},
+		 * 					{
+		 * 						score:{
+		 * 								$meta:
+		 * 									   "textScore"
+		 * 							  }
+		 *                  }
+		 *                ).sort({score:{$meta:"textScore"}}).limit(2).pretty()*/
+		
+		
+		
+		List<Recipe> recipes = new ArrayList<Recipe>();
+		String busqueda = "";
+		if(!consulta.getListaRecetasRechazadas().isEmpty()){
+			for(ObjectId receta : consulta.getListaRecetasRechazadas()){
+				busqueda = busqueda.concat("-\"".concat(receta.toString()).concat("\""));
+					}
+		}
+		
+		for (String ing : consulta.getIngredientes()) {
+			busqueda=busqueda.concat("\"".concat(ing).concat("\" "));
+		}
+		
+		for (String ing : consulta.getAlergias()) {
+			busqueda=busqueda.concat(" -".concat(ing));
+		}
+		DBObject textSearch = new BasicDBObject("$text", new BasicDBObject("$search",busqueda));
+		DBObject resultQuery = new BasicDBObject("score",new BasicDBObject("$meta","textScore"));
+		List<DBObject> result = collection.find(textSearch,resultQuery).sort(resultQuery).limit(5).toArray();
+		for (DBObject r : result) {
+			recipes.add(parseDBObjectToRecipe(r));
+		}
+		return recipes;
 	}
 
 }

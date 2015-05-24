@@ -22,8 +22,8 @@ public class VocabularioRecipe2Me {
     public static final String IdentRecursoPersistenciaMongo= "PersistenciaMongo1";
     public static final String InfoUsuarioYaExiste= "infoUsuarioYaExistente";
     public static final String InfoUsuarioAltaGuardada="InfoAltaUsuarioGuardada";
-    public static final String SaludoInicial1="Hola soy Recipe2Me, si has llegado aquí es porque no sabes que cocinar, pues bien yo me se de memoria mas de 4000 recetas asi que puedo ayudarte. Para empezar dime que ingredientes quieres que aparezcan en la receta.";
-    public static final String SaludoInicial2="Hola ";
+    public static final String SaludoInicial1="Hola soy Recipe2Me, si has llegado aquí es porque no sabes que cocinar, pues bien yo me se de memoria mas de 4000 recetas asi que puedo ayudarte. Para empezar te voy a realizar una serie de preguntas prar conocerte mejor.";
+    public static final String SaludoInicial2="Hola usuario, me alegro de volver a verte. Son las x horas, ¿vemos que puedes cenar?";
     public static final String PeticionInformacionGeneral1="Dime que deseas";
     public static final String RespuestaNoEniendo1="Lo siento pero esta frase y la primera son las única que puedo decir por ahora, asi que no insista.";
     public static final String RespuestaNoEniendo2="Lo siento pero sigo sin entender nada";

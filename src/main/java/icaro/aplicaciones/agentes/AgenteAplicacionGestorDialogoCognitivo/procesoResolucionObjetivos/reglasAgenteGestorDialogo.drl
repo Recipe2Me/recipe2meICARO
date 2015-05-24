@@ -23,17 +23,115 @@ then
     tarea.ejecutar();
 	recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName()); 
 end
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///Regla de reinicializacion del sistema
+rule "Reiniciar sistema tras desconexion"
+  when
+    evento:EventoDesconexion()
+    session:UserSession()
+    user:UserProfile()
+  then
+  	TareaSincrona tarea = gestorTareas.crearTareaSincrona(PeticionTerminacion.class);
+    tarea.ejecutar(user,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///Reglas de Focalizacion
-rule "Focaliza el objetivo ObtenerInfoSesion"
+rule "Focaliza el objetivo ObtenerInfoSesion (Primer Objetivo siempre)"
   when
-    obj:ObtenerInfoSesion();
+    obj:ObtenerInfoSesion()
     f:Focus(foco == null )
   then
     f.setFoco(obj);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     update(f);
+end
+
+rule "Focaliza el objetivo ObtenerConocimientoInicial (Segundo objetivo si es la primera vez que accede)"
+  when
+  	sesion:UserSession(first == true)
+    obj:ObtenerConocimientoInicial(state==Objetivo.PENDING)
+    objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
+    f:Focus(foco == objA )
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerValoracionUsuario (Segundo objetivo si no es la primera vez que accede y tiene pendiente una valoracion)"
+  when
+  	sesion:UserSession(first == false)
+  	user:UserProfile(pendiente == true)
+    obj:ObtenerValoracionUsuario(state==Objetivo.PENDING)
+    objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
+    f:Focus(foco == objA )
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerIngredienteOPlato (Segundo objetivo si no es la primera vez que accede)"
+  when
+  	sesion:UserSession(first == false)
+  	user:UserProfile(pendiente == false)
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerIngredienteOPlato (Tercer objetivo si es la primera vez que accede y ya ha rellenado el formulario)"
+  when
+  	sesion:UserSession(first == true)
+  	user:UserProfile(pendiente == false)
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    objA:ObtenerConocimientoInicial(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerIngredienteOPlato (Tercer objetivo si no es la primera vez que accede y ya ha valorado)"
+  when
+  	sesion:UserSession(first == false)
+  	user:UserProfile(pendiente == false)
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    objA:ObtenerValoracionUsuario(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Focalizo el objetivo ObtenerRecetasSegunRequisitos"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.PENDING)
+    objA:ObtenerIngredienteOPlato(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+ 
+rule "Focalizo el objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.PENDING)
+    objA:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVED)
+    f:Focus(foco == objA)
+  then
+    f.setFoco(obj);
+    update(f);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 //=======================================================================
 ///Reglas de Consecucion del Objetivo ObtenerInfoSesion
@@ -45,142 +143,422 @@ rule "Inicio del proceso de consecucion del  objetivo ObtenerInfoSesion"
   then
     obj.setSolving();
     update(obj);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
 rule "Creacion de la sesion del usuario"
-   when
+  when
     obj:ObtenerInfoSesion(state==Objetivo.SOLVING)
     evento:EventoConexion( name : user.username )
     f:Focus(foco == obj)
-   then
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+  then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(RegistrarDialogoUsuario.class);
     tarea.ejecutar(evento);
     retract(evento);
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
 
 rule "Zanjar objetivo ObtenerInfoSesion"
-   when
-     obj:ObtenerInfoSesion(state==Objetivo.SOLVING)
-     informe:InformeDeTarea(identTarea == "RegistrarDialogoUsuario")
-     f:Focus(foco == obj)
-   then
-     obj.setSolved();
-     update(obj);   
-     retract(informe);
- end
- 
- rule "Focaliza el objetivo ObtenerIngredientesFavoritos"
   when
-    obj:ObtenerIngredientesFavoritos(state==Objetivo.PENDING)
-    objA:ObtenerInfoSesion(state==Objetivo.SOLVED)
-    f:Focus(foco == objA )
+    obj:ObtenerInfoSesion(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "RegistrarDialogoUsuario")
+    f:Focus(foco == obj)
   then
-    f.setFoco(obj);
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
-    update(f);
 end
 
-rule "Inicio del proceso de obtencion de ingredientes favoritos"
+rule "Inicio del proceso de consecucion del  objetivo ObtenerValoracionUsuario"
   when
-    obj:ObtenerIngredientesFavoritos(state==Objetivo.PENDING)
+    obj:ObtenerValoracionUsuario(state==Objetivo.PENDING)
+    sesion:UserSession()
     Focus(foco == obj)
   then
     obj.setSolving();
     update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
-rule "Obtener ingredientes favoritos"
-   when
-    obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVING)
+rule "Obtener confirmacion de valorar receta"
+  when
+    obj:ObtenerValoracionUsuario(state==Objetivo.SOLVING)
     evento:EventoMensajeDelUsuario()
+    user:UserProfile(pendiente == true)
     f:Focus(foco == obj)
-   then
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerValoracionUsuario.class);
+    tarea.ejecutar(user,evento);
+    retract(evento);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "Obtener valoracion del usuario"
+  when
+    obj:ObtenerValoracionUsuario(state==Objetivo.SOLVING)
+    valoracion:ValoracionUsuario()
+    user:UserProfile(pendiente == true)
+    f:Focus(foco == obj)
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerValoracionUsuario.class);
+    tarea.ejecutar(user,valoracion);
+    retract(valoracion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "Zanjar objetivo ObtenerValoracionUsuario"
+  when
+    obj:ObtenerValoracionUsuario(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerValoracionUsuario")
+    user:UserProfile(pendiente == true)
+    f:Focus(foco == obj)
+  then
+  	user.setPendiente(false);
+    obj.setSolved();
+    update(obj);   
+    update(user);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Inicio del proceso de obtencion del conocimiento inicial"
+  when
+    obj:ObtenerConocimientoInicial(state==Objetivo.PENDING)
+    Focus(foco == obj)
+  then
+    obj.setSolving();
+    update(obj);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Zanjo proceso de obtencion del conocimiento inicial"
+  when
+    obj:ObtenerConocimientoInicial(isComplete() == true , state == Objetivo.SOLVING)
+    Focus(foco == obj)
+    dialogo:DialogoInicial()
+    session:UserSession()
+    user:UserProfile()
+  then
+    obj.setSolved();
+    update(obj);
+    retract(dialogo);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaActualizarPerfilUsuario.class);
+    tarea.ejecutar(dialogo,session,user);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Obtenemos el sub objetivo del objetivo principal de ObtenerConocimientoInicial"
+  when
+    obj:ObtenerConocimientoInicial(state==Objetivo.SOLVING , subFocus.getgoalId() == null || subFocus.getState() == Objetivo.SOLVED)
+    Focus(foco == obj)
+  then
+    obj.getSubObjetivoAleatorio();
+    update(obj)
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Inicio del proceso de obtencion de ingredientes favoritos"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesFavoritos" , subFocus.getState() == Objetivo.PENDING , subObj : subFocus )
+    Focus(foco == obj)
+    sesion:UserSession()
+  then
+  	subObj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Obtener ingredientes favoritos"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesFavoritos" , subFocus.getState() == Objetivo.SOLVING )
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
+    evento:EventoMensajeDelUsuario()
+    Focus(foco == obj)
+    dialogo:DialogoInicial()
+  then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesFavoritos.class);
-    tarea.ejecutar(evento);
+    tarea.ejecutar(evento,dialogo);
     retract(evento);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
 
-rule "Zanjar objetivo ObtenerIngredientesFavoritos"
-   when
-     obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVING)
-     informe:InformeDeTarea(identTarea == "TareaObtenerIngredientesFavoritos")
-     f:Focus(foco == obj)
-   then
-     obj.setSolved();
-     update(obj);   
-     retract(informe);
- end
-
-rule "Focalizo el objetivo ObtenerIngredientesOdiados"
+rule "SubObjetivo de ObtenerConocimientoInicial: Zanjar objetivo ObtenerIngredientesFavoritos"
   when
-    obj:ObtenerIngredientesFavoritos(state==Objetivo.SOLVED)
-    obj2:ObtenerIngredientesOdiados(state==Objetivo.PENDING)
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesFavoritos" , subFocus.getState() == Objetivo.SOLVING , subObj : subFocus )
+    informe:InformeDeTarea(identTarea == "TareaObtenerIngredientesFavoritos")
     f:Focus(foco == obj)
   then
-    f.setFoco(obj2);
-    update(f);
+    subObj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
-rule "Inicio el proceso para resolver el objetivo ObtenerIngredientesOdiados"
+rule "SubObjetivo de ObtenerConocimientoInicial: Inicio el proceso para resolver el objetivo ObtenerIngredientesOdiados"
   when
-    obj:ObtenerIngredientesOdiados(state==Objetivo.PENDING)
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesOdiados" , subFocus.getState() == Objetivo.PENDING , subObj : subFocus )
     Focus(foco == obj)
+    sesion:UserSession()
+  then
+    subObj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Obtener ingredientes odiados"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesOdiados" , subFocus.getState() == Objetivo.SOLVING )
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj)
+    dialogo:DialogoInicial()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
+    tarea.ejecutar(evento,dialogo);
+    retract(evento);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Zanjar objetivo ObtenerIngredientesOdiados"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerIngredientesOdiados" , subFocus.getState() == Objetivo.SOLVING , subObj : subFocus )
+    informe:InformeDeTarea(identTarea == "TareaObtenerIngredientesOdiados")
+    f:Focus(foco == obj)
+  then
+    subObj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+ 
+rule "SubObjetivo de ObtenerConocimientoInicial: Inicio el proceso para resolver el objetivo ObtenerAlergia"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerAlergia" , subFocus.getState() == Objetivo.PENDING , subObj : subFocus )
+    Focus(foco == obj)
+    sesion:UserSession()
+  then
+    subObj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Obtener alergias"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerAlergia" , subFocus.getState() == Objetivo.SOLVING )
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj)
+    dialogo:DialogoInicial()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerAlergia.class);
+    tarea.ejecutar(evento,dialogo);
+    retract(evento);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Zanjar objetivo ObtenerAlergia"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerAlergia" , subFocus.getState() == Objetivo.SOLVING , subObj : subFocus )
+    informe:InformeDeTarea(identTarea == "TareaObtenerAlergia")
+    f:Focus(foco == obj)
+  then
+    subObj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+ 
+rule "SubObjetivo de ObtenerConocimientoInicial: Inicio el proceso para resolver el objetivo ObtenerNivelCocina"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerNivelCocina" , subFocus.getState() == Objetivo.PENDING , subObj : subFocus )
+    Focus(foco == obj)
+    sesion:UserSession()
+  then
+    subObj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Obtener NivelCocina"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerNivelCocina" , subFocus.getState() == Objetivo.SOLVING )
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
+    evento:EventoMensajeDelUsuario()
+    f:Focus(foco == obj)
+    dialogo:DialogoInicial()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerNivelCocina.class);
+    tarea.ejecutar(evento,dialogo);
+    retract(evento);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "SubObjetivo de ObtenerConocimientoInicial: Zanjar objetivo ObtenerNivelCocina"
+  when
+    obj:ObtenerConocimientoInicial( subFocus.getgoalId() == "ObtenerNivelCocina" , subFocus.getState() == Objetivo.SOLVING , subObj : subFocus )
+    informe:InformeDeTarea(identTarea == "TareaObtenerNivelCocina")
+    f:Focus(foco == obj)
+  then
+    subObj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+ 
+rule "Inicio el proceso para resolver el objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.PENDING)
+    Focus(foco == obj)
+    sesion:UserSession()
   then
     obj.setSolving();
     update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,sesion);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
-rule "Obtener ingredientes odiados"
-   when
-    obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVING)
-    criterio:Criterio()
+rule "Obtener IngredienteOPlato"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     evento:EventoMensajeDelUsuario()
     f:Focus(foco == obj)
-   then
-    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Se ejecuta la tarea : RegistrarDialogoUsuario",InfoTraza.NivelTraza.debug));
-    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredientesOdiados.class);
-    tarea.ejecutar(evento,criterio);
-    retract(evento);
-
-end
-
-rule "Zanjar objetivo ObtenerIngredientesOdiados"
-   when
-     obj:ObtenerIngredientesOdiados(state==Objetivo.SOLVING)
-     informe:InformeDeTarea(identTarea == "TareaObtenerIngredientesOdiados")
-     f:Focus(foco == obj)
-   then
-     obj.setSolved();
-     update(obj);   
-     retract(informe);
- end
- 
- rule "Reiniciar sistema tras desconexion"
-  when
-  	f:Focus()
-  	obj1:ObtenerInfoSesion()
-  	obj2:ObtenerIngredientesOdiados()
-  	obj3:ObtenerIngredientesFavoritos()
-  	criterio:Criterio()
-    evento:EventoDesconexion()
+    consulta:QueryRecipe()
   then
-  	obj1.setPending();
-  	update(obj1);
-  	obj2.setPending();
-  	update(obj2);
-  	obj3.setPending();
-  	update(obj3);
-  	retract(criterio);
-	retract(evento);
-  	f.setFoco(obj1);
-  	update(f); 
-	recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerIngredienteOPlato.class);
+    tarea.ejecutar(evento,consulta);
+    retract(evento);
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
 
+rule "Zanjar objetivo ObtenerIngredienteOPlato"
+  when
+    obj:ObtenerIngredienteOPlato(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerIngredienteOPlato")
+    f:Focus(foco == obj)
+  then
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
 
+rule "Inicio el proceso para resolver el objetivo ObtenerRecetasSegunRequisitos"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.PENDING)
+    Focus(foco == obj)
+    session:UserSession()
+  then
+    obj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
 
+rule "Obtener Recetas A Recomendar"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
+    f:Focus(foco == obj)
+    sesion:UserSession()
+    consulta:QueryRecipe()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerRecetasARecomendar.class);
+    tarea.ejecutar(sesion,consulta);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
 
+rule "Zanjar objetivo ObtenerRecetasSegunRequisitos"
+  when
+    obj:ObtenerRecetasSegunRequisitos(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerRecetasARecomendar")
+    f:Focus(foco == obj)
+  then
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Inicio el proceso para resolver el objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.PENDING)
+    Focus(foco == obj)
+    session:UserSession()
+    consulta:QueryRecipe()
+  then
+    obj.setSolving();
+    update(obj);
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
+    tarea.ejecutar(obj,session);
+    TareaSincrona tarea2 = gestorTareas.crearTareaSincrona(TareaObtenerConfirmacionUsuario.class);
+    tarea2.ejecutar(consulta,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Obtener Confirmacion del Usuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
+    decision:DecisionUsuario()
+    f:Focus(foco == obj)
+    consulta:QueryRecipe()
+    session:UserSession()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerConfirmacionUsuario.class);
+    tarea.ejecutar(consulta,session,decision);
+    retract(decision);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+rule "Zanjar objetivo ObtenerConfirmacionUsuario"
+  when
+    obj:ObtenerConfirmacionUsuario(state==Objetivo.SOLVING)
+    informe:InformeDeTarea(identTarea == "TareaObtenerIngredienteOPlato")
+    f:Focus(foco == obj)
+  then
+    obj.setSolved();
+    update(obj);   
+    retract(informe);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+end
+
+rule "Estudio preliminar"
+  when
+    obj:ObtenerEstudioPreliminar(state==Objetivo.PENDING)
+    evento:EventoMensajeDelUsuario()
+    session:UserSession()
+  then
+    TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaEstudioPreliminar.class);
+    tarea.ejecutar(evento,session);
+    recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
+    recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
+end
+
+     
