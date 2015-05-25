@@ -1,0 +1,7 @@
+saludo.lst::Saludo::Saludo
+saludo cordial.lst:Cordial:Saludo::Saludo
+afirmacion.lst::::Afirmacion
+despedida.lst::::Despedida
+ingredientes.lst::::Ingrediente
+negacion.lst::::Negacion
+peticion de informacion.lst::::Funcion
