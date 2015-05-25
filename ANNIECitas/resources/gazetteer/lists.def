@@ -1,7 +1,8 @@
-saludo.lst::Saludo::Saludo
-saludo cordial.lst:Cordial:Saludo::Saludo
+ingredientes.lst:Ingrediente:Ingrediente::Ingrediente
+saludo.lst:Saludo:Saludo::Saludo
+saludo cordial.lst:Saludo cordial:Saludo cordial::Saludo Cordial
+despedida.lst:Despedida:Despedida::Despedida
+Peticion de informacion.lst:Peticion:Peticion::Peticion de informacion
+enfermedades.lst:Enfermedades:Enfermedades::Enfermedad
 afirmacion.lst::::Afirmacion
-despedida.lst::::Despedida
-ingredientes.lst::::Ingrediente
 negacion.lst::::Negacion
-peticion de informacion.lst::::Funcion
