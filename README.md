@@ -9,12 +9,14 @@ Para ejecutarlo (cumpliendo las dependencias del proyecto como la base de datos 
 ./gradlew runSimple
 
 Dependencias:
+------------.
 
 -Base de Datos Mongo en local con la configuración por defeco<br>
 -Gate Instalado<br>
 -Definir las rutas de Gate en icaro.aplicaciones.recursos.extractorSemantico.ConfigRutasExtractorSemantico.java<br>
 
 Importar base de datos:
+-----------------------
 
 -Windows
 Ejecutar el ejecutable importarBaseDatos.bat
@@ -22,4 +24,5 @@ Ejecutar el ejecutable importarBaseDatos.bat
 Ejecutar en la linea de comando desde el proyecto: mongorestore dump/recipe2me
 
 Importar plugin a Gate:
+-----------------------
 En cualquier sistema operativo copiar la carpeta ANNIECitas a la carpeta plugin de Gate.
