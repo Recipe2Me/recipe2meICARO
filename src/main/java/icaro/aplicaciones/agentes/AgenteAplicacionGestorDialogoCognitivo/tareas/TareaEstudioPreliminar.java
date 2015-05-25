@@ -15,11 +15,12 @@ import icaro.aplicaciones.agentes.AgenteAplicacionGestorDialogoCognitivo.objetiv
 import icaro.aplicaciones.informacion.dominioRecipe2Me.DialogoInicial;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.Message;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.UserSession;
+import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionExtraida;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
+import icaro.aplicaciones.recursos.sentenceGenerator.ItfUsoSentenceGenerator;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Objetivo;
@@ -30,6 +31,8 @@ public class TareaEstudioPreliminar extends TareaSincrona {
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
+	private ItfUsoSentenceGenerator itfSentenceGenerator;
+	
 
 	public TareaEstudioPreliminar() {
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
@@ -39,6 +42,7 @@ public class TareaEstudioPreliminar extends TareaSincrona {
 					.obtenerInterfazUso("ExtractorSemantico1");
 			itfUsComunicacionoWeb = (ItfUsoComunicacionWeb) this.repoIntfaces
 					.obtenerInterfazUso("ComunicacionWeb1");
+			itfSentenceGenerator = (ItfUsoSentenceGenerator) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoSentenceGenerator);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,51 +68,62 @@ public class TareaEstudioPreliminar extends TareaSincrona {
 			List<String> despedida = anotaciones.get("Despedida");
 			List<String> saludo = anotaciones.get("Saludo");
 			String msg = "";
-			if (despedida != null) {
-				msg = SentenceFactory
-						.generateGoodbyKnownUser(session.getUser());
+			if (session.isCerrar()) {
+				msg = itfSentenceGenerator.generateEndUnderstandSentence();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
 						mensaje.getUser());
 				itfUsComunicacionoWeb.terminarConversacion(mensaje.getUser());
-				// this.generarInformeConCausaTerminacion(getIdentTarea(),null,"Despedida",null,null);
-			} else if (saludo != null) {
-				msg = "¡¡¡Hola, chaval, encantado de saludarte, pero !!!";
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
-						mensaje.getUser());
-				this.generarInformeOK(getIdentTarea(), null, getIdentAgente(),
-						"Estudio preliminar");
-			} else {
-				this.generarInformeOK(getIdentTarea(), null, getIdentAgente(),
-						"Estudio preliminar");
-			}
-			if (session.getIntentos() == 2) {
 				getEnvioHechos().eliminarHechoWithoutFireRules(evento);
-				Objetivo objetivo = focus.getFoco();
-				if (objetivo instanceof ObtenerConocimientoInicial) {
-					ObtenerConocimientoInicial conocimiento = (ObtenerConocimientoInicial) objetivo;
-					if (conocimiento.getIntentos() == 2) {
+			} else {
+				if (despedida != null) {
+					session.setCerrar(true);
+					msg = itfSentenceGenerator.generateGoodbyKnownUser(session
+							.getUser());
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
+							mensaje.getUser());
+					itfUsComunicacionoWeb.terminarConversacion(mensaje
+							.getUser());
+				} else if (saludo != null) {
+					msg = itfSentenceGenerator.generateHelloKnownUser(session.getUser());
+					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,
+							mensaje.getUser());
+					this.generarInformeOK(getIdentTarea(), null,
+							getIdentAgente(), "Estudio preliminar");
+				} else {
+					this.generarInformeOK(getIdentTarea(), null,
+							getIdentAgente(), "Estudio preliminar");
+				}
+				if (session.getIntentos() == 3) {
+					getEnvioHechos().eliminarHechoWithoutFireRules(evento);
+					Objetivo objetivo = focus.getFoco();
+					if (objetivo instanceof ObtenerConocimientoInicial) {
+						ObtenerConocimientoInicial conocimiento = (ObtenerConocimientoInicial) objetivo;
+						if (conocimiento.getIntentos() == 2) {
+							session.setCerrar(true);
+							itfUsComunicacionoWeb
+									.enviarMensageAlUsuario(
+											itfSentenceGenerator.generateEndUnderstandSentence(),
+											session.getUser());
+						} else {
+							itfUsComunicacionoWeb
+									.enviarMensageAlUsuario(
+											itfSentenceGenerator.generateNotEndUnderstandSentence(),
+											session.getUser());
+							session.setIntentos(0);
+							conocimiento
+									.setIntentos(conocimiento.getIntentos() + 1);
+							conocimiento.getSubObjetivoAleatorio();
+							getEnvioHechos().actualizarHechoWithoutFireRules(
+									session);
+							getEnvioHechos().actualizarHecho(conocimiento);
+						}
+					} else if (objetivo instanceof ObtenerIngredienteOPlato) {
+						session.setCerrar(true);
 						itfUsComunicacionoWeb
 								.enviarMensageAlUsuario(
-										"Bueno parece que no consigo entenderte, pasate en otro momento, adiosss.",
+										itfSentenceGenerator.generateEndUnderstandSentence(),
 										session.getUser());
-					} else {
-						itfUsComunicacionoWeb
-								.enviarMensageAlUsuario(
-										"Bueno no conseguimos entendernos en este paso, vamos a probar con otro.",
-										session.getUser());
-						session.setIntentos(0);
-						conocimiento
-								.setIntentos(conocimiento.getIntentos() + 1);
-						conocimiento.getSubObjetivoAleatorio();
-						getEnvioHechos().actualizarHechoWithoutFireRules(
-								session);
-						getEnvioHechos().actualizarHecho(conocimiento);
 					}
-				} else if (objetivo instanceof ObtenerIngredienteOPlato) {
-					itfUsComunicacionoWeb
-							.enviarMensageAlUsuario(
-									"Bueno parece que no consigo entenderte, solo queria saber algun ingrediente que quisieras, pasate en otro momento, adiosss.",
-									session.getUser());
 				}
 			}
 		} catch (Exception e) {

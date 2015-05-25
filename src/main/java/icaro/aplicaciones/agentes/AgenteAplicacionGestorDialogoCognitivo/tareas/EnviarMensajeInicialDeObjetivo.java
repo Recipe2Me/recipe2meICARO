@@ -29,7 +29,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeHaci
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
-import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
+import icaro.aplicaciones.recursos.sentenceGenerator.ItfUsoSentenceGenerator;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
@@ -45,6 +45,7 @@ public class EnviarMensajeInicialDeObjetivo extends TareaAsincrona {
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
 	private ItfUsoPersistenciaMongo itfUsoPersistenciaMongo;
+	private ItfUsoSentenceGenerator itfSentenceGenerator;
 
 	public EnviarMensajeInicialDeObjetivo(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
@@ -55,6 +56,7 @@ public class EnviarMensajeInicialDeObjetivo extends TareaAsincrona {
 			itfUsComunicacionoWeb = (ItfUsoComunicacionWeb) this.repoIntfaces
 					.obtenerInterfazUso("ComunicacionWeb1");
 			itfUsoPersistenciaMongo = (ItfUsoPersistenciaMongo) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoPersistenciaMongo);
+			itfSentenceGenerator = (ItfUsoSentenceGenerator) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoSentenceGenerator);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -67,29 +69,30 @@ public class EnviarMensajeInicialDeObjetivo extends TareaAsincrona {
         String nombreAgenteEmisor = this.getIdentAgente();
 		Objetivo objetivo = (Objetivo) params[0];
 		UserSession session = (UserSession) params[1];
-		UserProfile user = null;
 		try {
 		if (objetivo instanceof ObtenerConocimientoInicial) {
 			ObtenerConocimientoInicial conocimiento = (ObtenerConocimientoInicial) objetivo;
 			if (conocimiento.getSubFocus() instanceof ObtenerIngredientesFavoritos) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateFavoriteQuestion(),session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateFavoriteQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerIngredientesOdiados) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateHatedQuestion(),session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateHatedQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerAlergia) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateAllergiesQuestion(),session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateAllergiesQuestion(),session.getUser());
 			} else if (conocimiento.getSubFocus() instanceof ObtenerNivelCocina) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario(SentenceFactory.generateLevelQuestion(),session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateLevelQuestion(),session.getUser());
 			}
 		} else if (objetivo instanceof ObtenerIngredienteOPlato) {
 			if (session.isNoReceta()) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("no hemos encontrado ninguna receta con los ingredientes que nos has indicado, por favor vuelva a indicarnos oros ingredientes distintos",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateNoRecipeComplainSentence(),session.getUser());
 			} else if (session.isNoMasRecetas()) {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("no tenemos mas recetas con el criterio que nos has dado, por favor vuelva a introducir nuevos ingredientes",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateNoRecipeComplainSentence(),session.getUser());
 			} else {
-				itfUsComunicacionoWeb.enviarMensageAlUsuario("Objetivo obtener ingredientes o plato",session.getUser());
+				itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateRecipeIngredientsQuestionSentence(),session.getUser());
 			}
 		} else if (objetivo instanceof ObtenerValoracionUsuario) {
-			itfUsComunicacionoWeb.enviarMensageAlUsuario("La ultima vez que accediste elegiste cocinar la receta x, ¿te gustaria valorarla?",session.getUser());
+			UserProfile user = (UserProfile) params[2];
+			Recipe recipe = itfUsoPersistenciaMongo.findOne(user.getRecetaPendiente().toString());
+			itfUsComunicacionoWeb.enviarMensageAlUsuario(itfSentenceGenerator.generateValorationQuestion(recipe.getTitle()),session.getUser());
 		} 
 		} catch (Exception e) {
 			e.printStackTrace();

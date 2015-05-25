@@ -35,6 +35,8 @@ public class UserSession implements Serializable {
 	private boolean noMasRecetas = false;
 	@Transient
 	private Integer intentos = 0;
+	@Transient
+	private boolean cerrar = false;
 	
 	public UserSession(String user) {
 		this.user = user;
@@ -137,6 +139,14 @@ public class UserSession implements Serializable {
 
 	public void setIntentos(Integer intentos) {
 		this.intentos = intentos;
+	}
+
+	public boolean isCerrar() {
+		return cerrar;
+	}
+
+	public void setCerrar(boolean cerrar) {
+		this.cerrar = cerrar;
 	}
 
 }

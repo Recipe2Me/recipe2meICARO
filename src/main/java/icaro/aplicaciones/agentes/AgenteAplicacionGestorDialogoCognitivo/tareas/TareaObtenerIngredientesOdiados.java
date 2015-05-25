@@ -11,7 +11,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.anotaciones.InformacionEx
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoMensajeDelUsuario;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.extractorSemantico.ItfUsoExtractorSemantico;
-import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
+import icaro.aplicaciones.recursos.sentenceGenerator.ItfUsoSentenceGenerator;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.TareaSincrona;
 import icaro.infraestructura.recursosOrganizacion.repositorioInterfaces.ItfUsoRepositorioInterfaces;
@@ -24,6 +24,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 	public ItfUsoRepositorioInterfaces repoIntfaces;
 	private ItfUsoExtractorSemantico itfUsoExtractorSemantico;
 	private ItfUsoComunicacionWeb itfUsComunicacionoWeb;
+	private ItfUsoSentenceGenerator itfSentenceGenerator;
 	
 	public TareaObtenerIngredientesOdiados(){
 		this.repoIntfaces = NombresPredefinidos.REPOSITORIO_INTERFACES_OBJ;
@@ -33,6 +34,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 					.obtenerInterfazUso("ExtractorSemantico1");
 			itfUsComunicacionoWeb = (ItfUsoComunicacionWeb) this.repoIntfaces
 					.obtenerInterfazUso("ComunicacionWeb1");
+			itfSentenceGenerator = (ItfUsoSentenceGenerator) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoSentenceGenerator);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -53,7 +55,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 			String msg="";
 			if(ingredientes!=null){
 				if(ingredientes.isEmpty()){
-					msg = SentenceFactory.generateIngredientsComplain();
+					msg = itfSentenceGenerator.generateIngredientsComplain();
 					itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 				}
 				else{
@@ -88,7 +90,7 @@ public class TareaObtenerIngredientesOdiados extends TareaSincrona{
 				}
 			}
 			else{
-				msg = SentenceFactory.generateIngredientsComplain();
+				msg = itfSentenceGenerator.generateIngredientsComplain();
 				itfUsComunicacionoWeb.enviarMensageAlUsuario(msg,mensaje.getUser());
 			}
 

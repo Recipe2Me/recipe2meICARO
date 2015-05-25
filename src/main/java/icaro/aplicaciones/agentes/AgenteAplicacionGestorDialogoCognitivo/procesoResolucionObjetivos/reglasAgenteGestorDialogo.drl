@@ -231,11 +231,12 @@ rule "Inicio del proceso de consecucion del  objetivo ObtenerValoracionUsuario"
     obj:ObtenerValoracionUsuario(state==Objetivo.PENDING)
     sesion:UserSession()
     Focus(foco == obj)
+    user:UserProfile()
   then
     obj.setSolving();
     update(obj);
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(EnviarMensajeInicialDeObjetivo.class);
-    tarea.ejecutar(obj,sesion);
+    tarea.ejecutar(obj,sesion,user);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
 end
 
@@ -243,12 +244,14 @@ rule "Obtener confirmacion de valorar receta"
   when
     obj:ObtenerValoracionUsuario(state==Objetivo.SOLVING)
     evento:EventoMensajeDelUsuario()
+    informe:InformeDeTarea(identTarea == "TareaEstudioPreliminar")
     user:UserProfile(pendiente == true)
     f:Focus(foco == obj)
   then
     TareaSincrona tarea = gestorTareas.crearTareaSincrona(TareaObtenerValoracionUsuario.class);
     tarea.ejecutar(user,evento);
     retract(evento);
+    retract(informe);
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());
     recursoTrazas.aceptaNuevaTraza(new InfoTraza(agentId,"Realizando el objetivo : "+obj.getgoalId()+"  Ejecutando la tarea : "+ tarea.getIdentTarea() ,InfoTraza.NivelTraza.debug));
 end
@@ -313,7 +316,9 @@ rule "Obtenemos el sub objetivo del objetivo principal de ObtenerConocimientoIni
   when
     obj:ObtenerConocimientoInicial(state==Objetivo.SOLVING , subFocus.getgoalId() == null || subFocus.getState() == Objetivo.SOLVED)
     Focus(foco == obj)
+    session:UserSession()
   then
+  	session.setIntentos(0);
     obj.getSubObjetivoAleatorio();
     update(obj)
     recursoTrazas.aceptaNuevaTrazaEjecReglas(agentId," EJECUTO LA REGLA: " + drools.getRule().getName());

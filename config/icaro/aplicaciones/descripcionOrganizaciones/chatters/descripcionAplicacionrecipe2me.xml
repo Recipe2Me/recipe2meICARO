@@ -44,6 +44,8 @@
 			tipo="RecursoWeb"/>
 			<icaro:DescRecursoAplicacion nombre="ExtractorSemantico"
                         localizacionClaseGeneradora="icaro.aplicaciones.recursos.extractorSemantico.ClaseGeneradoraExtractorSemantico"/>
+         	<icaro:DescRecursoAplicacion nombre="SentenceGenerator"
+                        localizacionClaseGeneradora="icaro.aplicaciones.recursos.sentenceGenerator.ClaseGeneradoraSentenceGenerator"/>
 		</icaro:DescRecursosAplicacion>
 	</icaro:DescripcionComponentes>
 	<icaro:DescInstancias> 
@@ -67,6 +69,7 @@
 			    		<icaro:componenteGestionado refId="PersistenciaMongo1" tipoComponente="RecursoAplicacion"/>
 					 	<icaro:componenteGestionado refId="ExtractorSemantico1" tipoComponente="RecursoAplicacion"/>
                      	<icaro:componenteGestionado refId="ComunicacionWeb1" tipoComponente="RecursoAplicacion"/>  
+                     	<icaro:componenteGestionado refId="SentenceGenerator1" tipoComponente="RecursoAplicacion"/>
 				</icaro:componentesGestionados>
 			</icaro:InstanciaGestor>
 		</icaro:Gestores>
@@ -91,6 +94,7 @@
 					</icaro:listaPropiedades>     	 
 				</icaro:Instancia>
 				<icaro:Instancia id="ExtractorSemantico1" refDescripcion="ExtractorSemantico" xsi:type="icaro:Instancia"/>
+				<icaro:Instancia id="SentenceGenerator1" refDescripcion="SentenceGenerator" xsi:type="icaro:Instancia"/>
 		</icaro:RecursosAplicacion>
 	<!--******************************************************************************************************
 	******************   Descripción común del nodo en el que se despliegan las instancias	******************

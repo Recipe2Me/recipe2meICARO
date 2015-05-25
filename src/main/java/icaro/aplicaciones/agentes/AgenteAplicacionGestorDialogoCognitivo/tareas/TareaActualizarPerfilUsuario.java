@@ -43,14 +43,15 @@ public class TareaActualizarPerfilUsuario extends TareaSincrona{
 		DialogoInicial dialogo = (DialogoInicial) params[0];
 		UserSession session = (UserSession) params[1];
 		UserProfile user = (UserProfile) params[2];
-		
+		try {
 		user.setAlergias(dialogo.getAlergias());
 		user.setSabeCocinar(dialogo.isSabeCocinar());
 		user.setGusto(dialogo.getIngredientesFavoritos());
 		user.setNoGusto(dialogo.getIngredientesOdiados());
 		user.setInit(true);
+		itfUsComunicacionoWeb.enviarMensageAlUsuario("Bueno ya he calculado tu perfil inicial. Ahora vamos a ver que te apetece que te recomiende.", user.getUsername());
 		this.getEnvioHechos().insertarHechoWithoutFireRules(new QueryRecipe(user));
-		try {
+		
 			itfPersistenciaMongo.actualizarUsuario(user);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

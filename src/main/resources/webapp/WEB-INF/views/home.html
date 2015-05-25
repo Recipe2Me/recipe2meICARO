@@ -295,7 +295,10 @@
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
 					$('#myModal').modal('hide');
-					$.get("/recomendacion/nomegusta",function (data) {
+					setTimeout(function(){
+						$.get("/recomendacion/nomegusta",function (data) {
+						}, 500); 
+					
 						
 					});
 					console.log("No me gusta");
@@ -305,18 +308,24 @@
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
 					$('#myModal').modal('hide');
-					$.get("/recomendacion/otrodia",function (data) {
+					setTimeout(function(){
+						$.get("/recomendacion/otrodia",function (data) {
 
-					});
+						});
+						}, 500); 
+
 					console.log('ahora no');
 				}else if(opcion == 'meGusta'){
 					//PUT CODE FOR "ME GUSTA" OPTION
 					$('body').removeClass('modal-open');
 					$('.modal-backdrop').remove();
 					$('#myModal').modal('hide');
-					$.get("/recomendacion/megusta",function (data) {
+					setTimeout(function(){
+						$.get("/recomendacion/megusta",function (data) {
 
-					});
+						});
+						}, 500); 
+					
 					console.log('me gusta');
 				}
 			}

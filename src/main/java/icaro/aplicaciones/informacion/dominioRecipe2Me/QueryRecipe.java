@@ -18,6 +18,8 @@ public class QueryRecipe {
 	public QueryRecipe(UserProfile perfil) {
 		ingredientes = new ArrayList<String>();
 		alergias = perfil.getAlergias();
+		if (alergias==null)
+			alergias = new ArrayList<String>();
 		sabeCocinar = perfil.isSabeCocinar();
 		gusto = perfil.getGusto();
 		listaRecetasRechazadas = perfil.getRecetasNoGusta();

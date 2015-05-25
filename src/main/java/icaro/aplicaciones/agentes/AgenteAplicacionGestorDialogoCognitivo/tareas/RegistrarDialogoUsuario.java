@@ -21,7 +21,7 @@ import icaro.aplicaciones.informacion.dominioRecipe2Me.VocabularioRecipe2Me;
 import icaro.aplicaciones.informacion.dominioRecipe2Me.eventos.EventoConexion;
 import icaro.aplicaciones.recursos.comunicacionWeb.ItfUsoComunicacionWeb;
 import icaro.aplicaciones.recursos.persistenciaMongo.ItfUsoPersistenciaMongo;
-import icaro.aplicaciones.recursos.sentenceGenerator.SentenceFactory;
+import icaro.aplicaciones.recursos.sentenceGenerator.ItfUsoSentenceGenerator;
 import icaro.infraestructura.entidadesBasicas.NombresPredefinidos;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.CausaTerminacionTarea;
 import icaro.infraestructura.entidadesBasicas.procesadorCognitivo.Focus;
@@ -43,38 +43,47 @@ public class RegistrarDialogoUsuario extends TareaSincrona {
 
 	@Override
 	public void ejecutar(Object... params) {
-		String identDeEstaTarea = this.getIdentTarea();
-		String identAgenteOrdenante = this.getIdentAgente();
-		EventoConexion evento = (EventoConexion) params[0];
-		UserProfile interlocutor = evento.getUser();
-		UserSession sesion = new UserSession(interlocutor.getUserName());
-		String mensaje = "";
-		//Controla si ya ha realizado el formulario inicial
-		sesion.setFirst(!interlocutor.isInit());
-		if (sesion.isFirst()) {
-			//La primera vez enviamos un saludo de presentacion y introducimos el objeto 
-			//donde almacenar el dialogo inicial mientras lo vamos recopilando
-			mensaje = SentenceFactory.generateHelloUnknownUser();
-			this.getEnvioHechos().insertarHechoWithoutFireRules(new DialogoInicial());
-		} else {
-			//La proximas veces enviamos un saludo y introducimos el objeto 
-			//donde almacenar los datos para la consulta
-			mensaje = SentenceFactory.generateHelloKnownUser(interlocutor.getUsername());
-			this.getEnvioHechos().insertarHechoWithoutFireRules(new QueryRecipe(interlocutor));
-		}
-		sesion.messages.add(new Message(mensaje));
-		//Introducimos los objetios en la memoria de trabajo
-		this.getEnvioHechos().insertarHechoWithoutFireRules(interlocutor);
-		this.getEnvioHechos().insertarHechoWithoutFireRules(sesion);
-		
 		try {
-			ItfUsoComunicacionWeb web = (ItfUsoComunicacionWeb) this.repoInterfaces.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoComunicacionWeb);
+			ItfUsoSentenceGenerator itfSentenceGenerator = (ItfUsoSentenceGenerator) this.repoInterfaces
+					.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoSentenceGenerator);
+			String identDeEstaTarea = this.getIdentTarea();
+			String identAgenteOrdenante = this.getIdentAgente();
+			EventoConexion evento = (EventoConexion) params[0];
+			UserProfile interlocutor = evento.getUser();
+			UserSession sesion = new UserSession(interlocutor.getUserName());
+			String mensaje = "";
+			// Controla si ya ha realizado el formulario inicial
+			sesion.setFirst(!interlocutor.isInit());
+			if (sesion.isFirst()) {
+				// La primera vez enviamos un saludo de presentacion y
+				// introducimos el objeto
+				// donde almacenar el dialogo inicial mientras lo vamos
+				// recopilando
+				mensaje = itfSentenceGenerator.generateHelloUnknownUser();
+				mensaje = mensaje.concat(" Voy a realizarte una serie de preguntas para conocerte mejor.");
+				this.getEnvioHechos().insertarHechoWithoutFireRules(
+						new DialogoInicial());
+			} else {
+				// La proximas veces enviamos un saludo y introducimos el objeto
+				// donde almacenar los datos para la consulta
+				mensaje = itfSentenceGenerator
+						.generateHelloKnownUser(interlocutor.getUsername());
+				this.getEnvioHechos().insertarHechoWithoutFireRules(
+						new QueryRecipe(interlocutor));
+			}
+			sesion.messages.add(new Message(mensaje));
+			// Introducimos los objetios en la memoria de trabajo
+			this.getEnvioHechos().insertarHechoWithoutFireRules(interlocutor);
+			this.getEnvioHechos().insertarHechoWithoutFireRules(sesion);
+
+			ItfUsoComunicacionWeb web = (ItfUsoComunicacionWeb) this.repoInterfaces
+					.obtenerInterfazUso(VocabularioRecipe2Me.IdentRecursoComunicacionWeb);
 			web.enviarMensageAlUsuario(mensaje, interlocutor.getUserName());
+			this.generarInformeOK(identDeEstaTarea, contextoEjecucionTarea,
+					identAgenteOrdenante, "Sesion_Registrada.");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		//this.getEnvioHechos().insertarHecho(sesion);
-		this.generarInformeOK(identDeEstaTarea, contextoEjecucionTarea, identAgenteOrdenante, "Sesion_Registrada.");
 	}
 
 }
