@@ -9,7 +9,7 @@ Para ejecutarlo (cumpliendo las dependencias del proyecto como la base de datos 
 ./gradlew runSimple
 
 Dependencias:
-------------.
+-------------
 
 -Base de Datos Mongo en local con la configuración por defeco<br>
 -Gate Instalado<br>
